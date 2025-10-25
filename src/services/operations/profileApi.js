@@ -24,7 +24,7 @@ export function getUserDetails(token, setLoading, setUserDetails) {
         GETUSERDETAILS,
         null,
         {
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       );
       if (response.data.success) {
@@ -44,7 +44,7 @@ export function updateProfile(token, payload, setLoading) {
     setLoading(true);
     try {
       const response = await apiConnector("PUT", UPDATEPROFILE, payload, {
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       });
       if (response.data.success) {
         console.log("successfully updated Profile");
@@ -72,7 +72,7 @@ export function deleteAccount(token, navigate, setLoading) {
         DELETEPROFILE,
         null,
         {
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       );
       if (response.data.success) {
@@ -101,7 +101,7 @@ export function updateDP(token, formData) {
     try {
       const response = await apiConnector("PUT", UPDATEDPAPI, formData, {
         "Content-Type": "multipart/form-data",
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       });
       if (response.data.success) {
         dispatch(setDP(response.data.url));
@@ -129,7 +129,7 @@ export async function getEnrolledCourses(token) {
       GET_ENROLLED_COURSES_API,
       null,
       {
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       }
     );
     if (!response.data.success) {
@@ -151,7 +151,7 @@ export async function getInstructorCourses(token, dispatch) {
       GET_INSTRUCTOR_COURSES_API,
       null,
       {
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       }
     );
     if (response.data.success) {
@@ -174,7 +174,7 @@ export async function getInstructorDashboardInfo(token, setLoading) {
       GET_INSTRUCTOR_DASHBOARD_INFO_API,
       null,
       {
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       }
     );
     if (response?.data?.success) {
