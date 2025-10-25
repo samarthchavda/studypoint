@@ -212,168 +212,76 @@ exports.getEnrolledCourses = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const enrlCourses = await User.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(userId),
-        },
-      },
-      {
-        $project: {
-          courses: 1,
-        },
-      },
-      {
-        $lookup: {
-          from: "courses",
-          localField: "courses",
-          foreignField: "_id",
-          as: "courses",
-        },
-      },
-      {
-        $lookup: {
-          from: "sections",
-          localField: "courses.courseContent",
-          foreignField: "_id",
-          as: "sections",
-        },
-      },
-      {
-        $lookup: {
-          from: "subsections",
-          localField: "sections.subSections",
-          foreignField: "_id",
-          as: "subSections",
-        },
-      },
-      {
-        $unwind: {
-          path: "$subSections",
-        },
-      },
-      {
-        $group: {
-          _id: "$subSections.courseId",
-          totalDuration: {
-            $sum: "$subSections.timeDuration",
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: "courses",
-          localField: "_id",
-          foreignField: "_id",
-          as: "course",
-        },
-      },
-      {
-        $unwind: {
-          path: "$course",
-        },
-      },
-      {
-        $project: {
-          "course._id": 1,
-          "course.name": 1,
-          "course.description": 1,
-          "course.thumbnail": 1,
-          totalDuration: 1,
-        },
-      },
-    ]);
-    const courseProgress = await CourseProgress.aggregate([
-      {
-        $match: {
-          userId: new mongoose.Types.ObjectId(userId),
-        },
-      },
-      {
-        $lookup: {
-          from: "courses",
-          localField: "courseId",
-          foreignField: "_id",
-          as: "result",
-        },
-      },
-      {
-        $lookup: {
-          from: "sections",
-          localField: "result.courseContent",
-          foreignField: "_id",
-          as: "resultSections",
-        },
-      },
-      {
-        $unwind: {
-          path: "$resultSections",
-        },
-      },
-      {
-        $group: {
-          _id: "$courseId",
-          courseId: { $first: "$courseId" },
-          completedVideos: { $first: "$completedVideos" },
-          totalVideos: {
-            $sum: { $size: "$resultSections.subSections" },
-          },
-        },
-      },
-      {
-        $project: {
-          courseId: 1,
-          completedVideos: { $size: "$completedVideos" },
-          totalVideos: 1,
-        },
-      },
-    ]);
-    console.log(enrlCourses);
-    console.log(courseProgress);
-    // const courses=enrlCourses.map((course)=>{
-    //     const cp=courseProgress.filter((courseP)=>courseP.courseId==course.course._id)[0];
-    // })
+    // Simple approach: Get user and populate courses
+    const user = await User.findById(userId).populate({
+      path: 'courses',
+      populate: {
+        path: 'courseContent',
+        populate: {
+          path: 'subSections'
+        }
+      }
+    });
 
-    const newCourses = enrlCourses.map((course) => {
-      const cp = courseProgress.filter(
-        (courseP) =>
-          courseP.courseId.toString() === course.course._id.toString()
-      )[0];
-      // console.log(cp,"cp");
-      const coursePercentage = Math.round(
-        (cp?.completedVideos / cp?.totalVideos) * 100
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Get course progress for all enrolled courses
+    const courseProgressList = await CourseProgress.find({ userId });
+
+    // Build enrolled courses array
+    const enrolledCourses = user.courses.map((course) => {
+      // Calculate total duration
+      let totalDuration = 0;
+      let totalVideos = 0;
+      
+      if (course.courseContent && course.courseContent.length > 0) {
+        course.courseContent.forEach(section => {
+          if (section.subSections && section.subSections.length > 0) {
+            section.subSections.forEach(subSection => {
+              totalDuration += subSection.timeDuration || 0;
+              totalVideos++;
+            });
+          }
+        });
+      }
+
+      // Find course progress
+      const progress = courseProgressList.find(
+        cp => cp.courseId.toString() === course._id.toString()
       );
+
+      const completedVideos = progress ? progress.completedVideos.length : 0;
+      const coursePercentage = totalVideos > 0 ? Math.round((completedVideos / totalVideos) * 100) : 0;
+
       return {
-        ...course.course,
-        totalDuration: course.totalDuration,
-        courseProgress: {
-          ...cp,
-        },
+        _id: course._id,
+        name: course.name,
+        description: course.description,
+        thumbnail: course.thumbnail,
+        totalDuration,
         coursePercentage,
+        courseProgress: {
+          courseId: course._id,
+          completedVideos,
+          totalVideos,
+        },
       };
     });
 
-    console.log(newCourses);
+    console.log('Enrolled courses:', enrolledCourses);
 
-    if (!enrlCourses) {
-      return res.status(404).json({
-        success: false,
-        message: "no user with that user id",
-      });
-    }
-    // if (enrlCourses.length == 0) {
-    //   return res.status(404).json({
-    //     success: false,
-    //     message: "you have not enrolled in any courses",
-    //   });
-    // }
     return res.status(200).json({
       success: true,
-      message: "enrolled courses fetched successfully",
-      enrolledCourses: newCourses,
+      message: "Enrolled courses fetched successfully",
+      enrolledCourses,
     });
   } catch (error) {
-    console.log("error while fetching enrolled courses data", error);
+    console.log("Error while fetching enrolled courses data:", error);
     return res.status(500).json({
       success: false,
       message: error.message,
