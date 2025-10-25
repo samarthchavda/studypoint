@@ -12,6 +12,7 @@ const Card = ({content,currentCard,setCurrentCard}) => {
         "Learn CSS": "68fca2c139ff6d15c8c1c51e",
         "Responsive Web design": "68fca2c139ff6d15c8c1c523",
         "Responsive Web Design": "68fca2c139ff6d15c8c1c523",
+        "Bootstrap learning": "68fca2c139ff6d15c8c1c523",
     };
     
     const handleCardClick = () => {
