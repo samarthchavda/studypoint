@@ -49,22 +49,22 @@ export const HomePageExplore = [
         tag: 'Most popular',
         courses : [
             {
-                heading : "Java",
+                heading : "Learn HTML",
                 description : "This course covers the basic concepts of HTML including creating and structuring web pages, adding text, links, images, and more.",
                 level : 'Beginner',
-                lessionNumber : 6
+                lessionNumber : 2
             },
             {
-                heading : "Python",
-                description : "This course explores advanced topics in HTML5 and CSS3, including animations, transitions, and layout techniques",
+                heading : "Learn CSS",
+                description : "Free to learn CSS basics: selectors, the box model, colors/fonts, and modern layout with Flexbox and Grid.",
                 level : 'Beginner',
-                lessionNumber : 6
+                lessionNumber : 2
             },
             {
-                heading : "SCSS",
-                description : "This course teaches responsive web design techniques, allowing web pages to adapt to different devices and screen sizes",
+                heading : "Bootstrap learning",
+                description : "Learn Bootstrap 5 to build responsive, mobile‑first websites using the grid system, utilities, and ready‑made components.",
                 level : 'Beginner',
-                lessionNumber : 6
+                lessionNumber : 2
             },
         ]
     },
@@ -73,22 +73,22 @@ export const HomePageExplore = [
         tag: 'Career paths',
         courses : [
             {
-                heading : "Next.js",
+                heading : "Learn HTML",
                 description : "This course covers the basic concepts of HTML including creating and structuring web pages, adding text, links, images, and more.",
                 level : 'Beginner',
-                lessionNumber : 6
+                lessionNumber : 2
             },
             {
-                heading : "Nuxt.js",
-                description : "This course explores advanced topics in HTML5 and CSS3, including animations, transitions, and layout techniques",
+                heading : "Learn CSS",
+                description : "Free to learn CSS basics: selectors, the box model, colors/fonts, and modern layout with Flexbox and Grid.",
                 level : 'Beginner',
-                lessionNumber : 6
+                lessionNumber : 2
             },
             {
-                heading : "Sanity",
-                description : "This course teaches responsive web design techniques, allowing web pages to adapt to different devices and screen sizes",
+                heading : "Bootstrap learning",
+                description : "Learn Bootstrap 5 to build responsive, mobile‑first websites using the grid system, utilities, and ready‑made components.",
                 level : 'Beginner',
-                lessionNumber : 6
+                lessionNumber : 2
             },
         ]
     },
