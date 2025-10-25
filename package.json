@@ -38,11 +38,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thepranaygupta/react-tailwind-css-starter-pack.git"
+    "url": "git+https://github.com/samarthchavda/studypoint.git"
   },
-  "author": "Pranay Gupta",
+  "author": "Chavda Samarth, Ansh Sangani",
   "bugs": {
-    "url": "https://github.com/thepranaygupta/react-tailwind-css-starter-pack/issues"
+    "url": "https://github.com/samarthchavda/studypoint/issues"
   },
   "scripts": {
     "start": "react-app-rewired start",
