@@ -2,24 +2,30 @@ import React from "react";
 
 const Stats = ({ data }) => {
   return (
-    <div className="flex glass py-3 justify-around text-center rounded-lg h-full ">
-      <div>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 glass py-4 px-6 rounded-lg">
+      <div className="text-center">
         <p className="text-3xl font-semibold text-richblack-50">
-          {data?.enrolledStudents}
+          {data?.totalStudents || 0}
         </p>
-        <p className="text-richblack-300 font-medium">Enrolled Students</p>
+        <p className="text-richblack-300 font-medium">Students</p>
       </div>
-      <div>
+      <div className="text-center">
         <p className="text-3xl font-semibold text-richblack-50">
-          {data?.instructors}
+          {data?.totalInstructors || 0}
         </p>
         <p className="text-richblack-300 font-medium">Instructors</p>
       </div>
-      <div>
+      <div className="text-center">
         <p className="text-3xl font-semibold text-richblack-50">
-          {data?.totalUsers}
+          {data?.totalCourses || 0}
         </p>
-        <p className="text-richblack-300 font-medium">Registered Users</p>
+        <p className="text-richblack-300 font-medium">Courses</p>
+      </div>
+      <div className="text-center">
+        <p className="text-3xl font-semibold text-richblack-50">
+          {data?.totalCategories || 0}
+        </p>
+        <p className="text-richblack-300 font-medium">Categories</p>
       </div>
     </div>
   );

@@ -5,6 +5,11 @@
 **Email:** admin@studynotion.com  
 **Password:** Test@123
 
+> ⚠️ **Important:** If login fails, run the password reset script:
+> ```bash
+> node server/scripts/debugAdminLogin.js
+> ```
+
 ---
 
 ## 🚀 How to Access Admin Panel
@@ -187,6 +192,20 @@ node server/scripts/checkAllCourses.js
 ---
 
 ## 🐛 Troubleshooting
+
+**Issue:** Can't login / "Invalid credentials" error  
+**Solution:** Password might have been corrupted. Run:
+```bash
+node server/scripts/debugAdminLogin.js
+```
+This will reset the password to `Test@123`
+
+**Issue:** Login successful but dashboard shows blank/nothing  
+**Solution:** 
+1. Check browser console for errors (F12)
+2. Verify backend server is running on port 4000
+3. Check network tab for failed API calls
+4. The stats component expects: `totalStudents`, `totalInstructors`, `totalCourses`, `totalCategories`
 
 **Issue:** Can't access admin panel  
 **Solution:** Verify you're logged in as admin and navigate to `/dashboard/admin`
