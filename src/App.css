@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* write your css here */
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.sh{
+    box-shadow: -1px -1px white inset;
+}
+
+.glass{
+/* From https://css.glass */
+background: rgba(71, 80, 107, 0.29);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(11px);
+-webkit-backdrop-filter: blur(11px);
+border: 1px solid rgba(71, 80, 107, 0.3);
+}
+
+.chex{
+    background: url('./assets/Images/bghome.svg');
+} 
+
+.insetShadow{
+    box-shadow: 0px -1.1px rgba(255, 255, 255, 0.18) inset;
+}
+
+.back{
+    background-color: #161D29;
+    border:1px solid #2C333F;
+    border-radius: 8px;
+}
+
+.field{
+    box-shadow: 0px -1.1px rgba(255, 255, 255, 0.18) inset;
+    background-color: #161D29;
+    border-radius: 8px;
+    padding: 12px;
+    color: #999DAA;
+}
+
+.field2{
+    box-shadow: 0px -1.1px rgba(255, 255, 255, 0.18) inset;
+    background-color: rgba(44, 51, 63, 1);
+    border-radius: 8px;
+    padding: 12px;
+    color: rgba(153, 157, 170, 1)
+} 
+.field2:focus{
+    outline: none;
+}
+.field:focus{
+    outline: none;
+}
+
+
+@keyframes ballAnimation {
+    from{
+        top:-3px;
+        right:0px;
+    }
+    to{
+        top:-12px;
+        right:0px;
+    }
+}
+
+.ball_animation{
+    animation: 1s infinite ballAnimation;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: 
+      radial-gradient(farthest-side,#ffa516 94%,#0000) top/8px 8px no-repeat,
+      conic-gradient(#0000 30%,#ffa516);
+    -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+    animation: l13 1s infinite linear;
+  }
+  @keyframes l13{ 
+    100%{transform: rotate(1turn)}
+  }
+
+.active{
+    background-color: #3D2A01;
+    color: #FFD60A;
+}
+/* 
+ details{
+    max-height: 4rem;
+    overflow: hidden;
+    transition: max-height 1s linear;
+}
+
+details[open]{
+    max-height: 20rem;
+    transition: max-height 1s linear;
+}  */
+
+
+/* details{
+    overflow: hidden;
+}
+
+details::details-content{
+    background-color: red;
+} */
+
+/* details::details-content{
+    content-visibility: 1s;
+    transition-behavior: allow-discrete;
+} */
+
+/* Replace the existing details related CSS with this
+details {
+  overflow: hidden;
+}
+
+details[open] > :not(summary) {
+  animation: sweep .5s linear;
+}
+
+@keyframes sweep {
+  0%    {
+    opacity: 0;
+    block-size: 0;
+  }
+  100%  {
+    opacity: 1;
+    block-size: auto;
+}
+} */
+
+/* details summary {
+  transition: margin 150ms ease-out;
+}
+
+details[open] summary {
+  margin-bottom: 10px;
+} */
+
+
+.glss{
+    /* From https://css.glass */
+background: rgba(255, 255, 255, 0.1);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid rgba(255, 255, 255, 1);
+}
+
+
+
+
+
+
+
