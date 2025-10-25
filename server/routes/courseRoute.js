@@ -44,6 +44,9 @@ const {
 // Import course progress controller
 const { updateCourseProgress } = require("../controllers/courseProgress");
 
+// Import free course enrollment controller
+const { enrollFreeCourse } = require("../controllers/freeCourseEnrollment");
+
 // Import auth middleware
 const { auth, isInstructor, isStudent, isAdmin, optionalAuth } = require("../middlewares/auth");
 
@@ -80,6 +83,8 @@ router.post("/editCourse", auth, isInstructor, editCourse);
 router.delete("/deleteCourse", auth, isInstructor, deleteCourse);
 
 router.post("/updateCourseProgress", auth, isStudent, updateCourseProgress);
+// Enroll in free course
+router.post("/enrollFreeCourse", auth, isStudent, enrollFreeCourse);
 
 // ********************************************************************************************************
 //                                      Category routes (Only by Admin)

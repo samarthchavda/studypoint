@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { buyCourse } from "../services/operations/paymentApi";
 import { useEffect, useState } from "react";
-import { getFullCourseDetails } from "../services/operations/courseApi";
+import { getFullCourseDetails, enrollFreeCourse } from "../services/operations/courseApi";
 import Spinner from "../components/comman/Spinner";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -85,9 +85,23 @@ const CourseInfoPage = () => {
     await buyCourse(token,user?._id,[courseId],dispatch);
   };
 
+  const handleFreeEnroll = async () => {
+    if (!user) {
+      toast.error("Please login to enroll in courses");
+      return;
+    }
+    if (user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+      toast.error("Instructors cannot enroll in courses");
+      return;
+    }
+    await enrollFreeCourse(token, courseId, navigate, dispatch);
+  };
+
   const isStudentEnrolled = () => {
     return course?.studentsEnrolled?.some((student) => student === user?._id);
   };
+
+  const isFree = course?.price === 0 || course?.price === null;
 
   return (
     <div>
@@ -115,6 +129,8 @@ const CourseInfoPage = () => {
                     instructions={course?.instructions}
                     addToCart={addToCart}
                     goToCourseHandler={goToCourseHandler}
+                    isFree={isFree}
+                    freeEnrollHandler={handleFreeEnroll}
                   />
                 </div>
               </div>

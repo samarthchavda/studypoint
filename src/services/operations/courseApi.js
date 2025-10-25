@@ -404,6 +404,36 @@ export async function deleteCourse(token, payload, dispatch) {
   }
 }
 
+// Enroll in free course
+export async function enrollFreeCourse(token, courseId, navigate, dispatch) {
+  const toastId = toast.loading("Enrolling in course...");
+  try {
+    const response = await apiConnector(
+      "POST",
+      courseEndPoint.ENROLL_FREE_COURSE_API,
+      { courseId },
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+    
+    if (response.data.success) {
+      toast.success("Successfully enrolled in course!");
+      toast.dismiss(toastId);
+      if (navigate) {
+        navigate("/dashboard/enrolled-courses");
+      }
+      return true;
+    }
+  } catch (error) {
+    console.log("Error enrolling in free course:", error);
+    toast.error(error?.response?.data?.message || "Failed to enroll in course");
+    return false;
+  } finally {
+    toast.dismiss(toastId);
+  }
+}
+
 export async function getCategoryCourses(payload, setCourses) {
   try {
     console.log("getCategoryCourses called with payload:", payload);

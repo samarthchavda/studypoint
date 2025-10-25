@@ -14,7 +14,9 @@ const CourseBuyCard = ({
   buyHandler,
   instructions,
   addToCart,
-  goToCourseHandler
+  goToCourseHandler,
+  isFree = false,
+  freeEnrollHandler
 }) => {
   const items=useSelector((state)=>state.cart.items);
   const dispatch=useDispatch();
@@ -39,22 +41,30 @@ const CourseBuyCard = ({
       <div className="mx-auto w-fit"><img src={thumbnail} className="max-h-[230px]" alt="thumbnail of course"/></div>
       <div className="">
         <div  className="p-6 gap-3 flex flex-col">
-<p className="text-3xl font-bold text-center md:text-start text-richblack-5">Rs. {price}</p>
+<p className="text-3xl font-bold text-center md:text-start text-richblack-5">
+  {isFree ? <span className="text-caribbeangreen-200">FREE</span> : `Rs. ${price}`}
+</p>
       {isBought ? (
         <YellowBtn clickHandler={goToCourseHandler} text={"Go To Course"} />
       ) : (
         <div>
           <div className="flex flex-col gap-3">
-        {
-          items?.some((item)=>item?._id===course?._id) ?  
-          <YellowBtn widthFull={true} text="Remove from Wishlist" clickHandler={()=>removeFromCart(course?._id)} />
-          : <YellowBtn widthFull={true} text="Add to Wishlist" clickHandler={handleAddToCart} />
-        }
+        {isFree ? (
+          <YellowBtn widthFull={true} text="Enroll Now - Free" clickHandler={freeEnrollHandler} />
+        ) : (
+          <>
+            {
+              items?.some((item)=>item?._id===course?._id) ?  
+              <YellowBtn widthFull={true} text="Remove from Wishlist" clickHandler={()=>removeFromCart(course?._id)} />
+              : <YellowBtn widthFull={true} text="Add to Wishlist" clickHandler={handleAddToCart} />
+            }
             <YellowBtn textColour={'#F1F2FF'} widthFull={true} text="Buy Now" bgColour={'#161D29'} clickHandler={buyHandler} />
+          </>
+        )}
           </div>
         </div>
       )}
-      <p className="text-richblack-25 text-sm text-center ">30-Day Money-Back Guarantee</p>
+      {!isFree && <p className="text-richblack-25 text-sm text-center ">30-Day Money-Back Guarantee</p>}
       <ul className="flex items-center md:items-start flex-col">
         <p className="text-richblack-5 font-medium">This course includes:</p>
         {

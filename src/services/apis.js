@@ -55,6 +55,7 @@ export const courseEndPoint = {
   GET_ALL_REVIEWS_API: baseUrl + "/course/getReviews",
   GET_AVERAGE_RATING_API: baseUrl + "/course/getAverageRating",
   GET_AVG_RATING: baseUrl + "/course/getAverageRating",
+  ENROLL_FREE_COURSE_API: baseUrl + "/course/enrollFreeCourse",
 };
 
 // rating and review endpoints
