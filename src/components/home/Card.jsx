@@ -15,7 +15,7 @@ const Card = ({content,currentCard,setCurrentCard}) => {
         // If it's one of the free courses (Learn HTML, Learn CSS, Responsive Web design), redirect to the course
         const freeCourses = ["Learn HTML", "Learn CSS", "Responsive Web design"];
         if (freeCourses.includes(content.heading)) {
-            navigate(`/courses/${FREE_COURSE_ID}`);
+            navigate(`/course/${FREE_COURSE_ID}`);
         }
     };
     
