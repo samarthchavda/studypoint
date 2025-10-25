@@ -6,8 +6,8 @@ const Card = ({content,currentCard,setCurrentCard}) => {
     let thisCard=currentCard===content.heading;
     const navigate = useNavigate();
     
-    // Free course ID from database
-    const FREE_COURSE_ID = "68fc96e678a283e996c3415b";
+    // Free course ID from database (updated after recreation)
+    const FREE_COURSE_ID = "68fc9bda58a0f5a4bc74daeb";
     
     const handleCardClick = () => {
         setCurrentCard(content.heading);

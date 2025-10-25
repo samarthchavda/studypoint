@@ -420,16 +420,11 @@ export async function enrollFreeCourse(token, courseId, navigate, dispatch) {
     if (response.data.success) {
       toast.success("Successfully enrolled in course!");
       toast.dismiss(toastId);
+      // Navigate to enrolled courses and force reload
       if (navigate) {
-        // Navigate to enrolled courses with state to force refresh
-        navigate("/dashboard/enrolled-courses", { 
-          replace: true,
-          state: { refresh: Date.now() } 
-        });
-        // Alternative: reload the page to fetch fresh data
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
+        navigate("/dashboard/enrolled-courses");
+        // Force page reload to fetch fresh data
+        window.location.href = "/dashboard/enrolled-courses";
       }
       return true;
     }
