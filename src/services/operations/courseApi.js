@@ -421,7 +421,15 @@ export async function enrollFreeCourse(token, courseId, navigate, dispatch) {
       toast.success("Successfully enrolled in course!");
       toast.dismiss(toastId);
       if (navigate) {
-        navigate("/dashboard/enrolled-courses");
+        // Navigate to enrolled courses with state to force refresh
+        navigate("/dashboard/enrolled-courses", { 
+          replace: true,
+          state: { refresh: Date.now() } 
+        });
+        // Alternative: reload the page to fetch fresh data
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }
       return true;
     }
