@@ -6,20 +6,28 @@ const Card = ({content,currentCard,setCurrentCard}) => {
     let thisCard=currentCard===content.heading;
     const navigate = useNavigate();
     
-    // Free course IDs by card heading (after splitting into HTML, CSS, Bootstrap)
-    const FREE_COURSE_IDS = {
+    // Course IDs by card heading (free + catalog courses)
+    const COURSE_IDS = {
+        // Free courses
         "Learn HTML": "68fc9bda58a0f5a4bc74daeb",
         "Learn CSS": "68fca2c139ff6d15c8c1c51e",
         "Responsive Web design": "68fca2c139ff6d15c8c1c523",
         "Responsive Web Design": "68fca2c139ff6d15c8c1c523",
         "Bootstrap learning": "68fca2c139ff6d15c8c1c523",
+        // Catalog courses
+        "Complete Web Development Bootcamp": "68fbab1e0031571debb0151b",
+        "React JS - The Complete Guide": "68fbab396e480602bcb915e8",
+        "Flutter & Dart - Complete Guide": "68fbab50d83bc0b27ce5d04c",
+        "React Native - Build Mobile Apps": "68fbab50d83bc0b27ce5d057",
+        "Data Science Masterclass": "68fbab50d83bc0b27ce5d062",
+        "Machine Learning A-Z": "68fbab50d83bc0b27ce5d06d",
     };
     
     const handleCardClick = () => {
         setCurrentCard(content.heading);
         
-        // If it's one of the free courses (Learn HTML, Learn CSS, Responsive Web design), redirect to its specific course
-        const courseId = FREE_COURSE_IDS[content.heading];
+        // If it's a mapped course, redirect to its course detail page
+        const courseId = COURSE_IDS[content.heading];
         if (courseId) navigate(`/course/${courseId}`);
     };
     
