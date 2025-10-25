@@ -8,7 +8,6 @@ const CardsWindow = () => {
     "Free",
     "New to coding",
     "Most popular",
-    "Skills paths",
     "Career paths",
   ];
   const [currentTab, setCurrentTab] = useState(tabs[0]);
