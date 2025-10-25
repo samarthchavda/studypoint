@@ -6,17 +6,20 @@ const Card = ({content,currentCard,setCurrentCard}) => {
     let thisCard=currentCard===content.heading;
     const navigate = useNavigate();
     
-    // Free course ID from database (updated after recreation)
-    const FREE_COURSE_ID = "68fc9bda58a0f5a4bc74daeb";
+    // Free course IDs by card heading (after splitting into HTML, CSS, Bootstrap)
+    const FREE_COURSE_IDS = {
+        "Learn HTML": "68fc9bda58a0f5a4bc74daeb",
+        "Learn CSS": "68fca2c139ff6d15c8c1c51e",
+        "Responsive Web design": "68fca2c139ff6d15c8c1c523",
+        "Responsive Web Design": "68fca2c139ff6d15c8c1c523",
+    };
     
     const handleCardClick = () => {
         setCurrentCard(content.heading);
         
-        // If it's one of the free courses (Learn HTML, Learn CSS, Responsive Web design), redirect to the course
-        const freeCourses = ["Learn HTML", "Learn CSS", "Responsive Web design"];
-        if (freeCourses.includes(content.heading)) {
-            navigate(`/course/${FREE_COURSE_ID}`);
-        }
+        // If it's one of the free courses (Learn HTML, Learn CSS, Responsive Web design), redirect to its specific course
+        const courseId = FREE_COURSE_IDS[content.heading];
+        if (courseId) navigate(`/course/${courseId}`);
     };
     
     return (

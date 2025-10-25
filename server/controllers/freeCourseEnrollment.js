@@ -34,14 +34,6 @@ exports.enrollFreeCourse = async (req, res) => {
       });
     }
 
-    // Check if user is already enrolled
-    if (course.studentsEnrolled.includes(userId)) {
-      return res.status(400).json({
-        success: false,
-        message: "You are already enrolled in this course",
-      });
-    }
-
     // Find the user
     const user = await User.findById(userId);
     if (!user) {
@@ -51,24 +43,36 @@ exports.enrollFreeCourse = async (req, res) => {
       });
     }
 
+    // Check if user is already enrolled (robust string/ObjectId-safe check)
+    const alreadyEnrolled = user.courses?.some((id) => id.toString() === courseId.toString());
+    if (alreadyEnrolled) {
+      return res.status(400).json({
+        success: false,
+        message: "You are already enrolled in this course",
+      });
+    }
+
     // Enroll the student
     const enrolledCourse = await Course.findByIdAndUpdate(
       courseId,
-      { $push: { studentsEnrolled: userId } },
+      { $addToSet: { studentsEnrolled: userId } },
       { new: true }
     );
 
-    // Create course progress
-    const courseProgress = await CourseProgress.create({
-      userId: userId,
-      courseId: courseId,
-    });
+    // Create course progress if not exists (idempotent)
+    let courseProgress = await CourseProgress.findOne({ userId, courseId });
+    if (!courseProgress) {
+      courseProgress = await CourseProgress.create({
+        userId: userId,
+        courseId: courseId,
+      });
+    }
 
     // Update user's courses
     const enrolledStudent = await User.findByIdAndUpdate(
       userId,
       {
-        $push: {
+        $addToSet: {
           courses: courseId,
           courseProgress: courseProgress._id,
         },
