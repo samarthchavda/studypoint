@@ -1,6 +1,7 @@
 import { setLoading } from "../../slices/authSlice";
+import { setUser } from "../../slices/profileSlice";
 import apiConnector from "../apiConnector";
-import { courseEndPoint, categoryEndpoint } from "../apis";
+import { courseEndPoint, categoryEndpoint, profileEndpoint } from "../apis";
 import {
   setStep,
   setCourseInfo,
@@ -37,7 +38,7 @@ export async function getAverageRating(token, payLoad) {
       GET_AVERAGE_RATING_API,
       payLoad,
       {
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       }
     );
     if (!response.data.success) {
@@ -49,56 +50,75 @@ export async function getAverageRating(token, payLoad) {
   }
 }
 
-export function createCourse(token, payLoad, course, setLoading) {
+export function createCourse(token, payLoad, course, setLoading, navigate) {
   return async (dispatch) => {
     try {
       dispatch(setLoading(true));
+      console.log("Creating course with payload:", payLoad);
+      console.log("Token:", token ? "Present" : "Missing");
+      
       const createdCourse = await apiConnector(
         "POST",
         CREATE_COURSE_API,
         payLoad,
         {
           "Content-Type": "multipart/form-data",
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       );
+      
+      console.log("Create course response:", createdCourse);
+      
       if (createdCourse.data.success) {
-        const newCreatedCourse = { ...createdCourse.data.course };
+        const newCreatedCourse = { ...createdCourse.data.data };
         dispatch(setCourseInfo(newCreatedCourse));
-        dispatch(setStep(2));
-        dispatch(setEditCourse(true));
-        toast.success("course created!");
+        toast.success("Course created and published successfully!");
+        
+        // Reset course state
+        dispatch(setCourseInfo(null));
+        dispatch(setStep(1));
+        dispatch(setEditCourse(false));
+        
+        // Navigate to my courses
+        if (navigate) {
+          navigate("/dashboard/my-courses");
+        }
       }
     } catch (error) {
       console.log("error in createCourse api", error);
-      toast.error("course not created!");
+      console.log("error response:", error.response?.data);
+      console.log("error message:", error.message);
+      toast.error(error.response?.data?.message || "Failed to create course!");
     }
     dispatch(setLoading(false));
   };
 }
 
-export function editCourseDetails(token, payLoad, course, step) {
+export function editCourseDetails(token, payLoad, course, navigate) {
   return async (dispatch) => {
-    const tid = toast.loading("Editing course...");
+    const tid = toast.loading("Updating course...");
     try {
       const editedCourse = await apiConnector("POST", EDIT_COURSE_API, payLoad, {
         "Content-Type": "multipart/form-data",
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       });
       if (editedCourse.data.success) {
-        dispatch(
-          setCourseInfo({
-            ...course,
-            thumbnail: editedCourse.data.updatedCourse.thumbnail,
-            status: editedCourse.data.updatedCourse.status,
-          })
-        );
-        dispatch(setStep(step));
-        toast.success("course edited!");
+        toast.success("Course updated successfully!");
+        
+        // Reset course state
+        dispatch(setCourseInfo(null));
+        dispatch(setStep(1));
+        dispatch(setEditCourse(false));
+        
+        // Navigate to my courses
+        if (navigate) {
+          navigate("/dashboard/my-courses");
+        }
       }
     } catch (error) {
       console.log("error in editCourse api", error);
-      toast.error("course not edited!");
+      console.log("error response:", error.response?.data);
+      toast.error(error.response?.data?.message || "Failed to update course!");
     }
     toast.dismiss(tid);
   };
@@ -113,7 +133,7 @@ export function createSection(token, payLoad, courseInfo) {
         courseEndPoint.CREATE_SECTION_API,
         payLoad,
         {
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       );
       if (createdSection.data.success) {
@@ -153,7 +173,7 @@ export function updateSectionName(
         courseEndPoint.UPDATE_SECTION_API,
         payload,
         {
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       );
       if (response.data.success) {
@@ -190,7 +210,7 @@ export function deleteSection(token, payload, courseInfo, index) {
         DELETE_SECTION_API,
         payload,
         {
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       );
       if (response.data.success) {
@@ -231,7 +251,7 @@ export function createSubsection(
         CREATE_SUBSECTION_API,
         payload,
         {
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       );
       if (createdSubSection.data.success) {
@@ -266,7 +286,7 @@ export function editSubSection(token, payload, courseInfo, index, removeForm) {
     const tid = toast.loading("Editing subsection...");
     try {
       const response = await apiConnector("POST", EDIT_SUBSECTION_API, payload, {
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       });
       if (response.data.success) {
         const newSubSection = response.data.updatedSubSection;
@@ -315,7 +335,7 @@ export function deleteSubSection(
         DELETE_SUBSECTION_API,
         payload,
         {
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       );
       if (response.data.success) {
@@ -365,7 +385,7 @@ export async function getFullEnrolledCourseDetails(token, courseId, dispatch) {
         courseId,
       },
       {
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       }
     );
     if (response.data.success) {
@@ -383,7 +403,7 @@ export async function deleteCourse(token, payload, dispatch) {
   const tid = toast.loading("deleting Course...");
   try {
     const response = await apiConnector("DELETE", DELETE_COURSE_API, payload, {
-      Authorization: `bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     });
     console.log(response);
     if (response.data.success) {
@@ -420,11 +440,26 @@ export async function enrollFreeCourse(token, courseId, navigate, dispatch) {
     if (response.data.success) {
       toast.success("Successfully enrolled in course!");
       toast.dismiss(toastId);
-      // Navigate to enrolled courses and force reload
+      
+      // Refresh user data to update enrolled courses
+      try {
+        const userDetailsResponse = await apiConnector(
+          "GET",
+          profileEndpoint.GET_USER_DETAILS_API,
+          null,
+          { Authorization: `Bearer ${token}` }
+        );
+        
+        if (userDetailsResponse?.data?.success) {
+          dispatch(setUser(userDetailsResponse.data.data));
+        }
+      } catch (error) {
+        console.log("Could not refresh user data:", error);
+      }
+      
+      // Navigate to enrolled courses
       if (navigate) {
         navigate("/dashboard/enrolled-courses");
-        // Force page reload to fetch fresh data
-        window.location.href = "/dashboard/enrolled-courses";
       }
       return true;
     }
@@ -473,7 +508,7 @@ export async function markAsComplete(
         courseId,
         subSectionId,
       },
-      { Authorization: `bearer ${token}` }
+      { Authorization: `Bearer ${token}` }
     );
     if (response?.data?.success) {
       const newCompletedLectures = [...completedLecturess, subSectionId];
@@ -507,7 +542,7 @@ export async function addRating(
         review,
       },
       {
-        Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       }
     );
     console.log(response);

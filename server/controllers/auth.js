@@ -130,7 +130,7 @@ exports.login=async (req,res)=>{
     const jwtPayload={
         email,
         id:checkUser._id,
-        role:checkUser.accountType
+        accountType:checkUser.accountType
     }
     const token=jwt.sign(jwtPayload,process.env.JWT_SECRET,{
         expiresIn:"30d"

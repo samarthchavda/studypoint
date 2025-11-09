@@ -1,10 +1,11 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const OpenRoute = ({ children }) => {
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  token === null ? navigate("/login") : <>{children}</>;
+  const { token } = useSelector((state) => state.auth);
+  if (token) return <Navigate to={'/'} />; // or redirect to dashboard if needed
+  return <>{children}</>;
 };
 
 export default OpenRoute;

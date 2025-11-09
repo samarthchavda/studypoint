@@ -30,7 +30,7 @@ const MyCourses = () => {
   return loading ? (
     <Spinner />
   ) : courses && courses.length > 0 ? (
-    <div className="sm:pr-0 pr-3">
+    <div className="sm:pr-0 pr-3 mt-8 md:mt-10">
       <div className="flex sm:flex-row flex-col w-full items-start sm:items-center justify-between">
         <div className="p-6">
           <LocationBar />
@@ -54,7 +54,7 @@ const MyCourses = () => {
       <CoursesTable updateCourses={updateCourses} courses={courses} />
     </div>
   ) : (
-    <div className="flex items-center flex-col gap-5 h-full justify-center ">
+    <div className="flex items-center flex-col gap-5 h-full justify-center mt-8 md:mt-10">
       <p className="text-3xl  text-richblack-5">
         You have not Added any courses
       </p>

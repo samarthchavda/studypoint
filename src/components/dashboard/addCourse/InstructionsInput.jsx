@@ -1,71 +1,52 @@
 import React from "react";
 import Label from "../../comman/Label";
+import ErrorMessage from "../../comman/ErrorMessage";
 
 const InstructionsInput = ({
   instructions,
   setInstructions,
-  register,
-  setValue,
-  watch,
 }) => {
-  const instruction = watch("instruction");
-  const clickHandler = () => {
-    if (instruction) {
-      const newIns = [...instructions, instruction];
-      setInstructions(newIns);
-      setValue('instruction', '');
-    }
+  
+  const handleChange = (e) => {
+    const value = e.target.value;
+    // Split by line breaks and filter out empty lines
+    const instructionArray = value.split('\n').filter(line => line.trim() !== '');
+    setInstructions(instructionArray);
   };
-  const keyDownHandler = (e) => {
-    if (e.key === "Enter") {
-      const value = instruction;
-      if (value && value.trim()) {
-        const newIns = [...instructions, instruction];
-        setInstructions(newIns);
-        e.target.value = "";
-      }
-    }
-  };
-  const removeInstruction = (index) => {
-    instructions.splice(index, 1);
-    const newIns = [...instructions];
-    setInstructions(newIns);
-  };
+
   return (
-    <div>
-      <div className="flex flex-col gap-1">
-        <Label
-          forwhat={"instruction"}
-          required={true}
-          text={"Requirements/Instructions"}
-        />
-        <input
-          onKeyDown={keyDownHandler}
-          className="field2"
-          id="instruction"
-          name="instruction"
-          type="text"
-          {...register("instruction")}
-          placeholder="Enter instructions for the course"
-        />
-      </div>
-      <span
-        onClick={clickHandler}
-        className="font-bold cursor-pointer text-sm text-[#FFD60A]"
-      >
-        Add
-      </span>
-      <ul className="flex flex-col mt-2 ">
-        {instructions.map((item, index) => {
-          return (
-            <li key={index} className=" w-fit rounded-lg flex items-center">
-              <p className="text-richblack-25 font-bold">{item}</p> 
-              <span className="cursor-pointer text-richblack-400 pl-3 text-sm" onClick={()=>{removeInstruction(index)}}>clear</span>
-            </li>
-          );
-        })}
-      </ul>
+    <div className="flex flex-col gap-1">
+      <Label
+        forwhat={"instructions"}
+        required={true}
+        text={"Requirements/Instructions"}
+      />
+      <textarea
+        className="field2"
+        id="instructions"
+        name="instructions"
+        rows={6}
+        onChange={handleChange}
+        placeholder="Enter instructions for the course (one per line)"
+        defaultValue={instructions.join('\n')}
+      />
+      {instructions.length === 0 && (
+        <ErrorMessage message="Please add at least one instruction" />
+      )}
       
+      {instructions.length > 0 && (
+        <div className="mt-2">
+          <p className="text-xs text-richblack-300">Preview ({instructions.length} instruction{instructions.length > 1 ? 's' : ''}):</p>
+          <ul className="flex flex-col gap-1 mt-1">
+            {instructions.map((item, index) => (
+              <li key={index} className="text-sm text-richblack-25 flex items-start gap-2">
+                <span className="text-yellow-50">•</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

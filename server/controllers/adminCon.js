@@ -303,4 +303,112 @@ exports.getStats = async (req, res) => {
   }
 };
 
+// Get all courses with detailed information
+exports.getAllCourses = async (req, res) => {
+  try {
+    const courses = await Course.find()
+      .populate("instructor", "firstName lastName email image")
+      .populate("category", "name")
+      .populate("ratingAndReviews")
+      .populate({
+        path: "courseContent",
+        populate: {
+          path: "subSections",
+        },
+      })
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Courses fetched successfully",
+      data: courses,
+    });
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch courses",
+      error: error.message,
+    });
+  }
+};
+
+// Delete course (admin only)
+exports.deleteCourse = async (req, res) => {
+  try {
+    const { courseId } = req.body;
+
+    if (!courseId) {
+      return res.status(400).json({
+        success: false,
+        message: "Course ID is required",
+      });
+    }
+
+    // Find the course
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    // Remove course from enrolled students
+    if (course.studentsEnrolled && course.studentsEnrolled.length > 0) {
+      await User.updateMany(
+        { _id: { $in: course.studentsEnrolled } },
+        { $pull: { courses: courseId } }
+      );
+    }
+
+    // Remove course from instructor
+    await User.findByIdAndUpdate(
+      course.instructor,
+      { $pull: { courses: courseId } }
+    );
+
+    // Remove course from category
+    await Category.findByIdAndUpdate(
+      course.category,
+      { $pull: { courses: courseId } }
+    );
+
+    // Delete all sections and subsections
+    const Section = require("../models/Section");
+    const SubSection = require("../models/SubSection");
+    
+    if (course.courseContent && course.courseContent.length > 0) {
+      for (const sectionId of course.courseContent) {
+        const section = await Section.findById(sectionId);
+        if (section && section.subSection && section.subSection.length > 0) {
+          await SubSection.deleteMany({ _id: { $in: section.subSection } });
+        }
+        await Section.findByIdAndDelete(sectionId);
+      }
+    }
+
+    // Delete all ratings and reviews
+    const RatingAndReview = require("../models/RatingAndReview");
+    if (course.ratingAndReviews && course.ratingAndReviews.length > 0) {
+      await RatingAndReview.deleteMany({ _id: { $in: course.ratingAndReviews } });
+    }
+
+    // Finally delete the course
+    await Course.findByIdAndDelete(courseId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Course deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting course:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete course",
+      error: error.message,
+    });
+  }
+};
+
 

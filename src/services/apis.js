@@ -102,9 +102,11 @@ export const adminEndpoints = {
   GET_ALL_USERS_API: baseUrl + "/admin/getAllUsers",
   GET_ALL_CONTACTS_API: baseUrl + "/admin/getAllContacts",
   GET_ALL_DEMO_BOOKINGS_API: baseUrl + "/admin/getAllDemoBookings",
+  GET_ALL_COURSES_API: baseUrl + "/admin/getAllCourses",
   DELETE_USER_API: baseUrl + "/admin/deleteUser",
   DELETE_CONTACT_API: baseUrl + "/admin/deleteContact",
   DELETE_DEMO_BOOKING_API: baseUrl + "/admin/deleteDemoBooking",
+  DELETE_COURSE_API: baseUrl + "/admin/deleteCourse",
   GET_ADMIN_STATS_API: baseUrl + "/admin/getStats",
   CREATE_CATEGORY_API: baseUrl + "/course/createCategory",
 };

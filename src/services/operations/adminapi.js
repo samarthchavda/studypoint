@@ -6,9 +6,11 @@ const {
   GET_ALL_USERS_API,
   GET_ALL_CONTACTS_API,
   GET_ALL_DEMO_BOOKINGS_API,
+  GET_ALL_COURSES_API,
   DELETE_USER_API,
   DELETE_CONTACT_API,
   DELETE_DEMO_BOOKING_API,
+  DELETE_COURSE_API,
   GET_ADMIN_STATS_API,
 } = adminEndpoints;
 
@@ -188,7 +190,7 @@ export const createCategory = async (data, token) => {
   try {
     const response = await apiConnector(
       "POST",
-      categoryEndpoint.CATEGORIES_API,
+      categoryEndpoint.CREATE_CATEGORY_API,
       data,
       {
         Authorization: `Bearer ${token}`,
@@ -208,3 +210,52 @@ export const createCategory = async (data, token) => {
   toast.dismiss(toastId);
   return result;
 };
+
+// Get all courses
+export const getAllCourses = async (token) => {
+  const toastId = toast.loading("Loading courses...");
+  let result = [];
+  try {
+    console.log("getAllCourses called with token:", token ? "exists" : "missing");
+    const response = await apiConnector("GET", GET_ALL_COURSES_API, null, {
+      Authorization: `Bearer ${token}`,
+    });
+
+    console.log("getAllCourses API response:", response);
+
+    if (!response?.data?.success) {
+      throw new Error("Could not fetch courses");
+    }
+    result = response.data.data;
+    console.log("getAllCourses result:", result);
+  } catch (error) {
+    console.log("GET_ALL_COURSES_API ERROR:", error);
+    console.log("Error details:", error.response?.data);
+    toast.error(error.response?.data?.message || "Could not fetch courses");
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+// Delete course
+export const deleteCourse = async (courseId, token) => {
+  const toastId = toast.loading("Deleting course...");
+  let result = false;
+  try {
+    const response = await apiConnector("DELETE", DELETE_COURSE_API, { courseId }, {
+      Authorization: `Bearer ${token}`,
+    });
+
+    if (!response?.data?.success) {
+      throw new Error("Could not delete course");
+    }
+    toast.success("Course deleted successfully");
+    result = true;
+  } catch (error) {
+    console.log("DELETE_COURSE_API ERROR:", error);
+    toast.error(error.response?.data?.message || "Could not delete course");
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+

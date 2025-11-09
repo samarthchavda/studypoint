@@ -29,6 +29,8 @@ import { useEffect, useState } from "react";
 import YouAreOffline from "./components/comman/YouAreOffline";
 import AdminDash from "./pages/dashboardPages/AdminPages/AdminDash";
 import CreateCategory from "./pages/dashboardPages/AdminPages/CreateCategory";
+import AdminUsers from "./pages/dashboardPages/AdminUsers";
+import AdminCourses from "./pages/dashboardPages/AdminCourses";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from '@vercel/analytics/react';
 
@@ -130,6 +132,8 @@ function App() {
                 {user?.accountType === ACCOUNT_TYPE.ADMIN && (
                   <>
                     <Route path="admin" element={<AdminDash />} />
+                    <Route path="admin/users" element={<AdminUsers />} />
+                    <Route path="admin/courses" element={<AdminCourses />} />
                     <Route
                       path="create-category"
                       element={<CreateCategory />}

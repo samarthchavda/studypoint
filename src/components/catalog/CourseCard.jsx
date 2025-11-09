@@ -63,8 +63,11 @@ const CourseCard = ({ info, allowWidth = false }) => {
               maxWidth: allowWidth ? (width > 766 ? "600px" : "371px") : "371px",
             }}
             className="rounded-lg"
-            src={info.thumbnail}
-            alt=""
+            src={info.thumbnail || "https://via.placeholder.com/400x200/1F2937/FFFFFF?text=No+Image"}
+            alt={info.courseName || info.name || "Course"}
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/400x200/1F2937/FFFFFF?text=No+Image";
+            }}
           />
           {/* Demo Badge */}
           <div className="absolute top-2 left-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">

@@ -28,18 +28,39 @@ const randomColors = (numColors) => {
   return colors;
 };
 const TopSellingCoursesChart = ({ courseData }) => {
+  // Check if data exists
+  if (!courseData || courseData.length === 0) {
+    return (
+      <div className="relative">
+        <div className="glass px-6 pb-6 py-4">
+          <h2 className="text-richblack-5 text-2xl font-semibold">
+            Top Selling Courses
+          </h2>
+          <div className="text-richblack-300 mt-4">No course data available</div>
+        </div>
+      </div>
+    );
+  }
+  
   const data = {
     labels: courseData?.map((course) => course.name),
     datasets: [
       {
-        label: "students",
-        data: courseData?.map((course) => course?.studentsEnrolled),
+        label: "Students Enrolled",
+        data: courseData?.map((course) => {
+          // Handle both array and number formats
+          if (Array.isArray(course?.studentsEnrolled)) {
+            return course.studentsEnrolled.length;
+          }
+          return course?.studentsEnrolled || 0;
+        }),
         backgroundColor: randomColors(1),
         borderColor: randomColors(1),
         borderWidth: 1,
       },
     ],
   };
+  
   return (
     <div className="relative">
       <div
@@ -47,7 +68,7 @@ const TopSellingCoursesChart = ({ courseData }) => {
       ></div>
       <div className="glass  px-6 pb-6 py-4">
         <h2 className="text-richblack-5 text-2xl font-semibold">
-          Most Selling Courses
+          Top Selling Courses
         </h2>
 
         <div className="px-5 sm:px-14 lg:px-44">
@@ -60,6 +81,17 @@ const TopSellingCoursesChart = ({ courseData }) => {
                   position: "top",
                   labels: {
                     usePointStyle: true,
+                    color: "#AFB2BF",
+                  },
+                },
+              },
+              scales: {
+                r: {
+                  ticks: {
+                    color: "#AFB2BF",
+                  },
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.1)",
                   },
                 },
               },

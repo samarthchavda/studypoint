@@ -37,7 +37,7 @@ All student accounts have the same password: **Demo@123**
 ## 👨‍💼 Admin Account
 
 - Email: `admin@studynotion.com`
-- Password: `Test@123`
+- Password: `Admin@123`
 
 ## 🎯 Test Student Account
 

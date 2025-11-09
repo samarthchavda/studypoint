@@ -1,11 +1,11 @@
 const { default: mongoose } = require("mongoose");
 
 const courseSchema = mongoose.Schema({
-  name: {
+  courseName: {
     type: String,
     trim: true,
   },
-  description: {
+  courseDescription: {
     type: String, 
     trim: true,
   },

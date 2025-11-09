@@ -260,8 +260,8 @@ exports.getEnrolledCourses = async (req, res) => {
 
       return {
         _id: course._id,
-        name: course.name,
-        description: course.description,
+        name: course.courseName || course.name,
+        description: course.courseDescription || course.description,
         thumbnail: course.thumbnail,
         totalDuration,
         coursePercentage,

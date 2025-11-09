@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getAllUsers, deleteUser } from "../../services/operations/adminAPI";
+import { useSelector } from "react-redux";
+import { getAllUsers, deleteUser } from "../../services/operations/adminapi";
 import Spinner from "../../components/comman/Spinner";
 import { FiTrash2, FiMail, FiUser } from "react-icons/fi";
 import { toast } from "react-hot-toast";
@@ -11,6 +12,7 @@ const AdminUsers = () => {
   const [confirmationModal, setConfirmationModal] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("All");
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
     fetchUsers();
@@ -19,9 +21,10 @@ const AdminUsers = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await getAllUsers();
-      if (response?.success) {
-        setUsers(response.data);
+      const response = await getAllUsers(token);
+      console.log("Fetched users:", response);
+      if (response) {
+        setUsers(response);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -32,18 +35,14 @@ const AdminUsers = () => {
   };
 
   const handleDeleteUser = async (userId) => {
-    const toastId = toast.loading("Deleting user...");
     try {
-      const response = await deleteUser(userId);
-      if (response?.success) {
-        toast.success("User deleted successfully");
+      const success = await deleteUser(userId, token);
+      if (success) {
         setUsers(users.filter((user) => user._id !== userId));
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error("Failed to delete user");
     } finally {
-      toast.dismiss(toastId);
       setConfirmationModal(null);
     }
   };
@@ -54,7 +53,7 @@ const AdminUsers = () => {
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesRole = filterRole === "All" || user.role === filterRole;
+    const matchesRole = filterRole === "All" || user.accountType === filterRole;
 
     return matchesSearch && matchesRole;
   });
@@ -162,35 +161,39 @@ const AdminUsers = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.role === "Admin"
+                          user.accountType === "Admin"
                             ? "bg-red-500 text-white"
-                            : user.role === "Instructor"
+                            : user.accountType === "Instructor"
                             ? "bg-blue-500 text-white"
                             : "bg-green-500 text-white"
                         }`}
                       >
-                        {user.role}
+                        {user.accountType}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-richblack-300">
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <button
-                        onClick={() => {
-                          setConfirmationModal({
-                            text1: "Delete User",
-                            text2: `Are you sure you want to delete ${user.firstName} ${user.lastName}?`,
-                            btn1Text: "Delete",
-                            btn2Text: "Cancel",
-                            btn1Handler: () => handleDeleteUser(user._id),
-                            btn2Handler: () => setConfirmationModal(null),
-                          });
-                        }}
-                        className="text-red-500 hover:text-red-400"
-                      >
-                        <FiTrash2 className="w-5 h-5" />
-                      </button>
+                      {user.accountType === "Admin" ? (
+                        <span className="text-richblack-500 text-sm">Protected</span>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setConfirmationModal({
+                              text1: "Delete User",
+                              text2: `Are you sure you want to delete ${user.firstName} ${user.lastName}?`,
+                              btn1Text: "Delete",
+                              btn2Text: "Cancel",
+                              btn1Handler: () => handleDeleteUser(user._id),
+                              btn2Handler: () => setConfirmationModal(null),
+                            });
+                          }}
+                          className="text-red-500 hover:text-red-400"
+                        >
+                          <FiTrash2 className="w-5 h-5" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))

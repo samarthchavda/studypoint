@@ -28,9 +28,19 @@ const CreateCategory = () => {
   }, []);
 
   const submitHandler=async(data)=>{
-    const response=await createCategory(token,data.name,data.description,dispatch,setLoading);
-    if(response){
-        setCategories([...categories,response?.category]);
+    dispatch(setLoading(true));
+    try {
+      const response = await createCategory(data, token);
+      if(response){
+        setCategories([...categories, response]);
+        // Reset form after successful creation
+        document.getElementById("name").value = "";
+        document.getElementById("description").value = "";
+      }
+    } catch (error) {
+      console.error("Error creating category:", error);
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 

@@ -12,7 +12,7 @@ async function checkAllCourses() {
     // Get all categories with their courses
     const categories = await Category.find({}).populate({
       path: 'courses',
-      select: 'name status whatYouWillLearn courseContent'
+      select: 'courseName status whatYouWillLearn courseContent thumbnail'
     });
     
     console.log('=== CHECKING ALL COURSES BY CATEGORY ===\n');
@@ -28,13 +28,23 @@ async function checkAllCourses() {
       }
       
       cat.courses.forEach(course => {
+        const hasName = course.courseName && course.courseName.length > 0;
+        const hasBanner = course.thumbnail && course.thumbnail.length > 0;
         const hasLearning = course.whatYouWillLearn && course.whatYouWillLearn.length > 10;
         const hasContent = course.courseContent && course.courseContent.length > 0;
-        const status = (hasLearning && hasContent) ? '✅' : '❌';
+        const status = (hasName && hasBanner && hasLearning && hasContent) ? '✅' : '❌';
         
-        console.log(`   ${status} ${course.name}`);
+        console.log(`   ${status} ${course.courseName || 'UNNAMED COURSE'}`);
         console.log(`      Status: ${course.status}`);
         
+        if (!hasName) {
+          console.log(`      ❌ Missing: courseName`);
+          totalIssues++;
+        }
+        if (!hasBanner) {
+          console.log(`      ❌ Missing: thumbnail/banner`);
+          totalIssues++;
+        }
         if (!hasLearning) {
           console.log(`      ❌ Missing: whatYouWillLearn`);
           totalIssues++;

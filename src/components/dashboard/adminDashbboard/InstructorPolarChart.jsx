@@ -21,28 +21,35 @@ const randomColors = (numColors) => {
 const InstructorPolarChart = ({ insData }) => {
   const [currChart, setCurrChart] = useState("Students");
 
+  // Check if data exists and is in correct format
+  // insData comes as array from backend, not object with byStudents/byIncome
+  if (!insData || insData.length === 0) {
+    return (
+      <div className="relative">
+        <div className="glass flex flex-col gap-3 px-6 pb-6 py-4">
+          <h2 className="text-richblack-5 text-2xl font-semibold">
+            Top Instructors
+          </h2>
+          <div className="text-richblack-300">No instructor data available</div>
+        </div>
+      </div>
+    );
+  }
+
   const data = {
-    labels:
-      currChart === "Students"
-        ? insData?.byStudents?.map(
-            (ins) => `${ins?.firstName} ${ins?.lastName}`
-          )
-        : insData?.byIncome?.map((ins) => `${ins?.firstName} ${ins?.lastName}`),
+    labels: insData?.map((ins) => ins?.name || `${ins?.firstName} ${ins?.lastName}`),
     datasets: [
       {
-        label: currChart === "Students" ? "Students" : "Rupees",
-        data:
-          currChart === "Students"
-            ? insData?.byStudents?.map((ins) => ins?.totalStudents)
-            : insData?.byIncome?.map((ins) => ins?.income),
-        backgroundColor:
-          currChart === "Students"
-            ? randomColors(insData?.byStudents?.length)
-            : randomColors(insData?.byIncome?.length),
+        label: currChart === "Students" ? "Students" : "Courses",
+        data: currChart === "Students"
+          ? insData?.map((ins) => ins?.totalStudents || 0)
+          : insData?.map((ins) => ins?.totalCourses || 0),
+        backgroundColor: randomColors(insData?.length),
         borderWidth: 1,
       },
     ],
   };
+  
   return (
     <div className=" relative">
       <div
@@ -52,7 +59,7 @@ const InstructorPolarChart = ({ insData }) => {
         <div>
           <div className="flex items-center justify-between gap-1">
             <h2 className="text-richblack-5 text-2xl font-semibold">
-              Most Loved Instructors
+              Top Instructors
             </h2>
 
             <div>
@@ -68,13 +75,13 @@ const InstructorPolarChart = ({ insData }) => {
               </button>
               <button
                 className={`${
-                  currChart === "Income"
+                  currChart === "Courses"
                     ? "bg-richblack-900/50 text-yellow-100"
                     : "text-yellow-200/60"
                 } font-medium px-3 py-2 rounded-lg`}
-                onClick={() => setCurrChart("Income")}
+                onClick={() => setCurrChart("Courses")}
               >
-                Income
+                Courses
               </button>
             </div>
           </div>
@@ -89,12 +96,22 @@ const InstructorPolarChart = ({ insData }) => {
                   position: "top",
                   labels: {
                     usePointStyle: true,
+                    color: "#AFB2BF",
+                  },
+                },
+              },
+              scales: {
+                r: {
+                  ticks: {
+                    color: "#AFB2BF",
+                  },
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.1)",
                   },
                 },
               },
             }}
-                      height={"300"}
-
+            height={"300"}
             data={data}
           />
         </div>

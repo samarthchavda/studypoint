@@ -11,8 +11,11 @@ const CourseCard = ({ course, rating }) => {
         <div>
           <img
             className="w-[185px] rounded-lg max-h-[145px]"
-            src={course.thumbnail}
+            src={course.thumbnail || "https://via.placeholder.com/185x145/1F2937/FFFFFF?text=No+Image"}
             alt="course thumbnail"
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/185x145/1F2937/FFFFFF?text=No+Image";
+            }}
           />
         </div>
         <div className="flex flex-col gap-2">

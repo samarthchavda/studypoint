@@ -133,17 +133,77 @@ const VideoDetails = () => {
     }
   };
 
+  // Check if it's a YouTube URL
+  const isYouTubeUrl = (url) => {
+    return url?.includes('youtube.com') || url?.includes('youtu.be');
+  };
+
+  // Convert YouTube URL to embed format
+  const getYouTubeEmbedUrl = (url) => {
+    if (!url) return null;
+    
+    // Handle youtu.be format
+    if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Handle youtube.com/watch format
+    if (url.includes('youtube.com/watch')) {
+      const videoId = new URL(url).searchParams.get('v');
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    return url;
+  };
+
+  const isYouTube = isYouTubeUrl(subSection?.videoUrl);
+  const embedUrl = isYouTube ? getYouTubeEmbedUrl(subSection?.videoUrl) : subSection?.videoUrl;
+
+  // Function to open YouTube video in new tab
+  const openYouTubeVideo = () => {
+    if (subSection?.videoUrl) {
+      window.open(subSection.videoUrl, '_blank');
+    }
+  };
+
   return subSection?.videoUrl ? (
     <div className="flex flex-col  mx-auto gap-4  w-full h-full">
       <div className="w-full h-full relative">
-        <Player
-          key={subSection?.videoUrl}
-          ref={videoRef}
-          onEnded={videoEndHandler}
-        >
-          <source src={subSection?.videoUrl} />
-        </Player>
-        {lectureEnded && (
+        {isYouTube ? (
+          <div className="w-full flex flex-col items-center justify-center bg-richblack-800 rounded-lg p-8" style={{ minHeight: '400px' }}>
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-semibold text-richblack-5 mb-2">
+                {subSection?.title}
+              </h3>
+              <p className="text-richblack-300 mb-6">
+                Click the button below to watch this lecture on YouTube
+              </p>
+            </div>
+            <button
+              onClick={openYouTubeVideo}
+              className="bg-yellow-50 hover:bg-yellow-100 text-richblack-900 font-bold py-4 px-8 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg"
+            >
+              <svg 
+                className="w-6 h-6" 
+                fill="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              Click Here to Watch Video
+            </button>
+          </div>
+        ) : (
+          <Player
+            key={subSection?.videoUrl}
+            ref={videoRef}
+            onEnded={videoEndHandler}
+          >
+            <source src={subSection?.videoUrl} />
+          </Player>
+        )}
+        {lectureEnded && !isYouTube && (
           <div className="absolute left-0 top-0 z-10 flex flex-col items-center  justify-center gap-3 bg-gradient-to-t from-richblack-900 to-richblack-200/10 w-full h-full">
             {!completedLectures?.includes(subSectionId) && (
               <YellowBtn
@@ -180,6 +240,36 @@ const VideoDetails = () => {
           </div>
         )}
       </div>
+      
+      {/* Navigation buttons for YouTube videos */}
+      {isYouTube && (
+        <div className="flex flex-wrap gap-3 justify-center pb-4">
+          {!completedLectures?.includes(subSectionId) && (
+            <YellowBtn
+              disabled={loading}
+              text={loading ? "Loading..." : "Mark as Completed"}
+              clickHandler={markAsCompleteHandler}
+            />
+          )}
+          {!isFirstVideo() && (
+            <YellowBtn
+              disabled={loading}
+              text={"Previous Lecture"}
+              bgColour={"#000814"}
+              textColour={"#FFFFFF"}
+              clickHandler={previousVideo}
+            />
+          )}
+          {!isLastVideo() && (
+            <YellowBtn
+              disabled={loading}
+              text={"Next Lecture"}
+              clickHandler={nextVideo}
+            />
+          )}
+        </div>
+      )}
+      
       <div className="pl-3 pb-3">
         <h2 className="text-richblack-5 text-3xl">{subSection.title}</h2>
         <p className="text-richblack-50">{subSection.description}</p>

@@ -74,8 +74,9 @@ export function login(email, password, navigate) {
           image,
         };
         localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("token", JSON.stringify(response.data.token));
+        // dispatch user
         dispatch(setUser(userData));
+        // dispatch token into store (also saves to localStorage)
         dispatch(setToken(response.data.token));
         toast.success("login successfull");
         if (user.accountType === "Student")

@@ -31,24 +31,38 @@ const options = {
 };
 const CategoryPieChart = ({ categoryData }) => {
   const navigate = useNavigate();
+  
+  // Check if data exists
+  if (!categoryData || categoryData.length === 0) {
+    return (
+      <div className="flex flex-col gap-1 relative">
+        <div className="w-full flex flex-col gap-5 glass px-6 pb-6 py-4 h-full">
+          <h2 className="text-richblack-5 text-2xl font-semibold">Category Distribution</h2>
+          <div className="text-richblack-300">No category data available</div>
+        </div>
+      </div>
+    );
+  }
+  
   const data = {
-    labels: categoryData?.map((category) => category.name),
+    labels: categoryData?.map((category) => category.category || category.name),
     datasets: [
       {
-        label: "students",
-        data: categoryData?.map((category) => category.totalStudents),
+        label: "Courses",
+        data: categoryData?.map((category) => category.count || category.totalStudents || 0),
         backgroundColor: randomColors(categoryData?.length),
         borderWidth: 1,
       },
     ],
   };
+  
   return (
     <div className="flex flex-col  gap-1 relative">
       <div
         className={`box1 backdrop-blur-2xl shadow-[1px_1px_300px_90px_rgba(71,165,197,1)] absolute top-1/2 left-1/2 h-1 w-1 rounded-full`}
       ></div>
       <div className="w-full flex flex-col gap-5 glass  px-6 pb-6 py-4 h-full">
-        <h2 className="text-richblack-5 text-2xl font-semibold">Most Engaging Categories</h2>
+        <h2 className="text-richblack-5 text-2xl font-semibold">Category Distribution</h2>
         <div className="w-full h-full">
         <Pie
           options={{
@@ -59,6 +73,7 @@ const CategoryPieChart = ({ categoryData }) => {
                 position: "top",
                 labels: {
                   usePointStyle: true,
+                  color: "#AFB2BF",
                 },
               },
             },

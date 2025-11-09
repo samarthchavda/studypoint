@@ -7,6 +7,12 @@ import { FaLock } from "react-icons/fa";
 const SubSectionWindow = ({ subSections, isEnrolled = false, showFirstFree = true }) => {
   const [expandedSections, setExpandedSections] = useState({});
 
+  const openVideoPreview = (videoUrl) => {
+    if (videoUrl) {
+      window.open(videoUrl, '_blank');
+    }
+  };
+
   return (
     <div className="flex flex-col py-4 px-8">
       {subSections?.map((subSection, index) => {
@@ -61,10 +67,19 @@ const SubSectionWindow = ({ subSections, isEnrolled = false, showFirstFree = tru
             </div>
             
             {isExpanded && !isLocked && (
-              <div className="pl-[2.5rem] pb-3">
+              <div className="pl-[2.5rem] pb-3 flex flex-col gap-3">
                 <p className="text-sm text-richblack-50">
                   {subSection?.description}
                 </p>
+                {isFreePreview && subSection?.videoUrl && (
+                  <button
+                    onClick={() => openVideoPreview(subSection.videoUrl)}
+                    className="bg-yellow-50 hover:bg-yellow-100 text-richblack-900 font-semibold py-2 px-4 rounded-lg flex items-center gap-2 w-fit transition-all duration-200 transform hover:scale-105"
+                  >
+                    <HiOutlineVideoCamera className="text-lg" />
+                    Watch Free Preview
+                  </button>
+                )}
               </div>
             )}
           </div>

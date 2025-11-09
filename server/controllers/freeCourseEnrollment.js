@@ -82,10 +82,11 @@ exports.enrollFreeCourse = async (req, res) => {
 
     // Send enrollment email
     try {
+      const courseName = course.courseName || course.name || 'this course';
       await mailSender(
         enrolledStudent.email,
-        `Successfully Enrolled into ${course.name}`,
-        courseEnrollmentEmail(course.name, `${enrolledStudent.firstName}`)
+        `Successfully Enrolled into ${courseName}`,
+        courseEnrollmentEmail(courseName, `${enrolledStudent.firstName}`)
       );
     } catch (emailError) {
       console.log("Error sending enrollment email:", emailError);

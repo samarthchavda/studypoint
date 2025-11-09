@@ -41,9 +41,12 @@ const CourseCard = ({ course }) => {
         <div className="bg-richblack-800 rounded-lg overflow-hidden hover:scale-105 transition-all duration-200">
           <div className="relative h-[200px] w-full">
             <img
-              src={course.thumbnail}
+              src={course.thumbnail || "https://via.placeholder.com/400x200/1F2937/FFFFFF?text=No+Image"}
               alt={course.name}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.src = "https://via.placeholder.com/400x200/1F2937/FFFFFF?text=No+Image";
+              }}
             />
             {/* Demo Badge */}
             <div className="absolute top-2 left-14 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllUsers, getAllContactForms, getAllDemoBookings, getDashboardStats } from "../../services/operations/adminAPI";
+import { useSelector } from "react-redux";
+import { getAllUsers, getAllContacts, getAllDemoBookings, getAdminStats } from "../../services/operations/adminapi";
 import Spinner from "../../components/comman/Spinner";
 import { FiUsers, FiMail, FiCalendar, FiBook, FiStar } from "react-icons/fi";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [recentUsers, setRecentUsers] = useState([]);
@@ -15,11 +17,19 @@ const AdminDashboard = () => {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
-        const response = await getDashboardStats();
-        if (response?.success) {
-          setStats(response.data.stats);
-          setRecentUsers(response.data.recentUsers);
-          setRecentContactForms(response.data.recentContactForms);
+        const statsResponse = await getAdminStats(token);
+        if (statsResponse) {
+          setStats(statsResponse.stats?.[0]);
+        }
+
+        const usersResponse = await getAllUsers(token);
+        if (usersResponse) {
+          setRecentUsers(usersResponse.slice(0, 5));
+        }
+
+        const contactsResponse = await getAllContacts(token);
+        if (contactsResponse) {
+          setRecentContactForms(contactsResponse.slice(0, 5));
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -148,7 +158,7 @@ const AdminDashboard = () => {
                     <p className="text-richblack-300 text-sm">{user.email}</p>
                   </div>
                   <span className="text-xs bg-richblack-600 text-richblack-5 px-2 py-1 rounded">
-                    {user.role}
+                    {user.accountType}
                   </span>
                 </div>
               ))
@@ -187,16 +197,8 @@ const AdminDashboard = () => {
                       </p>
                       <p className="text-richblack-300 text-sm">{form.email}</p>
                     </div>
-                    <span
-                      className={`text-xs px-2 py-1 rounded ${
-                        form.status === "new"
-                          ? "bg-green-500 text-white"
-                          : form.status === "read"
-                          ? "bg-yellow-500 text-white"
-                          : "bg-blue-500 text-white"
-                      }`}
-                    >
-                      {form.status}
+                    <span className="text-xs px-2 py-1 rounded bg-green-500 text-white">
+                      New
                     </span>
                   </div>
                   <p className="text-richblack-300 text-sm line-clamp-2">
@@ -210,12 +212,18 @@ const AdminDashboard = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
         <button
           onClick={() => navigate("/dashboard/admin/users")}
           className="bg-yellow-50 text-richblack-900 py-3 px-6 rounded-lg font-semibold hover:bg-yellow-25 transition-all"
         >
           Manage Users
+        </button>
+        <button
+          onClick={() => navigate("/dashboard/admin/courses")}
+          className="bg-yellow-50 text-richblack-900 py-3 px-6 rounded-lg font-semibold hover:bg-yellow-25 transition-all"
+        >
+          Manage Courses
         </button>
         <button
           onClick={() => navigate("/dashboard/admin/contact-forms")}

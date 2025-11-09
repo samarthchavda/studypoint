@@ -10,6 +10,8 @@ const {
   deleteUser,
   deleteContact,
   deleteDemoBooking,
+  getAllCourses,
+  deleteCourse,
 } = require("../controllers/adminCon");
 
 // Import middleware
@@ -19,9 +21,11 @@ const { auth, isAdmin } = require("../middlewares/auth");
 router.get("/getAllUsers", auth, isAdmin, getAllUsers);
 router.get("/getAllContacts", auth, isAdmin, getAllContacts);
 router.get("/getAllDemoBookings", auth, isAdmin, getAllDemoBookings);
+router.get("/getAllCourses", auth, isAdmin, getAllCourses);
 router.delete("/deleteUser", auth, isAdmin, deleteUser);
 router.delete("/deleteContact", auth, isAdmin, deleteContact);
 router.delete("/deleteDemoBooking", auth, isAdmin, deleteDemoBooking);
+router.delete("/deleteCourse", auth, isAdmin, deleteCourse);
 router.get("/getStats", auth, isAdmin, getStats);
 
 module.exports = router;

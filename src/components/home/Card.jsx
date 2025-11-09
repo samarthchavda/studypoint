@@ -8,19 +8,18 @@ const Card = ({content,currentCard,setCurrentCard}) => {
     
     // Course IDs by card heading (free + catalog courses)
     const COURSE_IDS = {
-        // Free courses
-        "Learn HTML": "68fc9bda58a0f5a4bc74daeb",
-        "Learn CSS": "68fca2c139ff6d15c8c1c51e",
-        "Responsive Web design": "68fca2c139ff6d15c8c1c523",
-        "Responsive Web Design": "68fca2c139ff6d15c8c1c523",
-        "Bootstrap learning": "68fca2c139ff6d15c8c1c523",
-        // Catalog courses
-        "Complete Web Development Bootcamp": "68fbab1e0031571debb0151b",
-        "React JS - The Complete Guide": "68fbab396e480602bcb915e8",
-        "Flutter & Dart - Complete Guide": "68fbab50d83bc0b27ce5d04c",
-        "React Native - Build Mobile Apps": "68fbab50d83bc0b27ce5d057",
-        "Data Science Masterclass": "68fbab50d83bc0b27ce5d062",
-        "Machine Learning A-Z": "68fbab50d83bc0b27ce5d06d",
+        // Free courses (Price: ₹0)
+        "Learn HTML": "691051dd1036183ee33a5566",
+        "Learn CSS": "691051dd1036183ee33a5573",
+        "Bootstrap learning": "691051dd1036183ee33a5580",
+        
+        // Paid courses from catalog
+        "Complete Web Development Bootcamp": "69104cef80c2310b8367fe21",
+        "React JS - The Complete Guide": "69104d0b302470b208cae4b4",
+        "Flutter & Dart - Complete Guide": "69104d0b302470b208cae4f6",
+        "React Native - Build Mobile Apps": "69104d0b302470b208cae50c",
+        "Data Science Masterclass": "69104d0b302470b208cae4ca",
+        "Machine Learning A-Z": "69104d0b302470b208cae4e0",
     };
     
     const handleCardClick = () => {

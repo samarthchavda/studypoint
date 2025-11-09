@@ -4,7 +4,7 @@ const Section = require("../models/Section");
 const SubSection = require("../models/SubSection");
 const User = require("../models/User");
 const CourseProgress = require("../models/CourseProgress");
-const { uploadImageToCloudinary } = require("../utils/cloudinaryUpload");
+const { imageUpload } = require("../utils/cloudinaryUpload");
 require("dotenv").config();
 
 // Helper function to convert seconds to duration
@@ -46,7 +46,6 @@ exports.createCourse = async (req, res) => {
       !courseDescription ||
       !whatYouWillLearn ||
       !price ||
-      !tag.length ||
       !thumbnail ||
       !category
     ) {
@@ -57,7 +56,7 @@ exports.createCourse = async (req, res) => {
     }
 
     if (!status || status === undefined) {
-      status = "Draft";
+      status = "draft";
     }
 
     const instructorDetails = await User.findById(userId, {
@@ -79,10 +78,24 @@ exports.createCourse = async (req, res) => {
       });
     }
 
-    const thumbnailImage = await uploadImageToCloudinary(
-      thumbnail,
-      process.env.FOLDERNAME
-    );
+    let thumbnailUrl = "https://via.placeholder.com/800x400?text=Course+Thumbnail";
+    
+    // Try to upload to Cloudinary if configured, otherwise use placeholder
+    if (process.env.CLOUDNAME && process.env.CLOUDNAME !== 'your_cloudinary_cloud_name') {
+      try {
+        const thumbnailImage = await imageUpload(
+          thumbnail,
+          process.env.FOLDERNAME
+        );
+        if (thumbnailImage && thumbnailImage.secure_url) {
+          thumbnailUrl = thumbnailImage.secure_url;
+        }
+      } catch (error) {
+        console.log("Cloudinary upload failed, using placeholder:", error.message);
+      }
+    } else {
+      console.log("Cloudinary not configured, using placeholder image");
+    }
 
     const newCourse = await Course.create({
       courseName,
@@ -92,7 +105,7 @@ exports.createCourse = async (req, res) => {
       price,
       tag,
       category: categoryDetails._id,
-      thumbnail: thumbnailImage.secure_url,
+      thumbnail: thumbnailUrl,
       status: status,
       instructions,
     });
@@ -335,11 +348,23 @@ exports.editCourse = async (req, res) => {
 
     if (req.files) {
       const thumbnail = req.files.thumbnailImage;
-      const thumbnailImage = await uploadImageToCloudinary(
-        thumbnail,
-        process.env.FOLDERNAME
-      );
-      course.thumbnail = thumbnailImage.secure_url;
+      
+      // Try to upload to Cloudinary if configured, otherwise use placeholder
+      if (process.env.CLOUDNAME && process.env.CLOUDNAME !== 'your_cloudinary_cloud_name') {
+        try {
+          const thumbnailImage = await imageUpload(
+            thumbnail,
+            process.env.FOLDERNAME
+          );
+          if (thumbnailImage && thumbnailImage.secure_url) {
+            course.thumbnail = thumbnailImage.secure_url;
+          }
+        } catch (error) {
+          console.log("Cloudinary upload failed:", error.message);
+        }
+      } else {
+        console.log("Cloudinary not configured, keeping existing thumbnail");
+      }
     }
 
     for (const key in updates) {
@@ -399,7 +424,7 @@ exports.getInstructorCourses = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: instructorCourses,
+      courses: instructorCourses,
     });
   } catch (error) {
     console.error(error);
