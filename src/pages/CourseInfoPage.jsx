@@ -55,9 +55,7 @@ const CourseInfoPage = () => {
   }, [courseId]);
 
   const goToCourseHandler = () => {
-    navigate(
-      `/view-course/${courseId}/sectionId/${course?.courseContent[0]?._id}/sub-sectionId/${course?.courseContent[0]?.subSections[0]?._id}`
-    );
+    navigate("/dashboard/enrolled-courses");
   };
 
   const addToCart = () => {

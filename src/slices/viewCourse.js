@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState={
-    entireCourseData:localStorage.getItem('entireCourseData')?JSON.parse(localStorage.getItem('entireCourseData')):null,
-    sectionData:localStorage.getItem('sectionData')?JSON.parse(localStorage.getItem('sectionData')):[],
-    completedLectures:localStorage.getItem('completedLectures')?JSON.parse(localStorage.getItem('completedLectures')):[],
-    totalLectures:localStorage.getItem('totalLectures')?JSON.parse(localStorage.getItem('totalLectures')):[],
+    entireCourseData:localStorage.getItem('entireCourseData') && localStorage.getItem('entireCourseData') !== "undefined" ?JSON.parse(localStorage.getItem('entireCourseData')):null,
+    sectionData:localStorage.getItem('sectionData') && localStorage.getItem('sectionData') !== "undefined" ?JSON.parse(localStorage.getItem('sectionData')):[],
+    completedLectures:localStorage.getItem('completedLectures') && localStorage.getItem('completedLectures') !== "undefined" ?JSON.parse(localStorage.getItem('completedLectures')):[],
+    totalLectures:localStorage.getItem('totalLectures') && localStorage.getItem('totalLectures') !== "undefined" ?JSON.parse(localStorage.getItem('totalLectures')):[],
 }
 
 const viewCourseSlice=createSlice({
