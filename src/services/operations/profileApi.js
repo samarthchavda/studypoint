@@ -124,6 +124,8 @@ export function updateDP(token, formData) {
 export async function getEnrolledCourses(token) {
   let result = [];
   try {
+    console.log("📡 Calling GET_ENROLLED_COURSES_API");
+    console.log("API URL:", GET_ENROLLED_COURSES_API);
     const response = await apiConnector(
       "GET",
       GET_ENROLLED_COURSES_API,
@@ -132,13 +134,17 @@ export async function getEnrolledCourses(token) {
         Authorization: `Bearer ${token}`,
       }
     );
+    console.log("📦 Full API response:", response);
+    console.log("📦 Response data:", response?.data);
     if (!response.data.success) {
       throw new Error(response.data.message);
     }
     result = response.data.enrolledCourses;
+    console.log("✅ Enrolled courses from API:", result);
   } catch (error) {
-    console.log("error in getEnrolled courses api", error);
-    toast.error("could not get Enrolled courses");
+    console.log("❌ Error in getEnrolled courses api:", error);
+    console.log("Error details:", error.response?.data);
+    toast.error("Could not get Enrolled courses");
   }
   return result;
 }

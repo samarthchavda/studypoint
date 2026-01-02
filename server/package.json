@@ -4,11 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-   "start": "node index.js",
+    "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node scripts/runSeeder.js",
-    "kill-port": "lsof -ti:4000 | xargs kill -9 || true",
-    "safe-start": "npm run kill-port && npm run dev"
+    "seed": "node scripts/runSeeder.js"
   },
   "keywords": [],
   "author": "",

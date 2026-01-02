@@ -21,7 +21,7 @@ const SubSectionWindowViewCourse = ({ subSections }) => {
           <div
             onClick={() =>
               navigate(
-                `view-course/${subSection?.courseId}/sectionId/${subSection?.sectionId}/sub-sectionId/${subSection?._id}`
+                `/view-course/${subSection?.courseId}/sectionId/${subSection?.sectionId}/sub-sectionId/${subSection?._id}`
               )
             }
             className={`x flex cursor-pointer items-center gap-2`}

@@ -8,10 +8,10 @@ const Card = ({content,currentCard,setCurrentCard}) => {
     
     // Course IDs by card heading (free + catalog courses)
     const COURSE_IDS = {
-        // Free courses (Price: ₹0)
-        "Learn HTML": "691051dd1036183ee33a5566",
-        "Learn CSS": "691051dd1036183ee33a5573",
-        "Bootstrap learning": "691051dd1036183ee33a5580",
+        // Free courses (Price: ₹0) - UPDATED WITH ACTUAL DATABASE IDs
+        "Learn HTML": "68fc9bda58a0f5a4bc74daeb",
+        "Learn CSS": "68fca2c139ff6d15c8c1c51e",
+        "Bootstrap learning": "68fca2c139ff6d15c8c1c523",
         
         // Paid courses from catalog
         "Complete Web Development Bootcamp": "69104cef80c2310b8367fe21",

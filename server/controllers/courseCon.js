@@ -197,6 +197,8 @@ exports.getFullCourseDetails = async (req, res) => {
     const courseId = req.params.courseId || req.body.courseId;
     const userId = req.user?.id; // Optional - may not be logged in
 
+    console.log('📚 getFullCourseDetails called for courseId:', courseId);
+
     const courseDetails = await Course.findOne({
       _id: courseId,
     })
@@ -229,6 +231,13 @@ exports.getFullCourseDetails = async (req, res) => {
       });
     }
 
+    console.log('📖 Course found:');
+    console.log('  - courseName:', courseDetails.courseName);
+    console.log('  - courseDescription:', courseDetails.courseDescription);
+    console.log('  - price:', courseDetails.price);
+    console.log('  - thumbnail:', courseDetails.thumbnail);
+    console.log('  - status:', courseDetails.status);
+
     // Get course progress only if user is logged in
     let courseProgressCount = null;
     if (userId) {
@@ -260,6 +269,7 @@ exports.getFullCourseDetails = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error('❌ Error in getFullCourseDetails:', error);
     return res.status(500).json({
       success: false,
       message: error.message,

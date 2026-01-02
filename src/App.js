@@ -109,9 +109,6 @@ function App() {
                 {user?.accountType === ACCOUNT_TYPE.STUDENT && (
                   <>
                     <Route
-                      element={<Navigate to={"/dashboard/enrolled-courses"} />}
-                    />
-                    <Route
                       path="enrolled-courses"
                       element={<EnrolledCourses />}
                     />

@@ -18,11 +18,20 @@ const EnrolledCoursesTable = () => {
   const courseDeleteHandler = () => {};
   const fetchEntolledCourses = async () => {
     try {
+      console.log("🔍 Fetching enrolled courses...");
+      console.log("Token:", token ? "✅ Present" : "❌ Missing");
       const response = await getEnrolledCourses(token);
-      if (response) setEnrolledCourses(response);
-      console.log(response);
+      console.log("📦 API Response:", response);
+      if (response) {
+        setEnrolledCourses(response);
+        console.log("✅ Enrolled courses set:", response);
+      } else {
+        console.log("⚠️ No response from API");
+        setEnrolledCourses([]);
+      }
     } catch (error) {
-      console.log("error while fetching enrolled courses");
+      console.log("❌ Error while fetching enrolled courses:", error);
+      setEnrolledCourses([]);
     }
   };
   useEffect(() => {

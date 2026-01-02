@@ -115,32 +115,33 @@ const CourseInfoPage = () => {
           {/* courseInfo section */}
           <div className="w-full flex flex-col gap-10 pb-20">
             <div className="w-full bg-richblack-800">
-              <div className=" max-w-maxContent w-11/12 relative py-8 flex md:flex-row flex-col gap-6  mx-auto">
-                <div className="md:w-[73%]">
-                  <CourseIntro course={course} />
-                </div>
-                <div className="md:absolute right-0 ">
-                  <CourseBuyCard
-                    thumbnail={course?.thumbnail}
-                    buyHandler={handleBuyCourse}
-                    isBought={isStudentEnrolled()}
-                    course={course}
-                    price={course?.price}
-                    instructions={course?.instructions}
-                    addToCart={addToCart}
-                    goToCourseHandler={goToCourseHandler}
-                    isFree={isFree}
-                    freeEnrollHandler={handleFreeEnroll}
-                  />
+              <div className="max-w-maxContent w-11/12 py-8 mx-auto">
+                <div className="flex md:flex-row flex-col gap-6 relative">
+                  <div className="md:w-[calc(100%-400px)] w-full md:pr-6">
+                    <CourseIntro course={course} />
+                  </div>
+                  <div className="md:w-[380px] w-full md:absolute md:right-0 md:top-0">
+                    <CourseBuyCard
+                      thumbnail={course?.thumbnail}
+                      buyHandler={handleBuyCourse}
+                      isBought={isStudentEnrolled()}
+                      course={course}
+                      price={course?.price}
+                      instructions={course?.instructions}
+                      addToCart={addToCart}
+                      goToCourseHandler={goToCourseHandler}
+                      isFree={isFree}
+                      freeEnrollHandler={handleFreeEnroll}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="w-1 h- full"></div>
             </div>
 
             <div className="w-full">
               <div className="max-w-maxContent w-11/12 flex flex-col gap-5 mx-auto ">
                 {/* what you'll learn*/}
-                <div className="md:w-[73%] p-8 flex flex-col gap-4 border-richblack-700 border-[1px] bg-richblack-800">
+                <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-richblack-700 border-[1px] bg-richblack-800">
                   <p className="text-3xl text-richblack-5 font-semibold">
                     What you'll learn
                   </p>
@@ -156,7 +157,7 @@ const CourseInfoPage = () => {
 
                 {/* Requirements Section */}
                 {course?.instructions && course.instructions.length > 0 && (
-                  <div className="md:w-[73%] p-8 flex flex-col gap-4 border-richblack-700 border-[1px]">
+                  <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-richblack-700 border-[1px]">
                     <p className="text-2xl text-richblack-5 font-semibold">
                       Requirements
                     </p>
@@ -172,7 +173,7 @@ const CourseInfoPage = () => {
 
                 {/* Course Description */}
                 {course?.description && (
-                  <div className="md:w-[73%] p-8 flex flex-col gap-4 border-richblack-700 border-[1px]">
+                  <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-richblack-700 border-[1px]">
                     <p className="text-2xl text-richblack-5 font-semibold">
                       Description
                     </p>
@@ -183,7 +184,7 @@ const CourseInfoPage = () => {
                 )}
 
                 {/* course content */}
-                <div className="md:w-[73%] mt-5">
+                <div className="md:w-[calc(100%-400px)] w-full mt-5">
                   <CourseContent 
                     content={course?.courseContent} 
                     isEnrolled={isStudentEnrolled()}
@@ -191,7 +192,7 @@ const CourseInfoPage = () => {
                 </div>
 
                 {/*author section*/}
-                <div className="md:w-[73%] flex flex-col gap-4 p-8 border-richblack-700 border-[1px]">
+                <div className="md:w-[calc(100%-400px)] w-full flex flex-col gap-4 p-8 border-richblack-700 border-[1px]">
                   <h4 className="font-semibold text-2xl text-richblack-5">
                     Instructor
                   </h4>

@@ -211,10 +211,12 @@ exports.updateDisplayPicture = async (req, res) => {
 exports.getEnrolledCourses = async (req, res) => {
   try {
     const userId = req.user.id;
+    console.log("📚 Getting enrolled courses for user:", userId);
 
     // Simple approach: Get user and populate courses
     const user = await User.findById(userId).populate({
       path: 'courses',
+      select: 'courseName courseDescription thumbnail courseContent price category instructor',
       populate: {
         path: 'courseContent',
         populate: {
@@ -224,17 +226,29 @@ exports.getEnrolledCourses = async (req, res) => {
     });
 
     if (!user) {
+      console.log("❌ User not found:", userId);
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
 
+    console.log("👤 User found:", user.email);
+    console.log("📦 User courses count:", user.courses?.length || 0);
+    console.log("📦 User courses:", user.courses?.map(c => c?.courseName || c?.name));
+
     // Get course progress for all enrolled courses
     const courseProgressList = await CourseProgress.find({ userId });
+    console.log("📊 Course progress count:", courseProgressList.length);
 
     // Build enrolled courses array
     const enrolledCourses = user.courses.map((course) => {
+      console.log("🔍 Processing course:", course._id);
+      console.log("  - courseName:", course.courseName);
+      console.log("  - courseDescription:", course.courseDescription);
+      console.log("  - thumbnail:", course.thumbnail);
+      console.log("  - Full course object keys:", Object.keys(course._doc || course));
+      
       // Calculate total duration
       let totalDuration = 0;
       let totalVideos = 0;
@@ -260,8 +274,8 @@ exports.getEnrolledCourses = async (req, res) => {
 
       return {
         _id: course._id,
-        name: course.courseName || course.name,
-        description: course.courseDescription || course.description,
+        name: course.courseName || course.name || 'Untitled Course',
+        description: course.courseDescription || course.description || 'No description available',
         thumbnail: course.thumbnail,
         totalDuration,
         coursePercentage,
@@ -273,7 +287,8 @@ exports.getEnrolledCourses = async (req, res) => {
       };
     });
 
-    console.log('Enrolled courses:', enrolledCourses);
+    console.log('✅ Enrolled courses:', enrolledCourses);
+    console.log('✅ Total enrolled courses:', enrolledCourses.length);
 
     return res.status(200).json({
       success: true,
