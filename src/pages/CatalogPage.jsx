@@ -59,31 +59,35 @@ const CatalogPage = () => {
     setCategoryObj(newCategoryObject);
     
     const fetchCourses = async () => {
-      if (newCategoryObject) {
-        // Try to fetch from API
+      // Always use default courses as primary data source
+      const defaultCoursesForCategory = getCoursesByCategory(catalogName);
+      
+      if (defaultCoursesForCategory.length > 0) {
+        // Use default courses
+        setCourses({
+          categoryCourses: defaultCoursesForCategory,
+          topSellingCourses: defaultCoursesForCategory.slice(0, Math.min(2, defaultCoursesForCategory.length)),
+          diffCategoryCourses: defaultCoursesForCategory
+        });
+        setLoading(false);
+      } else if (newCategoryObject) {
+        // Try to fetch from API only if no default courses
         try {
           const payload = { categoryId: newCategoryObject._id };
           await getCategoryCourses(payload, setCourses);
+          setLoading(false);
         } catch (error) {
-          console.log("Using default courses due to API error");
-          // Use default courses if API fails
-          const defaultCoursesForCategory = getCoursesByCategory(newCategoryObject.name);
+          console.log("No courses available for this category");
           setCourses({
-            categoryCourses: defaultCoursesForCategory,
-            topSellingCourses: defaultCoursesForCategory.slice(0, 2),
-            diffCategoryCourses: defaultCoursesForCategory
+            categoryCourses: [],
+            topSellingCourses: [],
+            diffCategoryCourses: []
           });
+          setLoading(false);
         }
       } else {
-        // Use default courses if no category found
-        const defaultCoursesForCategory = getCoursesByCategory(catalogName);
-        setCourses({
-          categoryCourses: defaultCoursesForCategory,
-          topSellingCourses: defaultCoursesForCategory.slice(0, 2),
-          diffCategoryCourses: defaultCoursesForCategory
-        });
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchCourses();
   }, [params, categories]);

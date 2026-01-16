@@ -281,7 +281,17 @@ export const defaultCourses = {
 
 // Get courses by category name
 export const getCoursesByCategory = (categoryName) => {
-  return defaultCourses[categoryName] || [];
+  // Try exact match first
+  if (defaultCourses[categoryName]) {
+    return defaultCourses[categoryName];
+  }
+  
+  // Try case-insensitive match
+  const key = Object.keys(defaultCourses).find(
+    k => k.toLowerCase() === categoryName.toLowerCase()
+  );
+  
+  return key ? defaultCourses[key] : [];
 };
 
 // Get category by name
