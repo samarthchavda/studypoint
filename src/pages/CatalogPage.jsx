@@ -13,12 +13,12 @@ import NavBar from "../components/comman/NavBar";
 import SliderCourses from "../components/catalog/SliderCourses";
 import GridCourses from "../components/catalog/GridCourses";
 import Footer from "../components/comman/Footer";
+import { defaultCategories, getCoursesByCategory, getCategoryByName } from "../data/catalog-data";
 
 const CatalogPage = () => {
-  const [courses, setCourses] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [courses, setCourses] = useState({ categoryCourses: [], topSellingCourses: [], diffCategoryCourses: [] });
+  const [categories, setCategories] = useState(defaultCategories); // Use default categories
   const [categoryObj, setCategoryObj] = useState(null);
-  // const loading = useSelector((state) => state.course.loading);
   const [loading, setLoading] = useState(true);
   const [call, setCall] = useState(true);
   const dispatch = useDispatch();
@@ -26,13 +26,15 @@ const CatalogPage = () => {
 
   const fetchCategories = async () => {
     setLoading(true);
-    apiConnector("GET", categoryEndpoint.CATEGORIES_API)
-      .then((response) => {
+    try {
+      const response = await apiConnector("GET", categoryEndpoint.CATEGORIES_API);
+      if (response?.data?.data && response.data.data.length > 0) {
         setCategories(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+      }
+    } catch (error) {
+      console.log("Using default categories due to API error:", error);
+      setCategories(defaultCategories);
+    }
     setCall(false);
     setLoading(false);
   };
@@ -43,26 +45,45 @@ const CatalogPage = () => {
     
     // Replace hyphens with spaces and match category name
     const catalogName = params.catalogName.replace(/-/g, " ");
-    console.log("Looking for category:", catalogName);
-    console.log("Available categories:", categories);
     
-    const newCategoryObject = categories
-      .filter((cat) => cat.name.toLowerCase() === catalogName.toLowerCase())
-      .at(0);
+    // Try to find category from API data or use default
+    let newCategoryObject = categories.find(
+      (cat) => cat.name.toLowerCase() === catalogName.toLowerCase()
+    );
     
-    console.log("Found category object:", newCategoryObject);
+    // Fallback to default categories if not found
+    if (!newCategoryObject) {
+      newCategoryObject = getCategoryByName(catalogName);
+    }
+    
     setCategoryObj(newCategoryObject);
     
     const fetchCourses = async () => {
       if (newCategoryObject) {
-        console.log("Fetching courses for category:", newCategoryObject.name);
-        const payload = { categoryId: newCategoryObject._id };
-        await getCategoryCourses(payload, setCourses);
-        setLoading(false);
+        // Try to fetch from API
+        try {
+          const payload = { categoryId: newCategoryObject._id };
+          await getCategoryCourses(payload, setCourses);
+        } catch (error) {
+          console.log("Using default courses due to API error");
+          // Use default courses if API fails
+          const defaultCoursesForCategory = getCoursesByCategory(newCategoryObject.name);
+          setCourses({
+            categoryCourses: defaultCoursesForCategory,
+            topSellingCourses: defaultCoursesForCategory.slice(0, 2),
+            diffCategoryCourses: defaultCoursesForCategory
+          });
+        }
       } else {
-        console.log("No category found, not fetching courses");
-        setLoading(false);
+        // Use default courses if no category found
+        const defaultCoursesForCategory = getCoursesByCategory(catalogName);
+        setCourses({
+          categoryCourses: defaultCoursesForCategory,
+          topSellingCourses: defaultCoursesForCategory.slice(0, 2),
+          diffCategoryCourses: defaultCoursesForCategory
+        });
       }
+      setLoading(false);
     };
     fetchCourses();
   }, [params, categories]);

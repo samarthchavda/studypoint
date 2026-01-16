@@ -35,7 +35,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: process.env.NODE_ENV === 'production' 
+      ? [process.env.FRONTEND_URL, "https://*.vercel.app"]
+      : ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
   })
 );
@@ -73,33 +75,38 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server with error handling
-const server = app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
-  console.log(`🌐 Server URL: http://localhost:${PORT}`);
-}).on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`❌ Port ${PORT} is already in use!`);
-    console.log('Trying to kill the process and restart...');
-    process.exit(1);
-  } else {
-    console.error('❌ Server error:', err);
-  }
-});
+// Export for Vercel Serverless Functions
+module.exports = app;
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('👋 SIGTERM signal received: closing HTTP server');
-  server.close(() => {
-    console.log('✅ HTTP server closed');
-    process.exit(0);
+// Start server locally (for development)
+if (require.main === module) {
+  const server = app.listen(PORT, () => {
+    console.log(`✅ Server is running on port ${PORT}`);
+    console.log(`🌐 Server URL: http://localhost:${PORT}`);
+  }).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use!`);
+      console.log('Trying to kill the process and restart...');
+      process.exit(1);
+    } else {
+      console.error('❌ Server error:', err);
+    }
   });
-});
 
-process.on('SIGINT', () => {
-  console.log('\n👋 SIGINT signal received: closing HTTP server');
-  server.close(() => {
-    console.log('✅ HTTP server closed');
-    process.exit(0);
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('👋 SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+      console.log('✅ HTTP server closed');
+      process.exit(0);
+    });
   });
-});
+
+  process.on('SIGINT', () => {
+    console.log('\n👋 SIGINT signal received: closing HTTP server');
+    server.close(() => {
+      console.log('✅ HTTP server closed');
+      process.exit(0);
+    });
+  });
+}

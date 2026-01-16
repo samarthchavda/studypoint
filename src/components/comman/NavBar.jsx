@@ -20,10 +20,11 @@ import { logout } from "../../services/operations/authApi";
 import { RiDashboard2Line } from "react-icons/ri";
 import ConfirmationModal from "./ConfirmationModal";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
+import { defaultCategories } from "../../data/catalog-data";
 const NavBar = () => {
   const boxRef = useRef(null);
   const modalRef = useRef(null);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(defaultCategories); // Use default categories
   const [logutModal, setLogoutModal] = useState(false);
   const navigate = useNavigate();
   const user = useSelector((state) => state.profile.user);
@@ -34,14 +35,16 @@ const NavBar = () => {
     setLogoutModal(false);
   });
   useEffect(() => {
+    // Try to fetch from API, but fallback to default if it fails
     apiConnector("GET", categoryEndpoint.CATEGORIES_API)
       .then((response) => {
-        if (response?.data?.data) {
+        if (response?.data?.data && response.data.data.length > 0) {
           setCategories(response.data.data);
         }
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.log("Using default categories due to API error");
+        setCategories(defaultCategories);
       });
   }, []);
   const token = useSelector((state) => state.auth.token);

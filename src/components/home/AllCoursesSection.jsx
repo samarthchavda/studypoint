@@ -6,15 +6,22 @@ import { Link } from "react-router-dom";
 import { IoMdArrowRoundForward } from "react-icons/io";
 import apiConnector from "../../services/apiConnector";
 import { categoryEndpoint } from "../../services/apis";
+import { defaultCourses } from "../../data/catalog-data";
 
 const AllCoursesSection = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Get all default courses as initial value
+  const getAllDefaultCourses = () => {
+    return Object.values(defaultCourses).flat();
+  };
+  
+  const [courses, setCourses] = useState(getAllDefaultCourses());
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCourses = async () => {
+      setLoading(true);
       try {
-        // Fetch ALL published courses instead of just Web Development
+        // Try to fetch from API
         const response = await apiConnector("GET", categoryEndpoint.CATEGORIES_API);
         const categories = response.data.data;
         
@@ -33,20 +40,25 @@ const AllCoursesSection = () => {
           }
         }
         
-        // Remove duplicates based on _id
-        const uniqueCourses = Array.from(new Map(allCourses.map(course => [course._id, course])).values());
-        
-        // Sort courses: published and recent first
-        const sortedCourses = uniqueCourses
-          .filter(course => course.status === 'published')
-          .sort((a, b) => {
-            // Sort by creation date (newest first)
-            return new Date(b.createdAt) - new Date(a.createdAt);
-          });
-        
-        setCourses(sortedCourses);
+        // If we got courses from API, use them
+        if (allCourses.length > 0) {
+          // Remove duplicates based on _id
+          const uniqueCourses = Array.from(new Map(allCourses.map(course => [course._id, course])).values());
+          
+          // Sort courses: published and recent first
+          const sortedCourses = uniqueCourses
+            .filter(course => course.status === 'published')
+            .sort((a, b) => {
+              // Sort by creation date (newest first)
+              return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+          
+          setCourses(sortedCourses);
+        }
+        // Otherwise keep using default courses
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.log("Using default courses due to API error");
+        // Keep using default courses
       } finally {
         setLoading(false);
       }
