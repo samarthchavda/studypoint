@@ -11,7 +11,7 @@ const CourseCard = ({ course, rating }) => {
         <div>
           <img
             className="w-[185px] rounded-lg max-h-[145px]"
-            src={course.thumbnail || "https://via.placeholder.com/185x145/1F2937/FFFFFF?text=No+Image"}
+            src={typeof course.thumbnail === 'string' ? course.thumbnail : course.thumbnail?.default || "https://via.placeholder.com/185x145/1F2937/FFFFFF?text=No+Image"}
             alt="course thumbnail"
             onError={(e) => {
               e.target.src = "https://via.placeholder.com/185x145/1F2937/FFFFFF?text=No+Image";
@@ -20,9 +20,11 @@ const CourseCard = ({ course, rating }) => {
         </div>
         <div className="flex flex-col gap-2">
           <h4 className="text-richblack-5 font-medium text-lg">
-            {course.name}
+            {course.courseName || course.name}
           </h4>
-          <h5 className="text-[#838894]">{course.category.name}</h5>
+          <h5 className="text-[#838894]">
+            {course.category?.name || course.categoryName || "General"}
+          </h5>
           <div className="flex items-center gap-2">
             <span className="text-[#E7C009] block">{rating?rating:"0"}</span>
             <ReactStars
@@ -33,7 +35,7 @@ const CourseCard = ({ course, rating }) => {
               color2="#E7C009"
             />
             <span className="text-[#838894]">
-              ({course.ratingAndReviews.length})
+              ({course.ratingAndReviews?.length || 0})
             </span>
           </div>
         </div>

@@ -16,13 +16,18 @@ const WishList = () => {
   const fetchAverageRating = async () => {
     try {
       const promises = items.map(async (element) => {
-        const ratingResponse = await getAverageRating(token, { courseId: element._id });
-        return {
-          id: element._id,
-          rating: ratingResponse && ratingResponse.averageRating
-            ? ratingResponse.averageRating.toFixed(1)
-            : "0.0"
-        };
+        try {
+          const ratingResponse = await getAverageRating(token, { courseId: element._id });
+          return {
+            id: element._id,
+            rating: ratingResponse && ratingResponse.averageRating
+              ? ratingResponse.averageRating.toFixed(1)
+              : "0.0"
+          };
+        } catch (error) {
+          console.log("Error fetching rating for course:", element._id);
+          return { id: element._id, rating: "0.0" };
+        }
       });
 
       const results = await Promise.all(promises);
@@ -35,6 +40,12 @@ const WishList = () => {
       setAvgRating(avgRatingObj);
     } catch (error) {
       console.log("error while getting average rating", error);
+      // Set default ratings for all items
+      const defaultRatings = {};
+      items.forEach(item => {
+        defaultRatings[item._id] = "0.0";
+      });
+      setAvgRating(defaultRatings);
     }
   };
 
