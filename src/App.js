@@ -74,19 +74,11 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />}></Route>
             <Route
               path="/catalog/:catalogName"
-              element={
-                <ProtectedRoute>
-                  <CatalogPage />
-                </ProtectedRoute>
-              }
+              element={<CatalogPage />}
             ></Route>
             <Route
               path="/course/:courseId"
-              element={
-                <ProtectedRoute>
-                  <CourseInfoPage />
-                </ProtectedRoute>
-              }
+              element={<CourseInfoPage />}
             ></Route>
             <Route
               path="/forgot-password/:id"
