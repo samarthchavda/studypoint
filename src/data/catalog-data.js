@@ -1,4 +1,19 @@
 // Default catalog data - fallback when API is unavailable
+// Import local images
+import webDevImg from '../assets/courseImages/complete-web-development-bootcamp-2024.jpg';
+import reactImg from '../assets/courseImages/react-js-complete-guide-2024.jpg';
+import jsImg from '../assets/courseImages/javascript-the-complete-guide-2024.jpg';
+import dataScienceImg from '../assets/courseImages/data-science-masterclass-with-python.jpg';
+import mlImg from '../assets/courseImages/machine-learning-a-z-hands-on-python.jpg';
+import flutterImg from '../assets/courseImages/flutter-dart-complete-mobile-app-development.jpg';
+import reactNativeImg from '../assets/courseImages/react-native-build-ios-android-apps.jpg';
+import pythonImg from '../assets/courseImages/python-programming-masterclass-zero-to-hero.jpg';
+import htmlImg from '../assets/courseImages/learn-html.jpg';
+import cssImg from '../assets/courseImages/learn-css.jpg';
+import uiuxImg from '../assets/courseImages/complete-ui-ux-design-bootcamp-with-figma.jpg';
+import figmaImg from '../assets/courseImages/figma-ui-ux-design-essentials.jpg';
+import bootstrapImg from '../assets/courseImages/bootstrap-learning.jpg';
+
 export const defaultCategories = [
   {
     _id: "cat1",
@@ -41,158 +56,225 @@ export const defaultCourses = {
   "Web Development": [
     {
       _id: "course1",
+      name: "Complete Web Development Bootcamp",
       courseName: "Complete Web Development Bootcamp",
       courseDescription: "Master HTML, CSS, JavaScript, React, Node.js, and MongoDB. Build real-world projects and become a full-stack developer.",
+      description: "Master HTML, CSS, JavaScript, React, Node.js, and MongoDB. Build real-world projects and become a full-stack developer.",
       whatYouWillLearn: "Build responsive websites, Create full-stack applications, Master modern frameworks, Deploy to production",
       price: 2999,
-      thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800",
-      instructor: { firstName: "John", lastName: "Doe" },
+      thumbnail: webDevImg,
+      instructor: { firstName: "John", lastName: "Doe", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-15")
     },
     {
       _id: "course2",
+      name: "React JS - The Complete Guide",
       courseName: "React JS - The Complete Guide",
       courseDescription: "Learn React from scratch. Hooks, Context API, Redux, and build amazing single-page applications.",
+      description: "Learn React from scratch. Hooks, Context API, Redux, and build amazing single-page applications.",
       whatYouWillLearn: "Master React fundamentals, Build dynamic UIs, Manage state efficiently, Create production-ready apps",
       price: 2499,
-      thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800",
-      instructor: { firstName: "Jane", lastName: "Smith" },
+      thumbnail: reactImg,
+      instructor: { firstName: "Jane", lastName: "Smith", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-10")
     },
     {
       _id: "course3",
-      courseName: "Node.js & Express - Backend Development",
-      courseDescription: "Build powerful backend APIs with Node.js, Express, and MongoDB. Learn authentication, REST APIs, and more.",
-      whatYouWillLearn: "Create REST APIs, Implement authentication, Database integration, Server deployment",
-      price: 2799,
-      thumbnail: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800",
-      instructor: { firstName: "Mike", lastName: "Johnson" },
+      name: "JavaScript - The Complete Guide 2024",
+      courseName: "JavaScript - The Complete Guide 2024",
+      courseDescription: "Master JavaScript from basics to advanced. ES6+, Async/Await, DOM manipulation, and modern JS development.",
+      description: "Master JavaScript from basics to advanced. ES6+, Async/Await, DOM manipulation, and modern JS development.",
+      whatYouWillLearn: "JavaScript fundamentals, Modern ES6+ features, Async programming, DOM manipulation",
+      price: 2299,
+      thumbnail: jsImg,
+      instructor: { firstName: "Mike", lastName: "Johnson", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-12")
     }
   ],
   "Data Science": [
     {
       _id: "course4",
+      name: "Data Science Masterclass",
       courseName: "Data Science Masterclass",
       courseDescription: "Complete data science course covering Python, Pandas, NumPy, Machine Learning, and real-world projects.",
+      description: "Complete data science course covering Python, Pandas, NumPy, Machine Learning, and real-world projects.",
       whatYouWillLearn: "Python for data analysis, Machine learning algorithms, Data visualization, Statistical analysis",
       price: 3499,
-      thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
-      instructor: { firstName: "Sarah", lastName: "Williams" },
+      thumbnail: dataScienceImg,
+      instructor: { firstName: "Sarah", lastName: "Williams", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-08")
     },
     {
       _id: "course5",
+      name: "Machine Learning A-Z",
       courseName: "Machine Learning A-Z",
       courseDescription: "Master machine learning algorithms, deep learning, and AI. Build real ML models from scratch.",
+      description: "Master machine learning algorithms, deep learning, and AI. Build real ML models from scratch.",
       whatYouWillLearn: "ML algorithms, Neural networks, Model deployment, Real-world applications",
       price: 3999,
-      thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800",
-      instructor: { firstName: "David", lastName: "Brown" },
+      thumbnail: mlImg,
+      instructor: { firstName: "David", lastName: "Brown", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-05")
     }
   ],
   "Mobile Development": [
     {
       _id: "course6",
+      name: "Flutter & Dart - Complete Guide",
       courseName: "Flutter & Dart - Complete Guide",
       courseDescription: "Build beautiful native mobile apps for iOS and Android using Flutter and Dart programming language.",
+      description: "Build beautiful native mobile apps for iOS and Android using Flutter and Dart programming language.",
       whatYouWillLearn: "Flutter widgets, State management, API integration, App deployment",
       price: 2799,
-      thumbnail: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800",
-      instructor: { firstName: "Emma", lastName: "Davis" },
+      thumbnail: flutterImg,
+      instructor: { firstName: "Emma", lastName: "Davis", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-07")
     },
     {
       _id: "course7",
+      name: "React Native - Build Mobile Apps",
       courseName: "React Native - Build Mobile Apps",
       courseDescription: "Create cross-platform mobile applications using React Native. Build for iOS and Android with one codebase.",
+      description: "Create cross-platform mobile applications using React Native. Build for iOS and Android with one codebase.",
       whatYouWillLearn: "React Native basics, Navigation, Native features, App publishing",
       price: 2599,
-      thumbnail: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800",
-      instructor: { firstName: "Chris", lastName: "Wilson" },
+      thumbnail: reactNativeImg,
+      instructor: { firstName: "Chris", lastName: "Wilson", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-09")
     }
   ],
   "Programming Languages": [
     {
       _id: "course8",
+      name: "Python Programming Masterclass",
       courseName: "Python Programming Masterclass",
       courseDescription: "Learn Python from basics to advanced. Perfect for beginners and experienced developers.",
+      description: "Learn Python from basics to advanced. Perfect for beginners and experienced developers.",
       whatYouWillLearn: "Python fundamentals, OOP concepts, File handling, Error handling, Libraries",
       price: 1999,
-      thumbnail: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800",
-      instructor: { firstName: "Alex", lastName: "Taylor" },
+      thumbnail: pythonImg,
+      instructor: { firstName: "Alex", lastName: "Taylor", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-11")
     },
     {
       _id: "course9",
-      courseName: "Java Programming Complete Course",
-      courseDescription: "Master Java programming language. Learn OOP, data structures, and build enterprise applications.",
-      whatYouWillLearn: "Java syntax, Object-oriented programming, Collections, Multithreading",
-      price: 2299,
-      thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800",
-      instructor: { firstName: "Lisa", lastName: "Anderson" },
+      name: "Learn HTML - Web Foundations",
+      courseName: "Learn HTML - Web Foundations",
+      courseDescription: "Master HTML5 fundamentals. Build the foundation for web development with semantic HTML.",
+      description: "Master HTML5 fundamentals. Build the foundation for web development with semantic HTML.",
+      whatYouWillLearn: "HTML syntax, Semantic elements, Forms, Tables, Best practices",
+      price: 999,
+      thumbnail: htmlImg,
+      instructor: { firstName: "Lisa", lastName: "Anderson", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-13")
+    },
+    {
+      _id: "course10",
+      name: "Learn CSS - Styling Websites",
+      courseName: "Learn CSS - Styling Websites",
+      courseDescription: "Master CSS3 and modern styling techniques. Create beautiful, responsive websites.",
+      description: "Master CSS3 and modern styling techniques. Create beautiful, responsive websites.",
+      whatYouWillLearn: "CSS fundamentals, Flexbox, Grid, Animations, Responsive design",
+      price: 1299,
+      thumbnail: cssImg,
+      instructor: { firstName: "Tom", lastName: "Garcia", image: "" },
+      ratingAndReviews: [],
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-14")
     }
   ],
   "UI/UX Design": [
     {
-      _id: "course10",
+      _id: "course11",
+      name: "Complete UI/UX Design Bootcamp",
       courseName: "Complete UI/UX Design Bootcamp",
       courseDescription: "Learn user interface and user experience design. Master Figma, design principles, and create stunning designs.",
+      description: "Learn user interface and user experience design. Master Figma, design principles, and create stunning designs.",
       whatYouWillLearn: "Design principles, User research, Prototyping, Figma mastery, Portfolio building",
       price: 2499,
-      thumbnail: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800",
-      instructor: { firstName: "Sophie", lastName: "Martinez" },
+      thumbnail: uiuxImg,
+      instructor: { firstName: "Sophie", lastName: "Martinez", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-06")
     },
     {
-      _id: "course11",
-      courseName: "Figma for Beginners",
+      _id: "course12",
+      name: "Figma UI/UX Design Essentials",
+      courseName: "Figma UI/UX Design Essentials",
       courseDescription: "Master Figma design tool. Learn interface design, prototyping, and collaboration features.",
+      description: "Master Figma design tool. Learn interface design, prototyping, and collaboration features.",
       whatYouWillLearn: "Figma interface, Components, Auto-layout, Prototyping, Design systems",
       price: 1499,
-      thumbnail: "https://images.unsplash.com/photo-1609921212029-bb5a28e60960?w=800",
-      instructor: { firstName: "Tom", lastName: "Garcia" },
+      thumbnail: figmaImg,
+      instructor: { firstName: "Rachel", lastName: "Kim", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-04")
     }
   ],
   "Artificial Intelligence": [
     {
-      _id: "course12",
-      courseName: "AI and Deep Learning",
-      courseDescription: "Explore artificial intelligence and deep learning. Build neural networks and AI applications.",
+      _id: "course13",
+      name: "Machine Learning with Python",
+      courseName: "Machine Learning with Python",
+      courseDescription: "Explore artificial intelligence and machine learning. Build ML models and AI applications.",
+      description: "Explore artificial intelligence and machine learning. Build ML models and AI applications.",
       whatYouWillLearn: "Neural networks, Deep learning, TensorFlow, PyTorch, AI applications",
       price: 4499,
-      thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800",
-      instructor: { firstName: "James", lastName: "Lee" },
+      thumbnail: mlImg,
+      instructor: { firstName: "James", lastName: "Lee", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-03")
     }
   ],
   "IOT": [
     {
-      _id: "course13",
-      courseName: "Internet of Things Fundamentals",
-      courseDescription: "Learn IoT basics. Connect sensors, devices, and build smart systems using Arduino and Raspberry Pi.",
-      whatYouWillLearn: "IoT concepts, Arduino, Raspberry Pi, Sensors, Cloud integration",
-      price: 2899,
-      thumbnail: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800",
-      instructor: { firstName: "Rachel", lastName: "Kim" },
+      _id: "course14",
+      name: "Bootstrap Framework Learning",
+      courseName: "Bootstrap Framework Learning",
+      courseDescription: "Learn Bootstrap framework for rapid web development. Build responsive websites quickly.",
+      description: "Learn Bootstrap framework for rapid web development. Build responsive websites quickly.",
+      whatYouWillLearn: "Bootstrap components, Grid system, Responsive design, Customization",
+      price: 1299,
+      thumbnail: bootstrapImg,
+      instructor: { firstName: "John", lastName: "Smith", image: "" },
       ratingAndReviews: [],
-      studentsEnrolled: []
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-02")
     }
   ]
 };
