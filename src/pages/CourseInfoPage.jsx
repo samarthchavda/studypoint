@@ -16,6 +16,7 @@ import { ACCOUNT_TYPE } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
 import ReviewSlider from "../components/comman/ReviewSlider";
 import { getCourseReviews } from "../services/operations/courseApi";
+import { defaultCourses } from "../data/catalog-data";
 const CourseInfoPage = () => {
   const [course, setCourse] = useState(null);
   const [reviews, setReviews] = useState(null);
@@ -31,14 +32,46 @@ const CourseInfoPage = () => {
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
-      const response = await getFullCourseDetails({ courseId }, dispatch);
-      console.log("Course Details Response:", response);
-      if (response) {
-        setCourse(response);
-      } else {
-        console.error("Failed to fetch course details");
+      try {
+        const response = await getFullCourseDetails({ courseId }, dispatch);
+        console.log("Course Details Response:", response);
+        if (response) {
+          setCourse(response);
+        } else {
+          // Try to find course in default data
+          findCourseInDefaultData();
+        }
+      } catch (error) {
+        console.log("Using default course data due to API error");
+        findCourseInDefaultData();
       }
+    };try {
+        const reviews = await getCourseReviews(courseId);
+        console.log("Reviews Response:", reviews);
+        if (reviews && reviews.length > 0) {
+          setReviews(reviews);
+        } else {
+          // Set empty array for default courses
+          setReviews([]);
+        }
+      } catch (error) {
+        console.log("No reviews available");
+        setReviews([]l categories for the course
+      for (const category in defaultCourses) {
+        const courses = defaultCourses[category];
+        const foundCourse = courses.find(c => c._id === courseId);
+        if (foundCourse) {
+          setCourse({
+            ...foundCourse,
+            courseContent: [], // Empty sections for default data
+            category: { name: category }
+          });
+          return;
+        }
+      }
+      console.error("Course not found in default data");
     };
+    
     fetchCourseDetails();
   }, [courseId, dispatch]);
 
@@ -196,9 +229,12 @@ const CourseInfoPage = () => {
                   </h4>
                   <div className="flex gap-4 items-start">
                     <img
-                      className="rounded-full h-[72px] w-[72px] object-cover"
-                      src={course?.instructor?.image}
+                      className="rounded-full h-[72px] w-[72px] object-cover bg-richblack-700"
+                      src={course?.instructor?.image || "https://api.dicebear.com/5.x/initials/svg?seed=" + course?.instructor?.firstName}
                       alt={`${course?.instructor?.firstName} ${course?.instructor?.lastName}`}
+                      onError={(e) => {
+                        e.target.src = "https://api.dicebear.com/5.x/initials/svg?seed=" + course?.instructor?.firstName;
+                      }}
                     />
                     <div className="flex-1">
                       <p className="text-richblack-5 font-semibold text-lg mb-1">
@@ -206,7 +242,7 @@ const CourseInfoPage = () => {
                         {course?.instructor?.lastName}
                       </p>
                       <p className="text-richblack-300 text-sm mb-2">
-                        {course?.instructor?.accountType} • {course?.instructor?.email}
+                        {course?.instructor?.accountType || "Instructor"} {course?.instructor?.email && `• ${course?.instructor?.email}`}
                       </p>
                       {course?.instructor?.additionalDetails?.about && (
                         <p className="text-richblack-50 text-sm leading-relaxed">
