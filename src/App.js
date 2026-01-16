@@ -33,6 +33,7 @@ import AdminUsers from "./pages/dashboardPages/AdminUsers";
 import AdminCourses from "./pages/dashboardPages/AdminCourses";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from '@vercel/analytics/react';
+import ProtectedRoute from "./components/other/ProtectedRoute";
 
 function App() {
   const user = useSelector((state) => state.profile.user);
@@ -73,11 +74,19 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />}></Route>
             <Route
               path="/catalog/:catalogName"
-              element={<CatalogPage />}
+              element={
+                <ProtectedRoute>
+                  <CatalogPage />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="/course/:courseId"
-              element={<CourseInfoPage />}
+              element={
+                <ProtectedRoute>
+                  <CourseInfoPage />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="/forgot-password/:id"
@@ -142,7 +151,11 @@ function App() {
               </Route>
             )}
 
-            <Route element={<ViewCourse />}>
+            <Route element={
+              <ProtectedRoute>
+                <ViewCourse />
+              </ProtectedRoute>
+            }>
               <Route
                 path="/view-course/:courseId/sectionId/:sectionId/sub-sectionId/:subSectionId"
                 element={<VideoDetails />}
