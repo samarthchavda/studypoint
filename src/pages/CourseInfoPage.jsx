@@ -31,32 +31,8 @@ const CourseInfoPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCourseDetails = async () => {
-      try {
-        const response = await getFullCourseDetails({ courseId }, dispatch);
-        console.log("Course Details Response:", response);
-        if (response) {
-          setCourse(response);
-        } else {
-          // Try to find course in default data
-          findCourseInDefaultData();
-        }
-      } catch (error) {
-        console.log("Using default course data due to API error");
-        findCourseInDefaultData();
-      }
-    };try {
-        const reviews = await getCourseReviews(courseId);
-        console.log("Reviews Response:", reviews);
-        if (reviews && reviews.length > 0) {
-          setReviews(reviews);
-        } else {
-          // Set empty array for default courses
-          setReviews([]);
-        }
-      } catch (error) {
-        console.log("No reviews available");
-        setReviews([]l categories for the course
+    const findCourseInDefaultData = () => {
+      // Search through all categories for the course
       for (const category in defaultCourses) {
         const courses = defaultCourses[category];
         const foundCourse = courses.find(c => c._id === courseId);
@@ -72,15 +48,38 @@ const CourseInfoPage = () => {
       console.error("Course not found in default data");
     };
     
+    const fetchCourseDetails = async () => {
+      try {
+        const response = await getFullCourseDetails({ courseId }, dispatch);
+        console.log("Course Details Response:", response);
+        if (response) {
+          setCourse(response);
+        } else {
+          // Try to find course in default data
+          findCourseInDefaultData();
+        }
+      } catch (error) {
+        console.log("Using default course data due to API error");
+        findCourseInDefaultData();
+      }
+    };
+    
     fetchCourseDetails();
   }, [courseId, dispatch]);
 
   useEffect(() => {
     const getReviews = async () => {
-      const reviews = await getCourseReviews(courseId);
-      console.log("Reviews Response:", reviews);
-      if (reviews && reviews.length > 0) {
-        setReviews(reviews);
+      try {
+        const reviews = await getCourseReviews(courseId);
+        console.log("Reviews Response:", reviews);
+        if (reviews && reviews.length > 0) {
+          setReviews(reviews);
+        } else {
+          setReviews([]);
+        }
+      } catch (error) {
+        console.log("No reviews available");
+        setReviews([]);
       }
     };
 
