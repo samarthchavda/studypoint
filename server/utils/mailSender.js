@@ -24,11 +24,22 @@ const mailSender = async (email, title, body) => {
     // Create a Transporter to send emails
     let transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
+      port: 587,
+      secure: false,
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
+      tls: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 10000, // 10 seconds
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
     });
+
+    console.log("Attempting to send email to:", email);
+    console.log("Using SMTP:", process.env.MAIL_HOST, "with user:", process.env.MAIL_USER);
 
     // Send emails to users
     let info = await transporter.sendMail({
@@ -45,6 +56,7 @@ const mailSender = async (email, title, body) => {
     };
   } catch (error) {
     console.log("mailSender: error sending mail:", error.message);
+    console.log("Full error:", error);
     return {
       success: false,
       error: error.message,
