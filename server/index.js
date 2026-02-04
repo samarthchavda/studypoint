@@ -13,6 +13,7 @@ const profileRoutes = require("./routes/profileRoute");
 const paymentRoutes = require("./routes/paymentRoute");
 const courseRoutes = require("./routes/courseRoute");
 const adminRoutes = require("./routes/adminRoute");
+const healthRoutes = require("./routes/healthRoute");
 
 const PORT = process.env.PORT || 4000;
 
@@ -35,9 +36,27 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? [process.env.FRONTEND_URL, "https://*.vercel.app"]
-      : ["http://localhost:3000", "http://localhost:3001"],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      
+      const allowedOrigins = process.env.NODE_ENV === 'production'
+        ? [process.env.FRONTEND_URL, /\.vercel\.app$/]
+        : ["http://localhost:3000", "http://localhost:3001"];
+      
+      const isAllowed = allowedOrigins.some(allowed => {
+        if (typeof allowed === 'string') return allowed === origin;
+        if (allowed instanceof RegExp) return allowed.test(origin);
+        return false;
+      });
+      
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.log('CORS blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );
@@ -57,6 +76,7 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1", healthRoutes);
 
 // Default route
 app.get("/", (req, res) => {
