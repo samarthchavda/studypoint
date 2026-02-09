@@ -1,3 +1,4 @@
+const sgMail = require('@sendgrid/mail');
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
@@ -12,15 +13,44 @@ const mailSender = async (email, title, body) => {
       };
     }
 
-    // Check if mail credentials are configured
+    console.log("Attempting to send email to:", email);
+
+    // Try SendGrid first if API key is available
+    if (process.env.SENDGRID_API_KEY) {
+      try {
+        console.log("Using SendGrid...");
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        
+        const msg = {
+          to: email,
+          from: process.env.MAIL_USER, // Must be verified in SendGrid
+          subject: title,
+          html: body,
+        };
+        
+        await sgMail.send(msg);
+        console.log("✅ Email sent successfully via SendGrid");
+        return {
+          success: true,
+          method: 'SendGrid',
+        };
+      } catch (error) {
+        console.log("❌ SendGrid failed:", error.message);
+        // Continue to nodemailer fallback
+      }
+    }
+
+    // Fallback to Gmail SMTP
     if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
-      console.log("Mail credentials not configured - skipping email send");
+      console.log("Mail credentials not configured");
       return {
         success: false,
         message: "Mail credentials not configured",
       };
     }
 
+    console.log("Using Gmail SMTP...");
+    
     // Create a Transporter to send emails
     // Using port 465 with secure:true works better on Render
     let transporter = nodemailer.createTransport({
