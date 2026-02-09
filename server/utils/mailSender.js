@@ -33,13 +33,13 @@ const mailSender = async (email, title, body) => {
       tls: {
         rejectUnauthorized: false
       },
-      connectionTimeout: 10000, // 10 seconds
-      greetingTimeout: 10000,
-      socketTimeout: 10000,
+      connectionTimeout: 15000, // 15 seconds
+      greetingTimeout: 15000,
+      socketTimeout: 15000,
     });
 
     console.log("Attempting to send email to:", email);
-    console.log("Using SMTP:", process.env.MAIL_HOST, "with user:", process.env.MAIL_USER);
+    console.log("Email subject:", title);
 
     // Send emails to users
     let info = await transporter.sendMail({

@@ -180,28 +180,37 @@ exports.sendOTP=async (req,res)=>{
             specialChars:false,
         });
         console.log("otp in process",otpp);
-        while(otpp===await OTP.findOne({otp:otpp}).otp){
-            let otp=generate(6,{
+        
+        // Check for unique OTP
+        let existingOTP = await OTP.findOne({otp:otpp});
+        while(existingOTP){
+            otpp=generate(6,{
                 upperCaseAlphabets:false,
                 lowerCaseAlphabets:false,
                 specialChars:false,
             });
+            existingOTP = await OTP.findOne({otp:otpp});
         }
+        
     //create dbentry
+        console.log("Creating OTP document for email:", email);
         const otpDoc=await OTP.create({
             email:email,
             otp:otpp
         });
-        console.log("otpdoc",otpDoc);
+        console.log("OTP document created successfully:", otpDoc);
          return res.status(200).json({
              success:true,
-             message:"otp set successfully"
+             message:"OTP sent successfully to your email",
+             email: email
         });
     } catch (error) {
-        console.log('error while generating otp', error);
+        console.log('Error while generating/sending OTP:', error);
+        console.error('Full error stack:', error.stack);
         return res.status(500).json({
             success: false,
-            message: 'error while generating otp'
+            message: 'Failed to send OTP. Please try again.',
+            error: error.message
         });
     }
 }

@@ -26,13 +26,31 @@ export function sendOTP(email, navigate) {
     dispatch(setLoading(true));
     try {
       const response = await apiConnector("POST", SENDOTP_API, { email });
+      console.log("OTP API Response:", response);
+      
       if (response.data.success) {
-        toast.success("otp sent");
+        toast.success("OTP sent successfully to your email");
         navigate("/verify-email");
+      } else {
+        // Backend returned success: false
+        toast.error(response.data.message || "Failed to send OTP");
       }
     } catch (error) {
       console.log("Error sending OTP:", error);
-      toast.error("failed to send otp");
+      console.log("Error response:", error.response);
+      
+      // Better error messages based on error type
+      if (error.response) {
+        // Server responded with error status
+        const message = error.response.data?.message || "Failed to send OTP";
+        toast.error(message);
+      } else if (error.request) {
+        // Request was made but no response
+        toast.error("Network error. Please check your connection");
+      } else {
+        // Something else happened
+        toast.error("Failed to send OTP. Please try again");
+      }
     }
     dispatch(setLoading(false));
   };

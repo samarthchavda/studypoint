@@ -26,15 +26,28 @@ async function sendVerificationEmail(email, otp) {
       return;
     }
 
+    console.log(`Attempting to send OTP ${otp} to email: ${email}`);
+    
     const mailResponse = await mailSender(
       email,
-      "Verification Email",
+      "Verification Email from StudyNotion",
       emailVerificationTemplate(otp)
     );
+    
     console.log("Email sent successfully: ", mailResponse);
+    
+    // Check if email was sent successfully
+    if (!mailResponse || !mailResponse.success) {
+      console.log("Warning: Email sending failed but OTP will still be saved");
+      console.log("Mail response:", mailResponse);
+    } else {
+      console.log("✅ OTP email sent successfully to:", email);
+    }
   } catch (error) {
     console.log("Error occurred while sending email: ", error);
-    throw error;
+    console.error("Email error details:", error.message);
+    // Don't throw - let OTP still be saved even if email fails
+    console.log("Continuing despite email error...");
   }
 }
 
