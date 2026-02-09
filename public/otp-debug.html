@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #FFD60A;
+            color: black;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #e6c109;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            margin-top: 20px;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 StudyNotion OTP Debug Test</h1>
+        <p>This page tests the OTP API directly to help diagnose issues.</p>
+        
+        <div class="info">
+            <strong>Backend URL:</strong> <span id="backendUrl">https://studypoint-1-r4wb.onrender.com/api/v1</span>
+        </div>
+
+        <form id="otpForm">
+            <label for="email"><strong>Email Address:</strong></label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <button type="submit">Send OTP</button>
+        </form>
+
+        <div id="result" class="result"></div>
+        <div id="details"></div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://studypoint-1-r4wb.onrender.com/api/v1';
+        
+        document.getElementById('otpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const resultDiv = document.getElementById('result');
+            const detailsDiv = document.getElementById('details');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '⏳ Sending request...';
+            detailsDiv.innerHTML = '';
+            
+            try {
+                const startTime = Date.now();
+                
+                const response = await fetch(`${BACKEND_URL}/auth/sendotp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const endTime = Date.now();
+                const duration = (endTime - startTime) / 1000;
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <strong>✅ SUCCESS!</strong><br>
+                        Message: ${data.message}<br>
+                        Email: ${data.email || email}<br>
+                        Response Time: ${duration.toFixed(2)}s
+                    `;
+                    
+                    detailsDiv.innerHTML = `
+                        <div class="info">
+                            <strong>✅ What This Means:</strong><br>
+                            • Backend API is working correctly<br>
+                            • OTP has been saved to database<br>
+                            • Check your email inbox (and spam folder)<br>
+                            <br>
+                            <strong>If you don't receive the email:</strong><br>
+                            • Email might be timing out on Render (SMTP issue)<br>
+                            • But OTP is saved, so frontend should show verification page<br>
+                            • Check Render logs for email errors
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <strong>❌ FAILED</strong><br>
+                        Message: ${data.message || 'Unknown error'}<br>
+                        Response Time: ${duration.toFixed(2)}s
+                    `;
+                    
+                    detailsDiv.innerHTML = `
+                        <div class="info">
+                            <strong>Error Details:</strong>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ NETWORK ERROR</strong><br>
+                    ${error.message}
+                `;
+                
+                detailsDiv.innerHTML = `
+                    <div class="info">
+                        <strong>Possible Issues:</strong><br>
+                        • Backend is down<br>
+                        • CORS issue<br>
+                        • Network connectivity problem<br>
+                        • Backend URL is wrong<br>
+                        <br>
+                        <strong>Error:</strong> ${error.toString()}
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
