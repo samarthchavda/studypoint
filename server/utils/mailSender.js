@@ -22,20 +22,25 @@ const mailSender = async (email, title, body) => {
     }
 
     // Create a Transporter to send emails
+    // Using port 465 with secure:true works better on Render
     let transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
-      port: 587,
-      secure: false,
+      port: 465, // Changed from 587 to 465
+      secure: true, // Changed from false to true for port 465
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
       tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
+        ciphers: 'SSLv3'
       },
-      connectionTimeout: 15000, // 15 seconds
-      greetingTimeout: 15000,
-      socketTimeout: 15000,
+      connectionTimeout: 30000, // 30 seconds
+      greetingTimeout: 30000,
+      socketTimeout: 30000,
+      pool: true, // Use connection pooling
+      maxConnections: 5,
+      maxMessages: 10,
     });
 
     console.log("Attempting to send email to:", email);
