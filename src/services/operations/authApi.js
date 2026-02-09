@@ -30,6 +30,16 @@ export function sendOTP(email, navigate) {
       
       if (response.data.success) {
         toast.success("OTP sent successfully to your email");
+        
+        // TEMPORARY: Show OTP in console for testing
+        if (response.data.otp) {
+          console.log("🔐 YOUR OTP IS:", response.data.otp);
+          console.log("⚠️ Email not delivered. Use the OTP above to verify.");
+        }
+        if (response.data.note) {
+          console.log("📝 Note:", response.data.note);
+        }
+        
         navigate("/verify-email");
       } else {
         // Backend returned success: false

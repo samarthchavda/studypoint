@@ -202,7 +202,11 @@ exports.sendOTP=async (req,res)=>{
          return res.status(200).json({
              success:true,
              message:"OTP sent successfully to your email",
-             email: email
+             email: email,
+             // TEMPORARY: Show OTP in response for testing (REMOVE IN PRODUCTION!)
+             otp: process.env.NODE_ENV === 'production' ? undefined : otpp,
+             // For production, check Render logs to see OTP
+             note: process.env.NODE_ENV === 'production' ? "Check Render logs for OTP" : "OTP shown for development only"
         });
     } catch (error) {
         console.log('Error while generating/sending OTP:', error);
