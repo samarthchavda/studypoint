@@ -5,26 +5,27 @@ exports.conncetToDatabase = () => {
   const mongoURI = process.env.MONGO_URI || process.env.MONGODB_URL;
   
   if (!mongoURI) {
-    console.error("❌ MongoDB URI is not defined in .env file!");
-    console.log("Please add MONGO_URI or MONGODB_URL to your .env file");
-    process.exit(1);
+    console.error("❌ MongoDB URI is not defined!");
+    console.log("⚠️ Serverless function will continue without database");
+    return; // Don't exit - serverless functions should handle gracefully
   }
 
   mongoose
-    .connect(mongoURI)
+    .connect(mongoURI, {
+      serverSelectionTimeoutMS: 30000, // Increased timeout for better connection
+      socketTimeoutMS: 45000,
+      tls: true, // Enable TLS
+      tlsAllowInvalidCertificates: false, // Set to true only if you have certificate issues
+    })
     .then(() => {
       console.log("✅ Database connected successfully");
       console.log(`📊 Connected to: ${mongoURI.split('@')[1] || 'MongoDB'}`);
     })
     .catch((error) => {
       console.error("❌ Database connection failed");
-      console.error(error);
-      console.log("\n💡 Tips:");
-      console.log("1. Check if MongoDB is running");
-      console.log("2. Verify MONGO_URI in .env file");
-      console.log("3. Check network connection\n");
-      // Don't exit immediately, let server handle it
-      setTimeout(() => process.exit(1), 2000);
+      console.error(error.message);
+      console.log("⚠️ Server will continue without database connection");
+      // Don't exit - let the serverless function continue
     });
 
   // Handle connection events
@@ -33,7 +34,7 @@ exports.conncetToDatabase = () => {
   });
 
   mongoose.connection.on('error', (err) => {
-    console.error('❌ Mongoose connection error:', err);
+    console.error('❌ Mongoose connection error:', err.message);
   });
 
   mongoose.connection.on('disconnected', () => {
