@@ -205,8 +205,7 @@ const AdminCourses = () => {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1 text-yellow-50 font-bold text-lg">
-                    <FiDollarSign />
-                    <span>{course.price === 0 ? "Free" : course.price}</span>
+                    <span>{course.price === 0 ? "Free" : `₹${course.price}`}</span>
                   </div>
 
                   {/* Action Buttons */}

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Completion Certificate - StudyNotion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .certificate-container {
+            background: white;
+            width: 1000px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            border: 20px solid;
+            border-image: linear-gradient(45deg, #FFD700, #FFA500, #FFD700) 1;
+        }
+
+        .corner {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+        }
+
+        .corner-tl { top: 0; left: 0; border-top: 8px solid #FFD700; border-left: 8px solid #FFD700; }
+        .corner-tr { top: 0; right: 0; border-top: 8px solid #FFD700; border-right: 8px solid #FFD700; }
+        .corner-bl { bottom: 0; left: 0; border-bottom: 8px solid #FFD700; border-left: 8px solid #FFD700; }
+        .corner-br { bottom: 0; right: 0; border-bottom: 8px solid #FFD700; border-right: 8px solid #FFD700; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .medal {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.5);
+        }
+
+        h1 {
+            font-size: 60px;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .divider {
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #FFD700, transparent);
+            margin: 30px auto;
+        }
+
+        .content {
+            text-align: center;
+            line-height: 2;
+        }
+
+        .intro-text {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .student-name {
+            font-size: 48px;
+            color: #1a1a1a;
+            font-weight: bold;
+            margin: 30px 0;
+            border-bottom: 3px solid #FFD700;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .project-text {
+            font-size: 20px;
+            color: #333;
+            margin: 30px 0;
+        }
+
+        .project-name {
+            font-size: 42px;
+            color: #667eea;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        .description {
+            font-size: 18px;
+            color: #555;
+            margin: 30px auto;
+            max-width: 800px;
+            line-height: 1.8;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .footer-item {
+            text-align: center;
+        }
+
+        .footer-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-value {
+            font-size: 18px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .signature-line {
+            border-top: 2px solid #333;
+            width: 200px;
+            margin: 20px auto 10px;
+        }
+
+        .branding {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .branding h2 {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .branding p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .checkmark {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            border-radius: 50%;
+            color: white;
+            font-size: 40px;
+            line-height: 60px;
+            margin: 20px 0;
+        }
+
+        .live-link {
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .link-label {
+            font-size: 16px;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .project-url {
+            font-size: 20px;
+            color: #667eea;
+            font-weight: bold;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .project-url:hover {
+            text-decoration: underline;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .certificate-container {
+                box-shadow: none;
+            }
+        }
+
+        .print-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .print-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media print {
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate-container">
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+
+        <div class="header">
+            <div class="medal">🏆</div>
+            <h1>Certificate</h1>
+            <div class="subtitle">of Project Completion</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="content">
+            <p class="intro-text">This is to proudly certify that</p>
+            
+            <div class="student-name">Chavda Samarth</div>
+            
+            <p class="project-text">has successfully developed and deployed</p>
+            
+            <div class="project-name">StudyNotion E-Learning Platform</div>
+
+            <div class="checkmark">✓</div>
+
+            <p class="description">
+                A comprehensive full-stack MERN application featuring user authentication, 
+                course management, video streaming, payment integration with Razorpay, 
+                admin dashboard, and modern responsive UI. The project demonstrates 
+                expertise in MongoDB, Express.js, React.js, Node.js, and cloud deployment.
+            </p>
+
+            <div class="live-link">
+                <div class="link-label">🌐 Live Project URL</div>
+                <a href="https://studynotion-app-rho.vercel.app" target="_blank" class="project-url">
+                    https://studynotion-app-rho.vercel.app
+                </a>
+            </div>
+
+            <div class="tech-stack">
+                <span class="tech-badge">MongoDB</span>
+                <span class="tech-badge">Express.js</span>
+                <span class="tech-badge">React.js</span>
+                <span class="tech-badge">Node.js</span>
+                <span class="tech-badge">Cloudinary</span>
+                <span class="tech-badge">Razorpay</span>
+                <span class="tech-badge">JWT Auth</span>
+                <span class="tech-badge">Redux</span>
+                <span class="tech-badge">Tailwind CSS</span>
+                <span class="tech-badge">Vercel</span>
+            </div>
+        </div> Certificate as PDF</button>
+
+    <script>
+        // Auto-fit on load and auto-print dialog
+        window.onload = function() {
+            document.body.style.zoom = window.innerWidth < 1200 ? "0.8" : "1";
+            
+            // Uncomment the line below to auto-open print dialog on page load
+            // setTimeout(() => window.print(), 500);
+        }
+        
+        // Ensure print button shows properly
+        window.onbeforeprint = function() {
+            document.querySelector('.print-button').style.display = 'none';
+        }
+        
+        window.onafterprint = function() {
+            document.querySelector('.print-button').style.display = 'block'
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Project Type</div>
+                <div class="signature-line"></div>
+                <div class="footer-value">Full Stack MERN</div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-label">Status</div>
+                <div class="footer-value">✅ Live & Deployed</div>
+            </div>
+        </div>
+
+        <div class="branding">
+            <h2>StudyNotion</h2>
+            <p>Online Learning Platform - Production Ready</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                Developed by: Chavda Samarth | Co-developer: Ansh Sangani
+            </p>
+        </div>
+    </div>
+
+    <button class="print-button" onclick="window.print()">📥 Download/Print Certificate</button>
+
+    <script>
+        // Auto-fit on load
+        window.onload = function() {
+            document.body.style.zoom = window.innerWidth < 1200 ? "0.8" : "1";
+        }
+    </script>
+</body>
+</html>

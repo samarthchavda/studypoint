@@ -1,0 +1,77 @@
+RENDER ENVIRONMENT VARIABLES - COPY THESE ONE BY ONE
+=====================================================
+
+Add each variable in Render by clicking "+ Add Environment Variable"
+Then copy the NAME and VALUE for each:
+
+1. MONGODB_URL
+   Value: [REQUIRED] Get from MongoDB Atlas - Format: mongodb+srv://username:password@cluster.mongodb.net/studynotion
+
+2. JWT_SECRET
+   Value: my_super_secret_jwt_key_123456789
+
+3. MAIL_HOST
+   Value: smtp.gmail.com
+
+4. MAIL_USER
+   Value: [REQUIRED] Your Gmail address
+
+5. MAIL_PASS
+   Value: [REQUIRED] Your Gmail App Password (not regular password)
+
+6. RAZORPAY_KEY
+   Value: [REQUIRED] Get from Razorpay Dashboard
+
+7. RAZORPAY_SECRET
+   Value: [REQUIRED] Get from Razorpay Dashboard
+
+8. CLOUD_NAME
+   Value: [REQUIRED] Get from Cloudinary Console
+
+9. API_KEY
+   Value: [REQUIRED] Get from Cloudinary Console
+
+10. API_SECRET
+    Value: [REQUIRED] Get from Cloudinary Console
+
+11. FOLDER_NAME
+    Value: StudyNotion
+
+12. PORT
+    Value: 4000
+
+13. NODE_ENV
+    Value: production
+
+14. FRONTEND_URL
+    Value: [WILL UPDATE LATER] https://studynotion-app.vercel.app
+
+
+IMPORTANT STEPS TO GET CREDENTIALS:
+====================================
+
+MongoDB Atlas:
+- Go to: https://cloud.mongodb.com
+- Create free cluster if you haven't
+- Click "Connect" → "Connect your application"
+- Copy connection string and replace <password> with your database password
+
+Gmail App Password:
+- Go to: https://myaccount.google.com/apppasswords
+- Generate new app password for "Mail"
+- Copy the 16-character password
+
+Razorpay:
+- Go to: https://dashboard.razorpay.com/app/keys
+- Copy Key ID and Key Secret (use Test Mode keys for now)
+
+Cloudinary:
+- Go to: https://cloudinary.com/console
+- Find Cloud Name, API Key, API Secret in dashboard
+
+
+AFTER DEPLOYMENT:
+=================
+Your Render URL will be: https://studypoint.onrender.com
+Update FRONTEND_URL in Render with your actual Vercel URL
+Update REACT_APP_BASE_URL in Vercel to: https://studypoint.onrender.com/api/v1
