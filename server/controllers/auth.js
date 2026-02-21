@@ -5,6 +5,7 @@ const User = require('../models/User');
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
+const smsSender = require('../utils/smsSender');
 const { passwordUpdated } = require("../mail/templates/passwordUpdate");
 
 //signup
@@ -30,6 +31,16 @@ exports.signup=async(req,res)=>{
                 success:false,
                 message:"Invalid Indian phone number format. Use +91 followed by 10 digits."
             })
+        }
+        
+        // Additional validation: Check if phone starts with valid Indian mobile prefix (6-9)
+        const phoneDigits = phoneNumber.substring(3); // Remove +91
+        const validPrefixes = ['6', '7', '8', '9'];
+        if (!validPrefixes.includes(phoneDigits[0])) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid mobile number. Indian mobile numbers must start with 6, 7, 8, or 9."
+            });
         }
         
         // Email is optional now - but validate if provided
@@ -205,6 +216,16 @@ exports.sendOTP=async (req,res)=>{
             });
         }
 
+        // Additional validation: Check if phone starts with valid Indian mobile prefix (6-9)
+        const phoneDigits = phoneNumber.substring(3); // Remove +91
+        const validPrefixes = ['6', '7', '8', '9'];
+        if (!validPrefixes.includes(phoneDigits[0])) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid mobile number. Indian mobile numbers must start with 6, 7, 8, or 9."
+            });
+        }
+
     //checkUser - check if already registered by phone
         const user=await User.findOne({phoneNumber});
         if(user){
@@ -235,20 +256,47 @@ exports.sendOTP=async (req,res)=>{
         
     //create db entry - SMS only for Indian numbers
         console.log("Creating OTP document for Indian phone:", phoneNumber);
-        const otpDoc=await OTP.create({
+        const otpDoc = await OTP.create({
             phoneNumber: phoneNumber,
-            otp:otpp,
+            otp: otpp,
             sendMethod: "sms"  // Always SMS for Indian users
         });
-        
         console.log("OTP document created successfully:", otpDoc);
-         return res.status(200).json({
-             success:true,
-             message:"OTP sent successfully via SMS",
-             contact: phoneNumber,
-             sendMethod: "sms",
-             // TEMPORARY: Show OTP in response for testing (REMOVE IN PRODUCTION!)
-             otp: process.env.NODE_ENV === 'production' ? undefined : otpp,
+
+        // Send OTP via SMS
+        const smsResult = await smsSender(phoneNumber, otpp);
+        
+        // For development/testing: Always return success even if SMS fails
+        // This allows testing with Twilio trial accounts
+        const isDevelopment = process.env.NODE_ENV !== 'production';
+        
+        if (!smsResult.success && !isDevelopment) {
+            return res.status(500).json({
+                success: false,
+                message: 'Failed to send OTP SMS.',
+                error: smsResult.message || 'Unknown SMS error',
+            });
+        }
+
+        // Log OTP for development
+        if (isDevelopment) {
+            console.log('\n🔑 ========================================');
+            console.log('🔑 DEVELOPMENT MODE - OTP FOR TESTING');
+            console.log('🔑 Phone:', phoneNumber);
+            console.log('🔑 OTP:', otpp);
+            console.log('🔑 ========================================\n');
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: smsResult.success 
+                ? "OTP sent successfully via SMS" 
+                : "OTP generated (SMS failed - check console for OTP)",
+            contact: phoneNumber,
+            sendMethod: "sms",
+            smsDelivered: smsResult.success,
+            // Show OTP in response for development/testing
+            otp: isDevelopment ? otpp : undefined,
         });
     } catch (error) {
         console.log('Error while generating/sending OTP:', error);

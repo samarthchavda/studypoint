@@ -33,10 +33,21 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
   });
 
   function changeHandler(event) {
-    setFormData((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
+    const { name, value } = event.target;
+    
+    // Special handling for phone number - only allow digits
+    if (name === "phoneNumber") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setFormData((prev) => ({
+        ...prev,
+        [name]: digitsOnly,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   }
 
   function submitHandler(event) {
@@ -52,6 +63,13 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
     const cleanPhone = formData.phoneNumber.replace(/\D/g, "");
     if (!/^\d{10}$/.test(cleanPhone)) {
       toast.error("Please enter a valid 10-digit Indian mobile number");
+      return;
+    }
+    
+    // Additional validation: Check if phone starts with valid Indian mobile prefix
+    const validPrefixes = ['6', '7', '8', '9'];
+    if (!validPrefixes.includes(cleanPhone[0])) {
+      toast.error("Invalid mobile number. Indian mobile numbers start with 6, 7, 8, or 9");
       return;
     }
     
@@ -158,6 +176,8 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
                 type="tel"
                 required
                 maxLength="10"
+                pattern="[6-9][0-9]{9}"
+                title="Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9"
                 placeholder="Enter 10-digit mobile number"
                 name="phoneNumber"
                 id="phoneNumber"

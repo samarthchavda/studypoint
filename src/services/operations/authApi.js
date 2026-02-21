@@ -130,10 +130,8 @@ export function login(email, password, navigate) {
         // dispatch token into store (also saves to localStorage)
         dispatch(setToken(response.data.token));
         toast.success("login successfull");
-        if (user.accountType === "Student")
-          navigate("/dashboard/enrolled-courses");
-        else if(user.accountType==='Instructor') navigate("/dashboard/my-courses");
-        else if (user.accountType === "Admin") navigate("/dashboard/admin");
+        // Redirect to home page after successful login
+        navigate("/");
       } else {
         throw new Error(response.data.message);
       }
