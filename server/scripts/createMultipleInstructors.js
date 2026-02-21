@@ -8,7 +8,7 @@ const Course = require('../models/Course');
 
 async function createInstructorsAndReassignCourses() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGODB_URL);
     console.log('Connected to database\n');
     
     // Create 4 new instructor accounts

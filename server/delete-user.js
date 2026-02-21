@@ -8,7 +8,7 @@ async function deleteUser() {
     console.log('\n🗑️  Deleting User...\n');
     
     // Connect to database
-    await mongoose.connect(process.env.MONGO_URI || process.env.MONGODB_URL, {
+    await mongoose.connect(process.env.MONGODB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

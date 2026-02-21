@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 exports.conncetToDatabase = () => {
-  const mongoURI = process.env.MONGO_URI || process.env.MONGODB_URL;
+  const mongoURI = process.env.MONGODB_URL;
   
   if (!mongoURI) {
     console.error("❌ MongoDB URI is not defined!");

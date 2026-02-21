@@ -8,7 +8,7 @@ async function testOTP() {
     
     // Connect to database
     console.log('Connecting to MongoDB...');
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGODB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
