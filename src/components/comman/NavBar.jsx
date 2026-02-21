@@ -147,83 +147,85 @@ const NavBar = () => {
             })}
           </ul>
         </nav>
-        {token === null ? (
-          <div className="flex gap-4">
-            <Link
-              className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
-              rounded-lg border-[1px]"
-              to="/login"
-            >
-              Login
-            </Link>
-            <Link
-              className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
-              rounded-lg border-[1px]"
-              to="/signup"
-            >
-              Signup
-            </Link>
-          </div>
-        ) : (
-          <div className="flex gap-4">
-            {user?.accountType === "Student" ? (
-              <Link to={"/dashboard/wishList"} className="relative ">
-                <IoCartOutline className="text-white cursor-pointer h-8 w-8" />
-                {totalItems === 0 ? (
-                  ""
-                ) : (
-                  <div
-                    className="h-4 w-4 rounded-full absolute right-0 
-                    text-xs text-black -top-1 ball_animation bg-green-400 flex justify-center items-center"
-                  >
-                    {totalItems}
-                  </div>
-                )}
-              </Link>
-            ) : null}
-            <div className="relative " onClick={showBox}>
-              <div
-                className="text-white cursor-pointer rounded-full h-8 w-8 "
-                style={{
-                  backgroundImage: `url(${user?.image})`,
-                  backgroundSize: "cover",
-                }}
-              ></div>
-              <div
-                ref={boxRef}
-                className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible  text-richblack-200 absolute bg-richblack-700 px-3 py-2 "
+        <div className="hidden md:flex">
+          {token === null ? (
+            <div className="flex gap-4">
+              <Link
+                className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
+                rounded-lg border-[1px]"
+                to="/login"
               >
-                {/* <div className=" h-10m w-10 top-0 left-0 rotate-45 bg-richblack-200"></div> */}
-                <div
-                  onClick={() => {
-                    setLogoutModal(true);
-                  }}
-                  className="flex border-b-[1px] pb-1 border-richblack-200/50  gap-1 cursor-pointer items-center"
-                >
-                  <MdLogout />
-                  Logout
-                </div>
-                <Link
-                  to={"/dashboard"}
-                  className="flex gap-1 cursor-pointer items-center"
-                >
-                  <RiDashboard2Line />
-                  Dashboard
+                Login
+              </Link>
+              <Link
+                className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
+                rounded-lg border-[1px]"
+                to="/signup"
+              >
+                Signup
+              </Link>
+            </div>
+          ) : (
+            <div className="flex gap-4">
+              {user?.accountType === "Student" ? (
+                <Link to={"/dashboard/wishList"} className="relative ">
+                  <IoCartOutline className="text-white cursor-pointer h-8 w-8" />
+                  {totalItems === 0 ? (
+                    ""
+                  ) : (
+                    <div
+                      className="h-4 w-4 rounded-full absolute right-0 
+                      text-xs text-black -top-1 ball_animation bg-green-400 flex justify-center items-center"
+                    >
+                      {totalItems}
+                    </div>
+                  )}
                 </Link>
+              ) : null}
+              <div className="relative " onClick={showBox}>
+                <div
+                  className="text-white cursor-pointer rounded-full h-8 w-8 "
+                  style={{
+                    backgroundImage: `url(${user?.image})`,
+                    backgroundSize: "cover",
+                  }}
+                ></div>
+                <div
+                  ref={boxRef}
+                  className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible  text-richblack-200 absolute bg-richblack-700 px-3 py-2 "
+                >
+                  {/* <div className=" h-10m w-10 top-0 left-0 rotate-45 bg-richblack-200"></div> */}
+                  <div
+                    onClick={() => {
+                      setLogoutModal(true);
+                    }}
+                    className="flex border-b-[1px] pb-1 border-richblack-200/50  gap-1 cursor-pointer items-center"
+                  >
+                    <MdLogout />
+                    Logout
+                  </div>
+                  <Link
+                    to={"/dashboard"}
+                    className="flex gap-1 cursor-pointer items-center"
+                  >
+                    <RiDashboard2Line />
+                    Dashboard
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-      <div className="md:hidden mx-auto ">
+      <div className="md:hidden w-11/12 mx-auto flex flex-col gap-3">
         <nav className="">
-          <ul className="flex gap-5">
+          <ul className="flex gap-5 justify-center">
             {NavbarLinks.map((item, index) => {
               return (
                 <li key={index}>
                   {item.title === "Catalog" ? (
                     <div className="text-richblack-200 relative group cursor-pointer">
-                      <div className="flex gap-1 items-center">
+                      <div className={`${location.pathname.split('/').at(1)==='catalog'?"text-[#FFD60A] font-bold" :"text-richblack-200"} flex gap-1 items-center`}>
                         Catalog
                         <IoIosArrowDropdown />
                       </div>
@@ -234,7 +236,7 @@ const NavBar = () => {
                             : categories.map((category, index) => {
                                 return (
                                   <Link
-                                    to={`/catalog/${category.name}`}
+                                    to={`/catalog/${category.name.replace(" ","-")}`}
                                     className="px-10 text-lg rounded-lg font-[550] py-1 hover:bg-richblack-100 "
                                     key={index}
                                   >
@@ -264,6 +266,72 @@ const NavBar = () => {
             })}
           </ul>
         </nav>
+        {token === null ? (
+          <div className="flex gap-4 justify-center">
+            <Link
+              className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
+              rounded-lg border-[1px]"
+              to="/login"
+            >
+              Login
+            </Link>
+            <Link
+              className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
+              rounded-lg border-[1px]"
+              to="/signup"
+            >
+              Signup
+            </Link>
+          </div>
+        ) : (
+          <div className="flex gap-4 justify-center items-center">
+            {user?.accountType === "Student" ? (
+              <Link to={"/dashboard/wishList"} className="relative ">
+                <IoCartOutline className="text-white cursor-pointer h-8 w-8" />
+                {totalItems === 0 ? (
+                  ""
+                ) : (
+                  <div
+                    className="h-4 w-4 rounded-full absolute right-0 
+                    text-xs text-black -top-1 ball_animation bg-green-400 flex justify-center items-center"
+                  >
+                    {totalItems}
+                  </div>
+                )}
+              </Link>
+            ) : null}
+            <div className="relative " onClick={showBox}>
+              <div
+                className="text-white cursor-pointer rounded-full h-8 w-8 "
+                style={{
+                  backgroundImage: `url(${user?.image})`,
+                  backgroundSize: "cover",
+                }}
+              ></div>
+              <div
+                ref={boxRef}
+                className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible  text-richblack-200 absolute bg-richblack-700 px-3 py-2 "
+              >
+                <div
+                  onClick={() => {
+                    setLogoutModal(true);
+                  }}
+                  className="flex border-b-[1px] pb-1 border-richblack-200/50  gap-1 cursor-pointer items-center"
+                >
+                  <MdLogout />
+                  Logout
+                </div>
+                <Link
+                  to={"/dashboard"}
+                  className="flex gap-1 cursor-pointer items-center"
+                >
+                  <RiDashboard2Line />
+                  Dashboard
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       {logutModal && (
         <ConfirmationModal
