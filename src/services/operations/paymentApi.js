@@ -51,8 +51,7 @@ export const buyCourse = async (
     },
     // callback_url: "http://localhost:4000/api/v1/payment/verifySignatureEnrollStudent",
     handler: async function (response) {
-      const { razorpay_signature, razorpay_order_id, razorpay_payment_id } =
-        response;
+      const { razorpay_signature, razorpay_payment_id } = response;
       const data = {
         razorpay_signature,
         razorpay_order_id: order.id,
