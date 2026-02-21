@@ -54,10 +54,16 @@ export function sendOTP(phoneNumber, navigate, method = "sms") {
       if (response.data.success) {
         toast.success("OTP sent successfully to your mobile number");
         
-        // TEMPORARY: Show OTP in console for testing
+        // TEMPORARY: Show OTP in console and toast for testing
         if (response.data.otp) {
           console.log("🔐 YOUR OTP IS:", response.data.otp);
           console.log("⚠️ SMS not delivered. Use the OTP above to verify.");
+          
+          // Show OTP in toast notification for easy access
+          toast.success(`Your OTP: ${response.data.otp}`, {
+            duration: 10000, // Show for 10 seconds
+            icon: '🔑',
+          });
         }
         if (response.data.note) {
           console.log("📝 Note:", response.data.note);

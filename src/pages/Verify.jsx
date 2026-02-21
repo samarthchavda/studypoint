@@ -6,6 +6,8 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { sendOTP, signup } from "../services/operations/authApi";
 import Spinner from "../components/comman/Spinner";
+import toast from "react-hot-toast";
+
 const Verify = () => {
   const dispatch = useDispatch();
   const [otp, setOtp] = useState("");
@@ -20,7 +22,9 @@ const Verify = () => {
   const resendOTP = () => {
     // Always resend via SMS (phone is mandatory now)
     if (signupData?.phoneNumber) {
-      dispatch(sendOTP(signupData.phoneNumber, navigate, "sms"));
+      // Remove +91 prefix if present, sendOTP will add it
+      const cleanPhone = signupData.phoneNumber.replace(/^\+91/, '');
+      dispatch(sendOTP(cleanPhone, navigate, "sms"));
     } else {
       toast.error("Phone number is required to resend OTP");
     }

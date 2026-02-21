@@ -62,10 +62,23 @@ const CourseBuyCard = ({
   return (
     <>
       <div className="bg-richblack-700 rounded-lg shadow-lg md:sticky md:top-4">
-        <div className="mx-auto w-fit"><img src={thumbnail} className="max-h-[230px] w-full object-cover rounded-t-lg" alt="thumbnail of course"/></div>
+        <div className="mx-auto w-full">
+          <img 
+            src={thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=250&fit=crop"} 
+            className="max-h-[230px] w-full object-cover rounded-t-lg" 
+            alt="thumbnail of course"
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/400x250/1F2937/FFFFFF?text=Course+Thumbnail";
+            }}
+          />
+        </div>
         <div className="p-6 gap-3 flex flex-col">
           <p className="text-3xl font-bold text-center md:text-start text-richblack-5">
-            {isFree ? <span className="text-caribbeangreen-200">FREE</span> : `Rs. ${price}`}
+            {isFree || price === undefined || price === null ? (
+              <span className="text-caribbeangreen-200">FREE</span>
+            ) : (
+              `Rs. ${price}`
+            )}
           </p>
           {isBought ? (
             <YellowBtn clickHandler={goToCourseHandler} text={"Go To Course"} />

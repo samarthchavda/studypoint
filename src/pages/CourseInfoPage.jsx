@@ -131,7 +131,7 @@ const CourseInfoPage = () => {
     return course?.studentsEnrolled?.some((student) => student === user?._id);
   };
 
-  const isFree = course?.price === 0 || course?.price === null;
+  const isFree = course?.price === 0 || course?.price === null || course?.price === undefined;
 
   return (
     <div>
