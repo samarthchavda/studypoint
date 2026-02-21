@@ -15,20 +15,32 @@ exports.signup=async(req,res)=>{
     const{firstName,lastName,email,password,accountType,
         confirmPassword,otp, phoneNumber}=req.body;
         
-    //validation
-        if(!firstName||!lastName||!email||!password||!accountType||!confirmPassword||!otp){
+    //validation - phone number is now REQUIRED
+        if(!firstName||!lastName||!password||!accountType||!confirmPassword||!otp||!phoneNumber){
             return res.status(400).json({
                 success:false,
-                message:"One of the required fields is empty"
+                message:"Phone number is required. First name, last name, password, and account type are required."
             })
         }
         
-        const regx=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        if(!regx.test(email)){
+        // Validate Indian phone format - should be +91 followed by 10 digits
+        const phoneRegex = /^\+91\d{10}$/;
+        if(!phoneRegex.test(phoneNumber)){
             return res.status(400).json({
                 success:false,
-                message:"Email is not valid"
+                message:"Invalid Indian phone number format. Use +91 followed by 10 digits."
             })
+        }
+        
+        // Email is optional now - but validate if provided
+        if(email){
+            const emailRegex=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+            if(!emailRegex.test(email)){
+                return res.status(400).json({
+                    success:false,
+                    message:"Email is not valid (if provided)"
+                })
+            }
         }
         
         if(password!==confirmPassword){
@@ -38,31 +50,34 @@ exports.signup=async(req,res)=>{
             })
         }
         
-    //check if user exists
-        const checkUser=await User.findOne({email});
-        if(checkUser){
+    //check if user already exists - check by phone (primary identifier)
+        const checkUserByPhone = await User.findOne({phoneNumber});
+        if(checkUserByPhone){
              return res.status(400).json({
                  success:false,
-                 message:"User is already registered"
+                 message:"This phone number is already registered"
             });
         }
         
-    //check for otp - support both email and phone
-        let recentOTP;
-        
-        if(phoneNumber){
-            // Phone-based OTP verification
-            recentOTP = await OTP.find({phoneNumber}).sort({createdAt:-1}).limit(1);
-        } else {
-            // Email-based OTP verification (default)
-            recentOTP = await OTP.find({email}).sort({createdAt:-1}).limit(1);
+        // Also check by email if provided
+        if(email){
+            const checkUserByEmail = await User.findOne({email});
+            if(checkUserByEmail){
+                 return res.status(400).json({
+                     success:false,
+                     message:"This email is already registered"
+                });
+            }
         }
+        
+    //check for otp - use phone as primary contact
+        const recentOTP = await OTP.find({phoneNumber}).sort({createdAt:-1}).limit(1);
 
         if(recentOTP.length == 0) {
             //OTP not found
             return res.status(400).json({
                 success:false,
-                message:'OTP not found. Please request a new one.',
+                message:'OTP not found. Please request a new OTP.',
             });
         }
         else if(recentOTP[0].otp!==otp){
@@ -78,21 +93,21 @@ exports.signup=async(req,res)=>{
     //create db entry
     const pd={
         gender:null,
-        phoneNumber:phoneNumber || null,
+        phoneNumber:phoneNumber,
         about:null,
         dob:null,
-        countryCode:null
+        countryCode:"+91"
     }
     const ProfileDetails=await Profile.create(pd);
     
     const user=await User.create({
         firstName,
         lastName,
-        email,
+        email: email || `user${phoneNumber}@studynotion.local`,  // Fallback email if not provided
         accountType,
         password:hashedPassword,
         additionalDetails:ProfileDetails._id,
-        phoneNumber: phoneNumber || null,
+        phoneNumber: phoneNumber,  // Store full phone with +91
         image:`https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
     })
 
@@ -170,32 +185,32 @@ exports.login=async (req,res)=>{
 //send otp
 exports.sendOTP=async (req,res)=>{
     try {
-     //fetch phone number OR email
-        const{phoneNumber, email, sendMethod = "sms"}=req.body;
+     //fetch phone number (REQUIRED FOR INDIAN USERS)
+        const{phoneNumber}=req.body;
         
-        // Validate input
-        if(!phoneNumber && !email){
+        // Phone number is mandatory
+        if(!phoneNumber){
              return res.status(400).json({
                  success:false,
-                 message:"Phone number or email is required"
+                 message:"Phone number is required"
             });
         }
 
-        // If SMS method selected, phone is required
-        if(sendMethod === "sms" && !phoneNumber){
+        // Validate Indian phone format - +91 followed by 10 digits
+        const phoneRegex = /^\+91\d{10}$/;
+        if(!phoneRegex.test(phoneNumber)){
             return res.status(400).json({
                 success:false,
-                message:"Phone number is required for SMS OTP"
+                message:"Invalid Indian phone number format. Use +91 followed by 10 digits."
             });
         }
 
-    //checkUser - check if already registered
-        let checkQuery = phoneNumber ? {phoneNumber} : {email};
-        const user=await User.find(checkQuery);
-        if(user.length>0){
+    //checkUser - check if already registered by phone
+        const user=await User.findOne({phoneNumber});
+        if(user){
              return res.status(401).json({
                  success:false,
-                 message:"User is already registered"
+                 message:"This phone number is already registered"
             });
         }
 
@@ -218,21 +233,20 @@ exports.sendOTP=async (req,res)=>{
             existingOTP = await OTP.findOne({otp:otpp});
         }
         
-    //create db entry
-        console.log("Creating OTP document for:", phoneNumber || email);
+    //create db entry - SMS only for Indian numbers
+        console.log("Creating OTP document for Indian phone:", phoneNumber);
         const otpDoc=await OTP.create({
-            email: email || undefined,
-            phoneNumber: phoneNumber || undefined,
+            phoneNumber: phoneNumber,
             otp:otpp,
-            sendMethod: sendMethod
+            sendMethod: "sms"  // Always SMS for Indian users
         });
         
         console.log("OTP document created successfully:", otpDoc);
          return res.status(200).json({
              success:true,
-             message:`OTP sent successfully via ${sendMethod === "sms" ? "SMS" : "Email"}`,
-             contact: phoneNumber || email,
-             sendMethod: sendMethod,
+             message:"OTP sent successfully via SMS",
+             contact: phoneNumber,
+             sendMethod: "sms",
              // TEMPORARY: Show OTP in response for testing (REMOVE IN PRODUCTION!)
              otp: process.env.NODE_ENV === 'production' ? undefined : otpp,
         });

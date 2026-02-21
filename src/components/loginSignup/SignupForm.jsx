@@ -28,7 +28,7 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
     email: "",
     password: "",
     cpassword: "",
-    code: "",
+    code: "+91",  // Default to India
     phoneNumber: "",
   });
 
@@ -41,34 +41,54 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
 
   function submitHandler(event) {
     event.preventDefault();
+    
+    // Validate phone number (required for Indian users)
+    if (!formData.phoneNumber) {
+      toast.error("Mobile number is required");
+      return;
+    }
+    
+    // Validate Indian phone format (10 digits)
+    const cleanPhone = formData.phoneNumber.replace(/\D/g, "");
+    if (!/^\d{10}$/.test(cleanPhone)) {
+      toast.error("Please enter a valid 10-digit Indian mobile number");
+      return;
+    }
+    
     if (formData.password !== formData.cpassword) {
-      toast.error("password didn't match");
+      toast.error("Passwords don't match");
       return;
     }
-    // Validate phone number format if provided
-    if (formData.phoneNumber && !/^\d{10}$/.test(formData.phoneNumber.replace(/\D/g, ""))) {
-      toast.error("Please enter a valid 10-digit phone number");
+
+    if (!formData.fName || !formData.lName) {
+      toast.error("First and last names are required");
       return;
     }
+
+    // Email is now optional - can be derived from phone or user can add later
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    
+    // Format phone with +91 for signup
+    const fullPhone = `+91${cleanPhone}`;
     
     const data = {
       firstName: formData.fName,
       lastName: formData.lName,
-      email: formData.email,
+      email: formData.email || `user${cleanPhone}@studynotion.local`,  // Fallback email
       password: formData.password,
       confirmPassword: formData.cpassword,
       accountType: user,
-      phoneNumber: formData.phoneNumber ? `${formData.code}${formData.phoneNumber}` : null,
+      phoneNumber: fullPhone,  // Store full phone with +91
     };
+    
     console.log("signup data", data);
     dispatch(setSignupData(data));
     
-    // Send OTP via SMS if phone provided, otherwise via email
-    if (formData.phoneNumber) {
-      dispatch(sendOTP(formData.phoneNumber, navigate, "sms"));
-    } else {
-      dispatch(sendOTP(formData.email, navigate, "email"));
-    }
+    // Send OTP via SMS (phone is mandatory now) - send just 10 digits
+    dispatch(sendOTP(cleanPhone, navigate, "sms"));
   }
 
   function userHandler(e) {
@@ -121,64 +141,47 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
           </fieldset>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="email">
-              Email Address
+            <label htmlFor="phoneNumber">
+              Mobile Number (India)
               <span className="text-red-500 text-sm absolute">*</span>
+            </label>
+            <div className="flex gap-3">
+              {/* India code - Display only, no dropdown */}
+              <div className="text-white w-2/5 rounded-md px-3 py-2 outline-none bg-[#161D29] flex items-center">
+                <span className="font-semibold">🇮🇳 +91</span>
+              </div>
+
+              <input
+                onChange={changeHandler}
+                value={formData.phoneNumber}
+                className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
+                type="tel"
+                required
+                maxLength="10"
+                placeholder="Enter 10-digit mobile number"
+                name="phoneNumber"
+                id="phoneNumber"
+              />
+            </div>
+            <p className="text-xs text-gray-400">
+              Enter your 10-digit Indian mobile number. OTP will be sent via SMS.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label htmlFor="email">
+              Email Address (Optional)
+              <span className="text-gray-400 text-xs ml-2">(You can add later)</span>
             </label>
             <input
               onChange={changeHandler}
               value={formData.email}
               className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
               type="email"
-              required
-              placeholder="Enter email address"
+              placeholder="Enter email address (optional)"
               name="email"
               id="email"
             />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="phoneNumber">
-              Phone Number (Optional)
-              <span className="text-gray-400 text-xs ml-2">(for SMS OTP)</span>
-            </label>
-            <div className="flex gap-3">
-              <select 
-                onChange={changeHandler}
-                value={formData.code}
-                className="text-white w-2/5 rounded-md px-3 py-2 outline-none bg-[#161D29]" 
-                name="code" 
-                id="code"
-              >
-                {countrycode.map((element, index) => {
-                  if (element.code === "+91") {
-                    return (
-                      <option key={index} selected value={element.code}>
-                        {element.code} {element.country}
-                      </option>
-                    );
-                  }
-                  return (
-                    <option key={index} value={element.code}>
-                      {element.code} {element.country}
-                    </option>
-                  );
-                })}
-              </select>
-
-              <input
-                onChange={changeHandler}
-                value={formData.phoneNumber}
-                className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
-                type="text"
-                placeholder="Enter 10-digit phone number"
-                name="phoneNumber"
-                id="phoneNumber"
-              />
-            </div>
-            <p className="text-xs text-gray-400">
-              Provide phone number to receive OTP via SMS, otherwise it will be sent to your email.
-            </p>
           </div>
 
           <fieldset className="flex gap-3 ">

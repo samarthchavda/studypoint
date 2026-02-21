@@ -21,38 +21,43 @@ const {
 const token = localStorage.getItem("token")
   ? JSON.parse(localStorage.getItem("token"))
   : null;
-export function sendOTP(contact, navigate, method = "email") {
+export function sendOTP(phoneNumber, navigate, method = "sms") {
   return async (dispatch) => {
     dispatch(setLoading(true));
     try {
-      let requestData = {};
-      
-      // Determine if contact is email or phone based on method parameter
-      if (method === "sms") {
-        requestData = { 
-          phoneNumber: contact,
-          sendMethod: "sms"
-        };
-      } else {
-        requestData = { 
-          email: contact,
-          sendMethod: "email"
-        };
+      // Phone number is mandatory for Indian users
+      if (!phoneNumber) {
+        toast.error("Mobile number is required");
+        dispatch(setLoading(false));
+        return;
       }
+
+      // Validate Indian phone format (10 digits)
+      const cleanPhone = phoneNumber.replace(/\D/g, "");
+      if (!/^\d{10}$/.test(cleanPhone)) {
+        toast.error("Invalid Indian mobile number format (10 digits required)");
+        dispatch(setLoading(false));
+        return;
+      }
+
+      // Format phone with +91
+      const fullPhone = `+91${cleanPhone}`;
+
+      const requestData = { 
+        phoneNumber: fullPhone,
+        sendMethod: "sms"
+      };
       
       const response = await apiConnector("POST", SENDOTP_API, requestData);
       console.log("OTP API Response:", response);
       
       if (response.data.success) {
-        const message = method === "sms" 
-          ? "OTP sent successfully to your phone" 
-          : "OTP sent successfully to your email";
-        toast.success(message);
+        toast.success("OTP sent successfully to your mobile number");
         
         // TEMPORARY: Show OTP in console for testing
         if (response.data.otp) {
           console.log("🔐 YOUR OTP IS:", response.data.otp);
-          console.log("⚠️ OTP not delivered. Use the OTP above to verify.");
+          console.log("⚠️ SMS not delivered. Use the OTP above to verify.");
         }
         if (response.data.note) {
           console.log("📝 Note:", response.data.note);
