@@ -18,7 +18,12 @@ const Verify = () => {
     }
   },[]);  
   const resendOTP = () => {
-    sendOTP(signupData.email, dispatch);
+    // Check if phone number exists - if yes, resend via SMS, otherwise email
+    if (signupData?.phoneNumber) {
+      dispatch(sendOTP(signupData.phoneNumber, navigate, "sms"));
+    } else {
+      dispatch(sendOTP(signupData.email, navigate, "email"));
+    }
   };
   const submitHandler = (event) => {
     event.preventDefault();
@@ -35,9 +40,9 @@ const Verify = () => {
       ) : (
         <div className="flex flex-col gap-3">
           <form onSubmit={submitHandler} className="flex flex-col gap-3">
-            <h3 className="text-3xl font-bold">Verify email</h3>
+            <h3 className="text-3xl font-bold">Verify {signupData?.phoneNumber ? "Phone" : "Email"}</h3>
             <p className="text-lg text-[#AFB2BF]">
-              A verification code has been sent to you, enter the code below
+              A verification code has been sent to you {signupData?.phoneNumber ? "via SMS" : "via email"}, enter the code below
             </p>
 
             <OtpInput

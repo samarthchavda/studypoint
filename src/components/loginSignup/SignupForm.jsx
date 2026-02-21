@@ -45,8 +45,12 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
       toast.error("password didn't match");
       return;
     }
-    // setIsLoggedIn(true);
-    // toast.success('Account Created successfully');
+    // Validate phone number format if provided
+    if (formData.phoneNumber && !/^\d{10}$/.test(formData.phoneNumber.replace(/\D/g, ""))) {
+      toast.error("Please enter a valid 10-digit phone number");
+      return;
+    }
+    
     const data = {
       firstName: formData.fName,
       lastName: formData.lName,
@@ -54,10 +58,17 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
       password: formData.password,
       confirmPassword: formData.cpassword,
       accountType: user,
+      phoneNumber: formData.phoneNumber ? `${formData.code}${formData.phoneNumber}` : null,
     };
     console.log("signup data", data);
     dispatch(setSignupData(data));
-    dispatch(sendOTP(formData.email, navigate));
+    
+    // Send OTP via SMS if phone provided, otherwise via email
+    if (formData.phoneNumber) {
+      dispatch(sendOTP(formData.phoneNumber, navigate, "sms"));
+    } else {
+      dispatch(sendOTP(formData.email, navigate, "email"));
+    }
   }
 
   function userHandler(e) {
@@ -126,31 +137,49 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
             />
           </div>
 
-          {/* <div className="flex flex-col gap-1">
-          <label htmlFor="phoneNumber">Phone Number<span className='text-red-500 text-sm absolute'>*</span></label>
-          <div className="flex gap-3">
-            <select className="text-white w-2/5 rounded-md px-3 py-2 outline-none bg-[#161D29]" name="code" id="code">
-                {
-                  countrycode.map((element,index)=>{
-                    if(element.code==='+91') return <option selected value={element.code}>{element.code} {element.country}</option>
-                    return <option value={element.code}>{element.code} {element.country}</option>
-                  })
-                }
-            </select>
-            
-          <input
-            onChange={changeHandler}
-            value={formData.phoneNumber}
-            className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
-            type="text"
-            required
-            placeholder="23671826718"
-            name="phoneNumber"
-            id="phoneNumber"
-          />
+          <div className="flex flex-col gap-1">
+            <label htmlFor="phoneNumber">
+              Phone Number (Optional)
+              <span className="text-gray-400 text-xs ml-2">(for SMS OTP)</span>
+            </label>
+            <div className="flex gap-3">
+              <select 
+                onChange={changeHandler}
+                value={formData.code}
+                className="text-white w-2/5 rounded-md px-3 py-2 outline-none bg-[#161D29]" 
+                name="code" 
+                id="code"
+              >
+                {countrycode.map((element, index) => {
+                  if (element.code === "+91") {
+                    return (
+                      <option key={index} selected value={element.code}>
+                        {element.code} {element.country}
+                      </option>
+                    );
+                  }
+                  return (
+                    <option key={index} value={element.code}>
+                      {element.code} {element.country}
+                    </option>
+                  );
+                })}
+              </select>
+
+              <input
+                onChange={changeHandler}
+                value={formData.phoneNumber}
+                className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
+                type="text"
+                placeholder="Enter 10-digit phone number"
+                name="phoneNumber"
+                id="phoneNumber"
+              />
+            </div>
+            <p className="text-xs text-gray-400">
+              Provide phone number to receive OTP via SMS, otherwise it will be sent to your email.
+            </p>
           </div>
-          
-        </div> */}
 
           <fieldset className="flex gap-3 ">
             <div className="w-1/2">

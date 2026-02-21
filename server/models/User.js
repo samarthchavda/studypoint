@@ -50,6 +50,10 @@ const userSchema=mongoose.Schema({
     },
     tokenExpires:{
         type:Date
+    },
+    phoneNumber:{
+        type:String,
+        trim:true,
     }
 
 });

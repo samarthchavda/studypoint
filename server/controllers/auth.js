@@ -11,62 +11,74 @@ const { passwordUpdated } = require("../mail/templates/passwordUpdate");
 exports.signup=async(req,res)=>{
     
     try {
-       //fetch detailes
+       //fetch details
     const{firstName,lastName,email,password,accountType,
-        confirmPassword,otp}=req.body;
-    //valdation
-        if(!firstName||!lastName||!email||!password||!accountType||!confirmPassword||!otp
-        ){
+        confirmPassword,otp, phoneNumber}=req.body;
+        
+    //validation
+        if(!firstName||!lastName||!email||!password||!accountType||!confirmPassword||!otp){
             return res.status(400).json({
                 success:false,
-                message:"one of the field is empty"
+                message:"One of the required fields is empty"
             })
         }
+        
         const regx=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         if(!regx.test(email)){
             return res.status(400).json({
                 success:false,
-                message:"email is not appropriate"
+                message:"Email is not valid"
             })
         }
+        
         if(password!==confirmPassword){
             return res.status(400).json({
                 success:false,
-                message:"password didn't match"
+                message:"Passwords don't match"
             })
         }
-    //check if user exist
+        
+    //check if user exists
         const checkUser=await User.findOne({email});
         if(checkUser){
              return res.status(400).json({
                  success:false,
-                 message:"the user is already registered"
+                 message:"User is already registered"
             });
         }
         
-    //check for otp
-        const recentOTP=await OTP.find({email}).sort({createdAt:-1}).limit(1);
+    //check for otp - support both email and phone
+        let recentOTP;
+        
+        if(phoneNumber){
+            // Phone-based OTP verification
+            recentOTP = await OTP.find({phoneNumber}).sort({createdAt:-1}).limit(1);
+        } else {
+            // Email-based OTP verification (default)
+            recentOTP = await OTP.find({email}).sort({createdAt:-1}).limit(1);
+        }
 
         if(recentOTP.length == 0) {
             //OTP not found
             return res.status(400).json({
                 success:false,
-                message:'OTP not Found',
+                message:'OTP not found. Please request a new one.',
             });
         }
         else if(recentOTP[0].otp!==otp){
              return res.status(400).json({
                  success:false,
-                 message:"otp is not valid"
+                 message:"OTP is not valid"
             });
         }
+        
     //hash password
     const hashedPassword=await bcrypt.hash(password,10);
 
     //create db entry
     const pd={
         gender:null,
-        phoneNumber:null,
+        phoneNumber:phoneNumber || null,
         about:null,
         dob:null,
         countryCode:null
@@ -80,20 +92,21 @@ exports.signup=async(req,res)=>{
         accountType,
         password:hashedPassword,
         additionalDetails:ProfileDetails._id,
+        phoneNumber: phoneNumber || null,
         image:`https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
     })
 
      return res.status(201).json({
          success:true,
-         message:"USer created successfully",
+         message:"User created successfully",
          user
     });
  
     } catch (error) {
-        console.log("error while signup",error);
+        console.log("Error during signup:",error);
          return res.status(500).json({
              success:false,
-             message:""
+             message:"Error during signup"
         });
     }
 }
@@ -157,29 +170,42 @@ exports.login=async (req,res)=>{
 //send otp
 exports.sendOTP=async (req,res)=>{
     try {
-     //fetch email
-        const{email}=req.body;
-        if(!email){
+     //fetch phone number OR email
+        const{phoneNumber, email, sendMethod = "sms"}=req.body;
+        
+        // Validate input
+        if(!phoneNumber && !email){
              return res.status(400).json({
                  success:false,
-                 message:"email is not provided"
+                 message:"Phone number or email is required"
             });
         }
-    //checkUser
-        const user=await User.find({email:email});
+
+        // If SMS method selected, phone is required
+        if(sendMethod === "sms" && !phoneNumber){
+            return res.status(400).json({
+                success:false,
+                message:"Phone number is required for SMS OTP"
+            });
+        }
+
+    //checkUser - check if already registered
+        let checkQuery = phoneNumber ? {phoneNumber} : {email};
+        const user=await User.find(checkQuery);
         if(user.length>0){
              return res.status(401).json({
                  success:false,
-                 message:"user is already registered"
+                 message:"User is already registered"
             });
         }
+
     //otp create
         let otpp=generate(6,{
             upperCaseAlphabets:false,
             lowerCaseAlphabets:false,
             specialChars:false,
         });
-        console.log("otp in process",otpp);
+        console.log("OTP generated:",otpp);
         
         // Check for unique OTP
         let existingOTP = await OTP.findOne({otp:otpp});
@@ -192,21 +218,23 @@ exports.sendOTP=async (req,res)=>{
             existingOTP = await OTP.findOne({otp:otpp});
         }
         
-    //create dbentry
-        console.log("Creating OTP document for email:", email);
+    //create db entry
+        console.log("Creating OTP document for:", phoneNumber || email);
         const otpDoc=await OTP.create({
-            email:email,
-            otp:otpp
+            email: email || undefined,
+            phoneNumber: phoneNumber || undefined,
+            otp:otpp,
+            sendMethod: sendMethod
         });
+        
         console.log("OTP document created successfully:", otpDoc);
          return res.status(200).json({
              success:true,
-             message:"OTP sent successfully to your email",
-             email: email,
+             message:`OTP sent successfully via ${sendMethod === "sms" ? "SMS" : "Email"}`,
+             contact: phoneNumber || email,
+             sendMethod: sendMethod,
              // TEMPORARY: Show OTP in response for testing (REMOVE IN PRODUCTION!)
              otp: process.env.NODE_ENV === 'production' ? undefined : otpp,
-             // For production, check Render logs to see OTP
-             note: process.env.NODE_ENV === 'production' ? "Check Render logs for OTP" : "OTP shown for development only"
         });
     } catch (error) {
         console.log('Error while generating/sending OTP:', error);

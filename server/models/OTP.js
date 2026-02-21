@@ -1,15 +1,23 @@
 const mongoose = require("mongoose");
 const mailSender = require("../utils/mailSender");
+const smsSender = require("../utils/smsSender");
 const emailVerificationTemplate = require("../mail/templates/emailVerificationTemplate");
 
 const OTPSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
+  },
+  phoneNumber: {
+    type: String,
   },
   otp: {
     type: String,
     required: true,
+  },
+  sendMethod: {
+    type: String,
+    enum: ["email", "sms"],
+    default: "email",
   },
   createdAt: {
     type: Date,
@@ -51,13 +59,50 @@ async function sendVerificationEmail(email, otp) {
   }
 }
 
-// Define a post-save hook to send email after the document has been saved
+// Define a function to send SMS
+async function sendVerificationSMS(phoneNumber, otp) {
+  try {
+    if (!phoneNumber) {
+      console.log("sendVerificationSMS: No phone number provided");
+      return;
+    }
+
+    console.log(`Attempting to send OTP ${otp} to phone: ${phoneNumber}`);
+    
+    const smsResponse = await smsSender(phoneNumber, otp);
+    
+    console.log("SMS response: ", smsResponse);
+    
+    if (!smsResponse || !smsResponse.success) {
+      console.log("Warning: SMS sending failed but OTP will still be saved");
+      console.log("SMS response:", smsResponse);
+    } else {
+      console.log("✅ OTP SMS sent successfully to:", phoneNumber);
+    }
+  } catch (error) {
+    console.log("Error occurred while sending SMS: ", error);
+    console.error("SMS error details:", error.message);
+    // Don't throw - let OTP still be saved even if SMS fails
+    console.log("Continuing despite SMS error...");
+  }
+}
+
+// Define a post-save hook to send email/SMS after the document has been saved
 OTPSchema.pre("save", async function (next) {
   console.log("New OTP document saved to database");
 
-  // Only send an email when a new document is created
+  // Only send verification when a new document is created
   if (this.isNew) {
-    await sendVerificationEmail(this.email, this.otp);
+    // Send SMS if phone number is provided
+    if (this.phoneNumber && this.sendMethod === "sms") {
+      console.log("Sending OTP via SMS to:", this.phoneNumber);
+      await sendVerificationSMS(this.phoneNumber, this.otp);
+    }
+    // Send Email if email is provided (default)
+    else if (this.email) {
+      console.log("Sending OTP via Email to:", this.email);
+      await sendVerificationEmail(this.email, this.otp);
+    }
   }
   next();
 });

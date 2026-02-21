@@ -21,20 +21,38 @@ const {
 const token = localStorage.getItem("token")
   ? JSON.parse(localStorage.getItem("token"))
   : null;
-export function sendOTP(email, navigate) {
+export function sendOTP(contact, navigate, method = "email") {
   return async (dispatch) => {
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("POST", SENDOTP_API, { email });
+      let requestData = {};
+      
+      // Determine if contact is email or phone based on method parameter
+      if (method === "sms") {
+        requestData = { 
+          phoneNumber: contact,
+          sendMethod: "sms"
+        };
+      } else {
+        requestData = { 
+          email: contact,
+          sendMethod: "email"
+        };
+      }
+      
+      const response = await apiConnector("POST", SENDOTP_API, requestData);
       console.log("OTP API Response:", response);
       
       if (response.data.success) {
-        toast.success("OTP sent successfully to your email");
+        const message = method === "sms" 
+          ? "OTP sent successfully to your phone" 
+          : "OTP sent successfully to your email";
+        toast.success(message);
         
         // TEMPORARY: Show OTP in console for testing
         if (response.data.otp) {
           console.log("🔐 YOUR OTP IS:", response.data.otp);
-          console.log("⚠️ Email not delivered. Use the OTP above to verify.");
+          console.log("⚠️ OTP not delivered. Use the OTP above to verify.");
         }
         if (response.data.note) {
           console.log("📝 Note:", response.data.note);
