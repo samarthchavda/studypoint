@@ -268,35 +268,26 @@ exports.sendOTP=async (req,res)=>{
         
         // For development/testing: Always return success even if SMS fails
         // This allows testing with Twilio trial accounts
-        const isDevelopment = process.env.NODE_ENV !== 'production';
+        const isDevelopment = process.env.NODE_ENV !== 'production' || process.env.SHOW_OTP_IN_RESPONSE === 'true';
         
-        if (!smsResult.success && !isDevelopment) {
-            return res.status(500).json({
-                success: false,
-                message: 'Failed to send OTP SMS.',
-                error: smsResult.message || 'Unknown SMS error',
-            });
-        }
-
-        // Log OTP for development
-        if (isDevelopment) {
-            console.log('\n🔑 ========================================');
-            console.log('🔑 DEVELOPMENT MODE - OTP FOR TESTING');
-            console.log('🔑 Phone:', phoneNumber);
-            console.log('🔑 OTP:', otpp);
-            console.log('🔑 ========================================\n');
-        }
+        // Always log OTP to console for debugging
+        console.log('\n🔑 ========================================');
+        console.log('🔑 OTP FOR TESTING');
+        console.log('🔑 Phone:', phoneNumber);
+        console.log('🔑 OTP:', otpp);
+        console.log('🔑 SMS Status:', smsResult.success ? 'Sent' : 'Failed');
+        console.log('🔑 ========================================\n');
 
         return res.status(200).json({
             success: true,
             message: smsResult.success 
                 ? "OTP sent successfully via SMS" 
-                : "OTP generated (SMS failed - check console for OTP)",
+                : "OTP generated (SMS failed - check response for OTP)",
             contact: phoneNumber,
             sendMethod: "sms",
             smsDelivered: smsResult.success,
-            // Show OTP in response for development/testing
-            otp: isDevelopment ? otpp : undefined,
+            // Always show OTP in response for testing (Twilio trial mode)
+            otp: otpp,
         });
     } catch (error) {
         console.log('Error while generating/sending OTP:', error);
