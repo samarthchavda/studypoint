@@ -23,6 +23,7 @@ import useOnClickOutside from "../../hooks/useOnClickOutside";
 import { defaultCategories } from "../../data/catalog-data";
 const NavBar = () => {
   const boxRef = useRef(null);
+  const mobileBoxRef = useRef(null);
   const modalRef = useRef(null);
   const [categories, setCategories] = useState(defaultCategories); // Use default categories
   const [logutModal, setLogoutModal] = useState(false);
@@ -50,7 +51,8 @@ const NavBar = () => {
   const token = useSelector((state) => state.auth.token);
   const totalItems = useSelector((state) => state.cart.totalItems);
   
-  const showBox = () => {
+  const showBox = (e) => {
+    e.stopPropagation();
     if (boxRef.current.classList.contains("invisible")) {
       boxRef.current.classList.remove("invisible");
       boxRef.current.classList.remove("opacity-0");
@@ -61,6 +63,21 @@ const NavBar = () => {
       boxRef.current.classList.add("opacity-0");
       boxRef.current.classList.remove("visible");
       boxRef.current.classList.remove("opacity-100");
+    }
+  };
+
+  const showMobileBox = (e) => {
+    e.stopPropagation();
+    if (mobileBoxRef.current.classList.contains("invisible")) {
+      mobileBoxRef.current.classList.remove("invisible");
+      mobileBoxRef.current.classList.remove("opacity-0");
+      mobileBoxRef.current.classList.add("visible");
+      mobileBoxRef.current.classList.add("opacity-100");
+    } else {
+      mobileBoxRef.current.classList.add("invisible");
+      mobileBoxRef.current.classList.add("opacity-0");
+      mobileBoxRef.current.classList.remove("visible");
+      mobileBoxRef.current.classList.remove("opacity-100");
     }
   };
 
@@ -85,6 +102,15 @@ const NavBar = () => {
       boxRef.current.classList.add("opacity-0");
       boxRef.current.classList.remove("visible");
       boxRef.current.classList.remove("opacity-100");
+    }
+  });
+
+  useOnClickOutside(mobileBoxRef, () => {
+    if (mobileBoxRef.current && mobileBoxRef.current.classList.contains("visible")) {
+      mobileBoxRef.current.classList.add("invisible");
+      mobileBoxRef.current.classList.add("opacity-0");
+      mobileBoxRef.current.classList.remove("visible");
+      mobileBoxRef.current.classList.remove("opacity-100");
     }
   });
 
@@ -210,7 +236,8 @@ const NavBar = () => {
                   className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible opacity-0 transition-all duration-200 text-richblack-200 absolute bg-richblack-700 px-3 py-2 min-w-[120px]"
                 >
                   <div
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setLogoutModal(true);
                     }}
                     className="flex border-b-[1px] pb-1 border-richblack-200/50 gap-1 cursor-pointer items-center hover:text-white"
@@ -314,7 +341,7 @@ const NavBar = () => {
                 )}
               </Link>
             ) : null}
-            <div className="relative " onClick={showBox}>
+            <div className="relative " onClick={showMobileBox}>
               <div
                 className="text-white cursor-pointer rounded-full h-8 w-8 "
                 style={{
@@ -323,11 +350,12 @@ const NavBar = () => {
                 }}
               ></div>
               <div
-                ref={boxRef}
+                ref={mobileBoxRef}
                 className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible opacity-0 transition-all duration-200 text-richblack-200 absolute bg-richblack-700 px-3 py-2 min-w-[120px]"
               >
                 <div
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setLogoutModal(true);
                   }}
                   className="flex border-b-[1px] pb-1 border-richblack-200/50 gap-1 cursor-pointer items-center hover:text-white"
