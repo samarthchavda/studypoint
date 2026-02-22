@@ -49,13 +49,18 @@ const NavBar = () => {
   }, []);
   const token = useSelector((state) => state.auth.token);
   const totalItems = useSelector((state) => state.cart.totalItems);
+  
   const showBox = () => {
     if (boxRef.current.classList.contains("invisible")) {
       boxRef.current.classList.remove("invisible");
+      boxRef.current.classList.remove("opacity-0");
       boxRef.current.classList.add("visible");
+      boxRef.current.classList.add("opacity-100");
     } else {
       boxRef.current.classList.add("invisible");
+      boxRef.current.classList.add("opacity-0");
       boxRef.current.classList.remove("visible");
+      boxRef.current.classList.remove("opacity-100");
     }
   };
 
@@ -65,13 +70,23 @@ const NavBar = () => {
       catalogRef.current.classList.remove('opacity-0');
       catalogRef.current.classList.add('visible');
       catalogRef.current.classList.add('opacity-100');
-    }else{ catalogRef.current.classList.add('invisible');
+    }else{ 
+      catalogRef.current.classList.add('invisible');
       catalogRef.current.classList.add('opacity-0');
       catalogRef.current.classList.remove('visible');
       catalogRef.current.classList.remove('opacity-100');
-
     }
   }
+  
+  // Close profile dropdown when clicking outside
+  useOnClickOutside(boxRef, () => {
+    if (boxRef.current && boxRef.current.classList.contains("visible")) {
+      boxRef.current.classList.add("invisible");
+      boxRef.current.classList.add("opacity-0");
+      boxRef.current.classList.remove("visible");
+      boxRef.current.classList.remove("opacity-100");
+    }
+  });
 
   const logoutHandler = (e) => {
     setLogoutModal(false);
@@ -192,21 +207,20 @@ const NavBar = () => {
                 ></div>
                 <div
                   ref={boxRef}
-                  className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible  text-richblack-200 absolute bg-richblack-700 px-3 py-2 "
+                  className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible opacity-0 transition-all duration-200 text-richblack-200 absolute bg-richblack-700 px-3 py-2 min-w-[120px]"
                 >
-                  {/* <div className=" h-10m w-10 top-0 left-0 rotate-45 bg-richblack-200"></div> */}
                   <div
                     onClick={() => {
                       setLogoutModal(true);
                     }}
-                    className="flex border-b-[1px] pb-1 border-richblack-200/50  gap-1 cursor-pointer items-center"
+                    className="flex border-b-[1px] pb-1 border-richblack-200/50 gap-1 cursor-pointer items-center hover:text-white"
                   >
                     <MdLogout />
                     Logout
                   </div>
                   <Link
                     to={"/dashboard"}
-                    className="flex gap-1 cursor-pointer items-center"
+                    className="flex gap-1 cursor-pointer items-center hover:text-white"
                   >
                     <RiDashboard2Line />
                     Dashboard
@@ -310,20 +324,20 @@ const NavBar = () => {
               ></div>
               <div
                 ref={boxRef}
-                className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible  text-richblack-200 absolute bg-richblack-700 px-3 py-2 "
+                className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible opacity-0 transition-all duration-200 text-richblack-200 absolute bg-richblack-700 px-3 py-2 min-w-[120px]"
               >
                 <div
                   onClick={() => {
                     setLogoutModal(true);
                   }}
-                  className="flex border-b-[1px] pb-1 border-richblack-200/50  gap-1 cursor-pointer items-center"
+                  className="flex border-b-[1px] pb-1 border-richblack-200/50 gap-1 cursor-pointer items-center hover:text-white"
                 >
                   <MdLogout />
                   Logout
                 </div>
                 <Link
                   to={"/dashboard"}
-                  className="flex gap-1 cursor-pointer items-center"
+                  className="flex gap-1 cursor-pointer items-center hover:text-white"
                 >
                   <RiDashboard2Line />
                   Dashboard
