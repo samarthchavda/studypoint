@@ -1,43 +1,62 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-exports.conncetToDatabase = () => {
+let isConnected = false;
+
+exports.conncetToDatabase = async () => {
   const mongoURI = process.env.MONGODB_URL;
   
   if (!mongoURI) {
     console.error("❌ MongoDB URI is not defined!");
-    console.log("⚠️ Serverless function will continue without database");
-    return; // Don't exit - serverless functions should handle gracefully
+    throw new Error("MongoDB URI is required");
   }
 
-  mongoose
-    .connect(mongoURI, {
-      serverSelectionTimeoutMS: 30000, // Increased timeout for better connection
+  // If already connected, return
+  if (isConnected && mongoose.connection.readyState === 1) {
+    console.log("✅ Using existing database connection");
+    return;
+  }
+
+  try {
+    await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 30000,
       socketTimeoutMS: 45000,
-      tls: true, // Enable TLS
-      tlsAllowInvalidCertificates: false, // Set to true only if you have certificate issues
-    })
-    .then(() => {
-      console.log("✅ Database connected successfully");
-      console.log(`📊 Connected to: ${mongoURI.split('@')[1] || 'MongoDB'}`);
-    })
-    .catch((error) => {
-      console.error("❌ Database connection failed");
-      console.error(error.message);
-      console.log("⚠️ Server will continue without database connection");
-      // Don't exit - let the serverless function continue
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      tls: true,
+      tlsAllowInvalidCertificates: false,
     });
+    
+    isConnected = true;
+    console.log("✅ Database connected successfully");
+    console.log(`📊 Connected to: ${mongoURI.split('@')[1] || 'MongoDB'}`);
+  } catch (error) {
+    console.error("❌ Database connection failed");
+    console.error(error.message);
+    isConnected = false;
+    throw error;
+  }
 
   // Handle connection events
   mongoose.connection.on('connected', () => {
     console.log('✅ Mongoose connected to DB');
+    isConnected = true;
   });
 
   mongoose.connection.on('error', (err) => {
     console.error('❌ Mongoose connection error:', err.message);
+    isConnected = false;
   });
 
   mongoose.connection.on('disconnected', () => {
     console.log('⚠️ Mongoose disconnected from DB');
+    isConnected = false;
   });
+};
+
+// Export connection status checker
+exports.ensureConnection = async () => {
+  if (!isConnected || mongoose.connection.readyState !== 1) {
+    await exports.conncetToDatabase();
+  }
 };

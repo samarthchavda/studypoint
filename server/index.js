@@ -28,8 +28,10 @@ process.on('unhandledRejection', (reason, promise) => {
   console.log('Server will continue running...');
 });
 
-// Database connection
-database.conncetToDatabase();
+// Database connection - Initialize immediately
+database.conncetToDatabase().catch(err => {
+  console.error('Failed to connect to database on startup:', err);
+});
 
 // Middlewares
 app.use(express.json());
@@ -69,6 +71,20 @@ app.use(
 
 // Cloudinary connection
 cloudinaryConnect();
+
+// Database connection middleware - ensure connection before each request
+app.use(async (req, res, next) => {
+  try {
+    await database.ensureConnection();
+    next();
+  } catch (error) {
+    console.error('Database connection error in middleware:', error);
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection unavailable. Please try again.',
+    });
+  }
+});
 
 // Routes
 app.use("/api/v1/auth", userRoutes);

@@ -139,57 +139,79 @@ exports.signup=async(req,res)=>{
 //login
 exports.login=async (req,res)=>{
     try {
-    //fetch data
-    const {email,password}=req.body;
+    //fetch data - support both email and phone login
+    const {email, phoneNumber, password}=req.body;
+    
     //validation
-    if(!email||!password){
+    if((!email && !phoneNumber) || !password){
          return res.status(400).json({
              success:false,
-             message:"email or password is missing"
+             message:"Email/Phone number and password are required"
         });
     }
-    //check if user exist
-    const checkUser=await User.findOne({email});
+    
+    //check if user exist - search by email or phone
+    let checkUser;
+    if(email){
+        checkUser = await User.findOne({email}).populate('additionalDetails');
+    } else if(phoneNumber){
+        checkUser = await User.findOne({phoneNumber}).populate('additionalDetails');
+    }
+    
     if(!checkUser){
          return res.status(404).json({
              success:false,
-             message:"user is not registered"
+             message:"User is not registered. Please signup first."
         });
     }
+    
     //password match
     const passMatch=await bcrypt.compare(password,checkUser.password);
     if(!passMatch){
          return res.status(400).json({
              success:false,
-             message:"password not matched"
+             message:"Incorrect password"
         });
     }
+    
     //create token
-    checkUser.password=undefined;
+    const userEmail = checkUser.email || `user_${checkUser._id}`;
     const jwtPayload={
-        email,
+        email: userEmail,
         id:checkUser._id,
         accountType:checkUser.accountType
     }
+    
     const token=jwt.sign(jwtPayload,process.env.JWT_SECRET,{
         expiresIn:"30d"
     })
-    checkUser.token=token;
+    
+    //remove password from response
+    const userResponse = checkUser.toObject();
+    delete userResponse.password;
+    userResponse.token = token;
+    
     //send cookie and token
     return res.cookie('token',token,{
-        expires:new Date(Date.now()+3*24*60*60*1000),
-        httpOnly:true
+        expires:new Date(Date.now()+30*24*60*60*1000),
+        httpOnly:true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }).json({
         success:true,
         token,
-        user:checkUser,
-        message:"user logged in successfully"
+        user:userResponse,
+        message:"Login successful"
     })  
     } catch (error) {
-        console.log("error while login",error);
+        console.error("❌ Login Error Details:", error);
+        console.error("Error name:", error.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
          return res.status(500).json({
              success:false,
-             message:"error while login"
+             message:"Login failed. Please try again.",
+             error: process.env.NODE_ENV === 'production' ? undefined : error.message
         });
     }
 }  
