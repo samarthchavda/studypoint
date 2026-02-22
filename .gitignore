@@ -32,3 +32,7 @@ yarn-error.log*
 .env.production.local
 .vercel
 .env*.local
+
+
+# Backend demo code (for study only - not for production)
+BACKEND_DEMO_CODE.js
