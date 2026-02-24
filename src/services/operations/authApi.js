@@ -125,19 +125,20 @@ export function login(email, password, navigate) {
       if (response.data.success) {
         const user = response.data.user;
         const image = user.image.split(" ").join("?");
-        // console.log(image);
         const userData = {
           ...user,
           image,
         };
         localStorage.setItem("user", JSON.stringify(userData));
-        // dispatch user
         dispatch(setUser(userData));
-        // dispatch token into store (also saves to localStorage)
         dispatch(setToken(response.data.token));
         toast.success("login successfull");
-        // Redirect to home page after successful login
-        navigate("/");
+        // Redirect admin to admin dashboard, others to home
+        if (userData.accountType === "Admin") {
+          navigate("/dashboard/admin");
+        } else {
+          navigate("/");
+        }
       } else {
         throw new Error(response.data.message);
       }

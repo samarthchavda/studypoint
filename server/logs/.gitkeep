@@ -1,0 +1,2 @@
+(count, setcount ) = usesatate(0);
+setcount = (count+1)

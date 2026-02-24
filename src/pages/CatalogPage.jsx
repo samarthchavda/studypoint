@@ -14,6 +14,7 @@ import SliderCourses from "../components/catalog/SliderCourses";
 import GridCourses from "../components/catalog/GridCourses";
 import Footer from "../components/comman/Footer";
 import { defaultCategories, getCoursesByCategory, getCategoryByName } from "../data/catalog-data";
+import { realCourses, getCoursesByCategory as getRealCoursesByCategory } from "../data/courses-data";
 
 const CatalogPage = () => {
   const [courses, setCourses] = useState({ categoryCourses: [], topSellingCourses: [], diffCategoryCourses: [] });
@@ -59,35 +60,46 @@ const CatalogPage = () => {
     setCategoryObj(newCategoryObject);
     
     const fetchCourses = async () => {
-      // Always use default courses as primary data source
-      const defaultCoursesForCategory = getCoursesByCategory(catalogName);
-      
-      if (defaultCoursesForCategory.length > 0) {
-        // Use default courses
-        setCourses({
-          categoryCourses: defaultCoursesForCategory,
-          topSellingCourses: defaultCoursesForCategory.slice(0, Math.min(2, defaultCoursesForCategory.length)),
-          diffCategoryCourses: defaultCoursesForCategory
-        });
-        setLoading(false);
-      } else if (newCategoryObject) {
-        // Try to fetch from API only if no default courses
+      // Try to fetch from API first (real database courses)
+      if (newCategoryObject && newCategoryObject._id) {
         try {
           const payload = { categoryId: newCategoryObject._id };
           await getCategoryCourses(payload, setCourses);
           setLoading(false);
+          return; // Exit if API fetch successful
         } catch (error) {
-          console.log("No courses available for this category");
+          console.log("API fetch failed, trying default courses:", error);
+        }
+      }
+      
+      // Fallback to real courses from JSON export if API fails
+      const realCoursesForCategory = getRealCoursesByCategory(catalogName);
+      
+      if (realCoursesForCategory.length > 0) {
+        console.log(`Using real courses data for ${catalogName}:`, realCoursesForCategory.length);
+        setCourses({
+          categoryCourses: realCoursesForCategory,
+          topSellingCourses: realCoursesForCategory.slice(0, Math.min(2, realCoursesForCategory.length)),
+          diffCategoryCourses: realCoursesForCategory
+        });
+      } else {
+        // Final fallback to old default courses
+        const defaultCoursesForCategory = getCoursesByCategory(catalogName);
+        if (defaultCoursesForCategory.length > 0) {
+          setCourses({
+            categoryCourses: defaultCoursesForCategory,
+            topSellingCourses: defaultCoursesForCategory.slice(0, Math.min(2, defaultCoursesForCategory.length)),
+            diffCategoryCourses: defaultCoursesForCategory
+          });
+        } else {
           setCourses({
             categoryCourses: [],
             topSellingCourses: [],
             diffCategoryCourses: []
           });
-          setLoading(false);
         }
-      } else {
-        setLoading(false);
       }
+      setLoading(false);
     };
     fetchCourses();
   }, [params, categories]);
