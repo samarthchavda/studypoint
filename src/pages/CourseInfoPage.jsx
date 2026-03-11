@@ -17,6 +17,49 @@ import { useNavigate } from "react-router-dom";
 import ReviewSlider from "../components/comman/ReviewSlider";
 import { getCourseReviews } from "../services/operations/courseApi";
 import { defaultCourses } from "../data/catalog-data";
+import { realCourses } from "../data/courses-data";
+
+const normalizeCourse = (course, fallbackCategory) => {
+  if (!course) {
+    return null;
+  }
+
+  const parsedPrice = Number(course.price);
+  const normalizedPrice = Number.isFinite(parsedPrice) ? parsedPrice : null;
+
+  return {
+    ...course,
+    name: course.name || course.courseName,
+    courseName: course.courseName || course.name,
+    description: course.description || course.courseDescription,
+    courseDescription: course.courseDescription || course.description,
+    whatYouWillLearn: course.whatYouWillLearn || "",
+    instructions: Array.isArray(course.instructions) ? course.instructions : [],
+    price: normalizedPrice,
+    courseContent: Array.isArray(course.courseContent) ? course.courseContent : [],
+    category: course.category || (fallbackCategory ? { name: fallbackCategory } : null),
+    studentsEnrolled: Array.isArray(course.studentsEnrolled) ? course.studentsEnrolled : [],
+    ratingAndReviews: Array.isArray(course.ratingAndReviews) ? course.ratingAndReviews : [],
+  };
+};
+
+const findFallbackCourseById = (courseId) => {
+  const realCourse = realCourses.find((item) => item._id === courseId);
+  if (realCourse) {
+    return normalizeCourse(realCourse);
+  }
+
+  for (const category in defaultCourses) {
+    const courses = defaultCourses[category];
+    const foundCourse = courses.find((item) => item._id === courseId);
+    if (foundCourse) {
+      return normalizeCourse(foundCourse, category);
+    }
+  }
+
+  return null;
+};
+
 const CourseInfoPage = () => {
   const [course, setCourse] = useState(null);
   const [reviews, setReviews] = useState(null);
@@ -31,21 +74,15 @@ const CourseInfoPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const findCourseInDefaultData = () => {
-      // Search through all categories for the course
-      for (const category in defaultCourses) {
-        const courses = defaultCourses[category];
-        const foundCourse = courses.find(c => c._id === courseId);
-        if (foundCourse) {
-          setCourse({
-            ...foundCourse,
-            courseContent: [], // Empty sections for default data
-            category: { name: category }
-          });
-          return;
-        }
+    const setFallbackCourse = () => {
+      const fallbackCourse = findFallbackCourseById(courseId);
+      if (fallbackCourse) {
+        setCourse(fallbackCourse);
+        return;
       }
-      console.error("Course not found in default data");
+
+      console.error("Course not found in fallback data");
+      setCourse(null);
     };
     
     const fetchCourseDetails = async () => {
@@ -53,14 +90,13 @@ const CourseInfoPage = () => {
         const response = await getFullCourseDetails({ courseId }, dispatch);
         console.log("Course Details Response:", response);
         if (response) {
-          setCourse(response);
+          setCourse(normalizeCourse(response));
         } else {
-          // Try to find course in default data
-          findCourseInDefaultData();
+          setFallbackCourse();
         }
       } catch (error) {
         console.log("Using default course data due to API error");
-        findCourseInDefaultData();
+        setFallbackCourse();
       }
     };
     
@@ -128,10 +164,16 @@ const CourseInfoPage = () => {
   };
 
   const isStudentEnrolled = () => {
-    return course?.studentsEnrolled?.some((student) => student === user?._id);
+    return course?.studentsEnrolled?.some((student) => {
+      if (typeof student === "string") {
+        return student === user?._id;
+      }
+
+      return student?._id === user?._id;
+    });
   };
 
-  const isFree = course?.price === 0 || course?.price === null || course?.price === undefined;
+  const isFree = Number(course?.price) === 0;
 
   return (
     <div>
@@ -144,7 +186,7 @@ const CourseInfoPage = () => {
 
           {/* courseInfo section */}
           <div className="w-full flex flex-col gap-10 pb-20">
-            <div className="w-full bg-richblack-800">
+            <div className="w-full bg-gradient-to-r from-primary-50 to-secondary-50 border-b border-neutral-200">
               <div className="max-w-maxContent w-11/12 py-8 mx-auto">
                 <div className="flex md:flex-row flex-col gap-6 relative">
                   <div className="md:w-[calc(100%-400px)] w-full md:pr-6">
@@ -171,15 +213,15 @@ const CourseInfoPage = () => {
             <div className="w-full">
               <div className="max-w-maxContent w-11/12 flex flex-col gap-5 mx-auto ">
                 {/* what you'll learn*/}
-                <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-richblack-700 border-[1px] bg-richblack-800">
-                  <p className="text-3xl text-richblack-5 font-semibold">
+                <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-neutral-200 border-[1px] bg-white rounded-xl shadow-sm">
+                  <p className="text-3xl text-neutral-800 font-semibold">
                     What you'll learn
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
                     {course?.whatYouWillLearn?.split(',').map((item, index) => (
                       <div key={index} className="flex items-start gap-2">
-                        <span className="text-caribbeangreen-200 text-xl mt-1">✓</span>
-                        <p className="text-richblack-50 text-sm">{item.trim()}</p>
+                        <span className="text-success-500 text-xl mt-1">✓</span>
+                        <p className="text-neutral-700 text-sm">{item.trim()}</p>
                       </div>
                     ))}
                   </div>
@@ -187,13 +229,13 @@ const CourseInfoPage = () => {
 
                 {/* Requirements Section */}
                 {course?.instructions && course.instructions.length > 0 && (
-                  <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-richblack-700 border-[1px]">
-                    <p className="text-2xl text-richblack-5 font-semibold">
+                  <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-neutral-200 border-[1px] bg-white rounded-xl shadow-sm">
+                    <p className="text-2xl text-neutral-800 font-semibold">
                       Requirements
                     </p>
                     <ul className="list-disc list-inside space-y-2">
                       {course.instructions.map((instruction, index) => (
-                        <li key={index} className="text-richblack-50 text-sm">
+                        <li key={index} className="text-neutral-700 text-sm">
                           {instruction}
                         </li>
                       ))}
@@ -203,11 +245,11 @@ const CourseInfoPage = () => {
 
                 {/* Course Description */}
                 {course?.description && (
-                  <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-richblack-700 border-[1px]">
-                    <p className="text-2xl text-richblack-5 font-semibold">
+                  <div className="md:w-[calc(100%-400px)] w-full p-8 flex flex-col gap-4 border-neutral-200 border-[1px] bg-white rounded-xl shadow-sm">
+                    <p className="text-2xl text-neutral-800 font-semibold">
                       Description
                     </p>
-                    <p className="text-richblack-50 text-sm leading-relaxed">
+                    <p className="text-neutral-700 text-sm leading-relaxed">
                       {course.description}
                     </p>
                   </div>
@@ -222,13 +264,13 @@ const CourseInfoPage = () => {
                 </div>
 
                 {/*author section*/}
-                <div className="md:w-[calc(100%-400px)] w-full flex flex-col gap-4 p-8 border-richblack-700 border-[1px]">
-                  <h4 className="font-semibold text-2xl text-richblack-5">
+                <div className="md:w-[calc(100%-400px)] w-full flex flex-col gap-4 p-8 border-neutral-200 border-[1px] bg-white rounded-xl shadow-sm">
+                  <h4 className="font-semibold text-2xl text-neutral-800">
                     Instructor
                   </h4>
                   <div className="flex gap-4 items-start">
                     <img
-                      className="rounded-full h-[72px] w-[72px] object-cover bg-richblack-700"
+                      className="rounded-full h-[72px] w-[72px] object-cover bg-neutral-100 border-2 border-primary-200"
                       src={course?.instructor?.image || "https://api.dicebear.com/5.x/initials/svg?seed=" + course?.instructor?.firstName}
                       alt={`${course?.instructor?.firstName} ${course?.instructor?.lastName}`}
                       onError={(e) => {
@@ -236,24 +278,24 @@ const CourseInfoPage = () => {
                       }}
                     />
                     <div className="flex-1">
-                      <p className="text-richblack-5 font-semibold text-lg mb-1">
+                      <p className="text-neutral-800 font-semibold text-lg mb-1">
                         {course?.instructor?.firstName}{" "}
                         {course?.instructor?.lastName}
                       </p>
-                      <p className="text-richblack-300 text-sm mb-2">
+                      <p className="text-neutral-600 text-sm mb-2">
                         {course?.instructor?.accountType || "Instructor"} {course?.instructor?.email && `• ${course?.instructor?.email}`}
                       </p>
                       {course?.instructor?.additionalDetails?.about && (
-                        <p className="text-richblack-50 text-sm leading-relaxed">
+                        <p className="text-neutral-700 text-sm leading-relaxed">
                           {course?.instructor?.additionalDetails?.about}
                         </p>
                       )}
                       {!course?.instructor?.additionalDetails?.about && (
-                        <p className="text-richblack-50 text-sm leading-relaxed">
+                        <p className="text-neutral-700 text-sm leading-relaxed">
                           Experienced instructor passionate about teaching and helping students achieve their learning goals.
                         </p>
                       )}
-                      <div className="flex gap-4 mt-3 text-sm text-richblack-300">
+                      <div className="flex gap-4 mt-3 text-sm text-neutral-600">
                         <span>📚 {course?.instructor?.courses?.length || 0} Courses</span>
                         <span>⭐ 4.5 Average Rating</span>
                       </div>

@@ -18,9 +18,7 @@ const {
   RESETPASSWORD_API,
   CHANGEPASSWORDAPI,
 } = auth;
-const token = localStorage.getItem("token")
-  ? JSON.parse(localStorage.getItem("token"))
-  : null;
+const token = localStorage.getItem("token");
 export function sendOTP(phoneNumber, navigate, method = "sms") {
   return async (dispatch) => {
     dispatch(setLoading(true));
@@ -144,7 +142,9 @@ export function login(email, password, navigate) {
       }
     } catch (error) {
       console.log("error in login operation", error);
-      toast.error("failed to login");
+      const message =
+        error.response?.data?.message || error.message || "Failed to login";
+      toast.error(message);
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);

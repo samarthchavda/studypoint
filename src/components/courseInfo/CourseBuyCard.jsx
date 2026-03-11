@@ -23,6 +23,8 @@ const CourseBuyCard = ({
   const items=useSelector((state)=>state.cart.items);
   const dispatch=useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const numericPrice = Number(price);
+  const hasValidPrice = Number.isFinite(numericPrice) && numericPrice >= 0;
   
   const removeFromCart=(_id)=>{
     dispatch(removeItem({_id}));
@@ -61,23 +63,25 @@ const CourseBuyCard = ({
   }
   return (
     <>
-      <div className="bg-richblack-700 rounded-lg shadow-lg md:sticky md:top-4">
+      <div className="bg-white border border-neutral-200 rounded-xl shadow-lg md:sticky md:top-4">
         <div className="mx-auto w-full">
           <img 
             src={thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=250&fit=crop"} 
-            className="max-h-[230px] w-full object-cover rounded-t-lg" 
+            className="max-h-[230px] w-full object-cover rounded-t-xl" 
             alt="thumbnail of course"
             onError={(e) => {
-              e.target.src = "https://via.placeholder.com/400x250/1F2937/FFFFFF?text=Course+Thumbnail";
+              e.target.src = "https://via.placeholder.com/400x250/0EA5E9/FFFFFF?text=Course+Thumbnail";
             }}
           />
         </div>
         <div className="p-6 gap-3 flex flex-col">
-          <p className="text-3xl font-bold text-center md:text-start text-richblack-5">
-            {isFree || price === undefined || price === null ? (
-              <span className="text-caribbeangreen-200">FREE</span>
+          <p className="text-3xl font-bold text-center md:text-start text-neutral-800">
+            {isFree ? (
+              <span className="text-success-600">FREE</span>
+            ) : hasValidPrice ? (
+              `Rs. ${numericPrice}`
             ) : (
-              `Rs. ${price}`
+              <span className="text-neutral-500">Price unavailable</span>
             )}
           </p>
           {isBought ? (
@@ -94,27 +98,27 @@ const CourseBuyCard = ({
                       <YellowBtn widthFull={true} text="Remove from Wishlist" clickHandler={()=>removeFromCart(course?._id)} />
                       : <YellowBtn widthFull={true} text="Add to Wishlist" clickHandler={handleAddToCart} />
                     }
-                    <YellowBtn textColour={'#F1F2FF'} widthFull={true} text="Buy Now" bgColour={'#161D29'} clickHandler={handleBuyNowClick} />
+                    <YellowBtn textColour={'#FFFFFF'} widthFull={true} text="Buy Now" bgColour={'#0EA5E9'} clickHandler={handleBuyNowClick} />
                   </>
                 )}
               </div>
             </div>
           )}
-          {!isFree && <p className="text-richblack-25 text-sm text-center ">30-Day Money-Back Guarantee</p>}
+          {!isFree && <p className="text-neutral-600 text-sm text-center font-medium">30-Day Money-Back Guarantee</p>}
           <ul className="flex items-center md:items-start flex-col">
-            <p className="text-richblack-5 font-medium">This course includes:</p>
+            <p className="text-neutral-800 font-semibold mb-2">This course includes:</p>
             {
-                instructions?.map((item)=><li className="text-caribbeangreen-100 flex gap-1 items-center text-sm"><TiTickOutline className="text-lg"/>{item}</li>)
+                instructions?.map((item, index)=><li key={index} className="text-success-700 flex gap-1 items-center text-sm font-medium"><TiTickOutline className="text-lg"/>{item}</li>)
             }
           </ul>
-          <p onClick={shareHandler} className="text-yellow-100 cursor-pointer flex gap-1 items-center justify-center"><FaShareFromSquare/> Share</p>
+          <p onClick={shareHandler} className="text-primary-600 cursor-pointer flex gap-1 items-center justify-center font-medium hover:text-primary-700 transition-colors"><FaShareFromSquare/> Share</p>
         </div>
       </div>
 
       <PaymentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        totalAmount={price}
+        totalAmount={hasValidPrice ? numericPrice : 0}
         onSubmit={handlePaymentSubmit}
       />
     </>

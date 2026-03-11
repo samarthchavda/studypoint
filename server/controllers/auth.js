@@ -159,7 +159,7 @@ exports.login=async (req,res)=>{
     }
     
     if(!checkUser){
-         return res.status(404).json({
+            return res.status(401).json({
              success:false,
              message:"User is not registered. Please signup first."
         });

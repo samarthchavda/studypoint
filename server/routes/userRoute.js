@@ -5,11 +5,14 @@ const { contactUs } = require('../controllers/contactUs');
 const { resetPasswordToken, resetPassword } = require('../controllers/resetPassword');
 const router=express.Router();  
 router.post("/signUp",signup);
+router.post("/signup",signup);
 router.post("/login",login);
 router.put("/changePassword",auth,changePassword);
 router.post('/sendotp',sendOTP);
 router.post('/contactUs',contactUs);
 router.post('/resetPasswordToken',resetPasswordToken);
+router.post('/reset-password-token',resetPasswordToken);
 router.post('/resetPassword',resetPassword);
+router.post('/reset-password',resetPassword);
 
 module.exports=router;

@@ -6,14 +6,20 @@ import { FaLock } from "react-icons/fa";
 import SectionBar from "./SectionBar";
 
 const CourseContent = ({ content, isEnrolled = false }) => {
+  const courseContent = Array.isArray(content) ? content : [];
+
   const subSectionsLength = () =>
-    content?.reduce((acc, section) => acc + section?.subSections.length, 0);
+    courseContent.reduce(
+      (acc, section) => acc + (Array.isArray(section?.subSections) ? section.subSections.length : 0),
+      0
+    );
+
   const totalLecturesLength = () => {
-    const lengthInSeconds = content?.reduce(
+    const lengthInSeconds = courseContent.reduce(
       (acc, section) =>
         acc +
-        section?.subSections.reduce(
-          (acc, subSection) => acc + subSection?.timeDuration,
+        (section?.subSections || []).reduce(
+          (subAcc, subSection) => subAcc + (Number(subSection?.timeDuration) || 0),
           0
         ),
       0
@@ -21,47 +27,41 @@ const CourseContent = ({ content, isEnrolled = false }) => {
     const length = formatDuration(lengthInSeconds);
     return length;
   };
-  const sectionLegth = (section) => {
-    const seconds = section?.subSections?.reduce(
-      (acc, subSection) => acc + subSection?.timeDuration,
-      0
-    );
-    const length = formatDuration(seconds);
-  };
   const length = totalLecturesLength();
   const totalLectures = subSectionsLength();
+  const durationText =
+    length?.hours > 0
+      ? `${length.hours}h : ${length.minutes}m`
+      : `${length?.minutes || 0}m : ${length?.seconds || 0}s`;
 
   return (
     <div>
       <div className="flex flex-col gap-4">
-        <h3 className="text-richblack-5 text-2xl font-semibold">
+        <h3 className="text-neutral-800 text-2xl font-semibold">
           Course Content
         </h3>
-        <p className="text-sm text-richblack-50 flex items-center">
-          {content?.length} section(s)
+        <p className="text-sm text-neutral-700 flex items-center font-medium">
+          {courseContent.length} section(s)
           <LuDot className="text-2xl" />
           {totalLectures} lecture(s) <LuDot className="text-2xl" />
-          {length?.hours == 0
-            ? `${length?.minutes}m : ${length?.seconds}s`
-            : `${length?.hours}h : ${length?.minutes}m`}{" "}
-          total length
+          {durationText} total length
         </p>
 
         {/* Preview Banner for Non-Enrolled Students */}
         {!isEnrolled && (
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 text-richblack-900 p-4 rounded-md flex items-center gap-3">
-            <FaLock className="text-xl text-yellow-700" />
+          <div className="bg-accent-50 border-l-4 border-accent-500 text-neutral-800 p-4 rounded-md flex items-center gap-3">
+            <FaLock className="text-xl text-accent-600" />
             <div>
               <p className="font-semibold text-base">Course Preview Mode</p>
-              <p className="text-sm">
-                This is a preview showing {totalLectures} lectures. Purchase this course to unlock all content and start learning.
+              <p className="text-sm text-neutral-700">
+                This is a preview showing {totalLectures} lecture{totalLectures === 1 ? "" : "s"}. Purchase this course to unlock all content and start learning.
               </p>
             </div>
           </div>
         )}
 
         <div>
-          {content?.map((section) => (
+          {courseContent.map((section) => (
             <SectionBar 
               key={section._id}
               section={section} 
