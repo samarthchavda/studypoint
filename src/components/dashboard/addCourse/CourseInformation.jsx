@@ -220,7 +220,7 @@ const CourseInformation = () => {
     <form
       onKeyDown={downHandler}
       onSubmit={handleSubmit(submitHandler)}
-      className="md:ml-5 ml-3  flex rounded-lg border border-richblack-700 flex-col gap-5 bg-[#161D29] p-6"
+      className="md:ml-5 ml-3 flex rounded-lg border border-neutral-200 flex-col gap-5 bg-white shadow-md p-6"
     >
       <div className="flex flex-col gap-1">
         <Label text={"Course Title"} forwhat={"courseTitle"} required={true} />
@@ -267,9 +267,9 @@ const CourseInformation = () => {
       <div className="flex flex-col gap-1">
         <Label text={"Price"} forwhat={"price"} required={true} />
         <div className="flex gap-1 items-center field2">
-          <RiMoneyRupeeCircleLine className="text-[#585D69] text-3xl" />
+          <RiMoneyRupeeCircleLine className="text-neutral-600 text-3xl" />
           <input
-            className="w-full outline-none bg-[#2C333F] text-[rgba(153,157,170,1)] pl-1"
+            className="w-full outline-none bg-white text-neutral-800 pl-1"
             {...register("price", {
               required: { value: true, message: "Price is required" },
             })}

@@ -46,6 +46,7 @@ const CatalogPage = () => {
     
     // Replace hyphens with spaces and match category name
     const catalogName = params.catalogName.replace(/-/g, " ");
+    console.log("Catalog Name:", catalogName);
     
     // Try to find category from API data or use default
     let newCategoryObject = categories.find(
@@ -57,6 +58,7 @@ const CatalogPage = () => {
       newCategoryObject = getCategoryByName(catalogName);
     }
     
+    console.log("Category Object:", newCategoryObject);
     setCategoryObj(newCategoryObject);
     
     const fetchCourses = async () => {
@@ -64,42 +66,56 @@ const CatalogPage = () => {
       if (newCategoryObject && newCategoryObject._id) {
         try {
           const payload = { categoryId: newCategoryObject._id };
-          await getCategoryCourses(payload, setCourses);
-          setLoading(false);
-          return; // Exit if API fetch successful
+          const result = await getCategoryCourses(payload, setCourses);
+          console.log("API Courses Result:", result);
+          
+          // Check if API returned courses
+          const apiCourses = result?.categoryCourses || result?.data?.categoryCourses || [];
+          if (apiCourses.length > 0) {
+            console.log(`Using ${apiCourses.length} API courses for ${catalogName}`);
+            setLoading(false);
+            return; // Exit if API fetch successful with courses
+          }
+          console.log("API returned no courses, trying fallback...");
         } catch (error) {
-          console.log("API fetch failed, trying default courses:", error);
+          console.log("API fetch failed, trying fallback courses:", error);
         }
       }
       
-      // Fallback to real courses from JSON export if API fails
+      // Fallback to real courses from JSON export if API fails or returns empty
       const realCoursesForCategory = getRealCoursesByCategory(catalogName);
+      console.log("Real Courses for", catalogName, ":", realCoursesForCategory);
       
       if (realCoursesForCategory.length > 0) {
-        console.log(`Using real courses data for ${catalogName}:`, realCoursesForCategory.length);
+        console.log(`Using ${realCoursesForCategory.length} real courses for ${catalogName}`);
         setCourses({
           categoryCourses: realCoursesForCategory,
           topSellingCourses: realCoursesForCategory.slice(0, Math.min(2, realCoursesForCategory.length)),
           diffCategoryCourses: realCoursesForCategory
         });
+        setLoading(false);
       } else {
         // Final fallback to old default courses
         const defaultCoursesForCategory = getCoursesByCategory(catalogName);
+        console.log("Default Courses for", catalogName, ":", defaultCoursesForCategory);
+        
         if (defaultCoursesForCategory.length > 0) {
+          console.log(`Using ${defaultCoursesForCategory.length} default courses for ${catalogName}`);
           setCourses({
             categoryCourses: defaultCoursesForCategory,
             topSellingCourses: defaultCoursesForCategory.slice(0, Math.min(2, defaultCoursesForCategory.length)),
             diffCategoryCourses: defaultCoursesForCategory
           });
         } else {
+          console.log("No courses found for", catalogName);
           setCourses({
             categoryCourses: [],
             topSellingCourses: [],
             diffCategoryCourses: []
           });
         }
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchCourses();
   }, [params, categories]);

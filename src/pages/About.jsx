@@ -24,7 +24,7 @@ const About = () => {
               <HighlightedText text={"Brighter Future"} />
             </p>
             <p className="text-[#838894] font-medium">
-              Studynotion is at the forefront of driving innovation in online
+              StudyPoint is at the forefront of driving innovation in online
               education. We're passionate about creating a brighter future by
               offering cutting-edge courses, leveraging emerging technologies,
               and nurturing a vibrant learning community.

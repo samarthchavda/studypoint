@@ -67,7 +67,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-15")
+      createdAt: new Date("2024-01-15"),
+      instructions: ["Basic computer knowledge", "Internet connection", "Willingness to learn"]
     },
     {
       _id: "course2",
@@ -82,7 +83,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-10")
+      createdAt: new Date("2024-01-10"),
+      instructions: ["JavaScript basics", "HTML & CSS knowledge", "Code editor installed"]
     },
     {
       _id: "course3",
@@ -97,7 +99,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-12")
+      createdAt: new Date("2024-01-12"),
+      instructions: ["Basic HTML knowledge", "Text editor installed", "Web browser"]
     }
   ],
   "Data Science": [
@@ -114,7 +117,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-08")
+      createdAt: new Date("2024-01-08"),
+      instructions: ["Basic Python knowledge", "Mathematics fundamentals", "Computer with 8GB RAM"]
     },
     {
       _id: "course5",
@@ -129,7 +133,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-05")
+      createdAt: new Date("2024-01-05"),
+      instructions: ["Python programming", "Linear algebra basics", "Statistics knowledge"]
     }
   ],
   "Mobile Development": [
@@ -146,7 +151,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-07")
+      createdAt: new Date("2024-01-07"),
+      instructions: ["Basic programming knowledge", "Android Studio or VS Code", "Mobile device or emulator"]
     },
     {
       _id: "course7",
@@ -161,7 +167,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-09")
+      createdAt: new Date("2024-01-09"),
+      instructions: ["JavaScript knowledge", "React basics", "Node.js installed"]
     }
   ],
   "Programming Languages": [
@@ -178,7 +185,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-11")
+      createdAt: new Date("2024-01-11"),
+      instructions: ["No prior programming experience needed", "Computer with any OS", "Enthusiasm to learn"]
     },
     {
       _id: "course9",
@@ -193,7 +201,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-13")
+      createdAt: new Date("2024-01-13"),
+      instructions: ["No prior experience needed", "Computer with internet", "Text editor"]
     },
     {
       _id: "course10",
@@ -208,7 +217,24 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-14")
+      createdAt: new Date("2024-01-14"),
+      instructions: ["Basic HTML knowledge", "Text editor", "Modern web browser"]
+    },
+    {
+      _id: "course14",
+      name: "Bootstrap Framework Learning",
+      courseName: "Bootstrap Framework Learning",
+      courseDescription: "Learn Bootstrap framework for rapid web development. Build responsive websites quickly.",
+      description: "Learn Bootstrap framework for rapid web development. Build responsive websites quickly.",
+      whatYouWillLearn: "Bootstrap components, Grid system, Responsive utilities, Customization",
+      price: 1299,
+      thumbnail: bootstrapImg,
+      instructor: { firstName: "John", lastName: "Smith", image: "" },
+      ratingAndReviews: [],
+      studentsEnrolled: [],
+      status: "published",
+      createdAt: new Date("2024-01-02"),
+      instructions: ["HTML & CSS basics", "Basic JavaScript knowledge", "Code editor"]
     }
   ],
   "UI/UX Design": [
@@ -225,7 +251,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-06")
+      createdAt: new Date("2024-01-06"),
+      instructions: ["No design experience needed", "Computer with internet", "Figma account (free)"]
     },
     {
       _id: "course12",
@@ -240,7 +267,8 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-04")
+      createdAt: new Date("2024-01-04"),
+      instructions: ["Basic design understanding", "Figma account", "Computer with good internet"]
     }
   ],
   "Artificial Intelligence": [
@@ -257,24 +285,26 @@ export const defaultCourses = {
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-03")
+      createdAt: new Date("2024-01-03"),
+      instructions: ["Python programming", "Linear algebra basics", "Statistics knowledge"]
     }
   ],
   "IOT": [
     {
-      _id: "course14",
-      name: "Bootstrap Framework Learning",
-      courseName: "Bootstrap Framework Learning",
-      courseDescription: "Learn Bootstrap framework for rapid web development. Build responsive websites quickly.",
-      description: "Learn Bootstrap framework for rapid web development. Build responsive websites quickly.",
-      whatYouWillLearn: "Bootstrap components, Grid system, Responsive design, Customization",
-      price: 1299,
+      _id: "course15",
+      name: "Internet of Things Fundamentals",
+      courseName: "Internet of Things Fundamentals",
+      courseDescription: "Learn IoT basics, connect devices, sensors, and build smart systems with Arduino and Raspberry Pi.",
+      description: "Learn IoT basics, connect devices, sensors, and build smart systems with Arduino and Raspberry Pi.",
+      whatYouWillLearn: "IoT concepts, Arduino programming, Sensor integration, Cloud connectivity, Smart home projects",
+      price: 1999,
       thumbnail: bootstrapImg,
       instructor: { firstName: "John", lastName: "Smith", image: "" },
       ratingAndReviews: [],
       studentsEnrolled: [],
       status: "published",
-      createdAt: new Date("2024-01-02")
+      createdAt: new Date("2024-01-02"),
+      instructions: ["Basic programming knowledge", "Arduino kit (optional)", "Enthusiasm for electronics"]
     }
   ]
 };

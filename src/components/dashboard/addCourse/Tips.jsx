@@ -11,14 +11,14 @@ const courseInstructions = [
 ];
 const Tips = () => {
     return (
-        <div className='bg-[#161D29] p-7 max-w-[384px] flex flex-col items-start gap-5 h-fit  border border-richblack-700 rounded-lg mt-5'>
-            <h2 className='text-richblack-5  font-semibold'>⚡Course Upload Tips</h2>
-            <ul className='text-richblack-5 flex flex-col gap-3 w-full'>
+        <div className='bg-gradient-to-br from-primary-50 to-purple-50 p-7 max-w-[384px] flex flex-col items-start gap-5 h-fit border border-primary-200 rounded-lg mt-5 shadow-md'>
+            <h2 className='text-neutral-800 font-semibold text-lg'>⚡Course Upload Tips</h2>
+            <ul className='text-neutral-700 flex flex-col gap-3 w-full'>
                 {
                     courseInstructions.map((item, index) => (
                         <li key={index} className="flex">
-                            <BsDot className='w-5 h-5'/>
-                            <p className="text-xs font-medium text-richblack-5 w-full">{item.instruction}</p>
+                            <BsDot className='w-5 h-5 text-primary-600'/>
+                            <p className="text-xs font-medium text-neutral-700 w-full">{item.instruction}</p>
                         </li>
                     ))
                 }

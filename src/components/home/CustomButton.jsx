@@ -5,7 +5,8 @@ const CustomButton = ({children,active,linkTo}) => {
     // Check if it's an external link
     const isExternal = linkTo?.startsWith('http://') || linkTo?.startsWith('https://');
     
-    const buttonClass = `${active ? 'bg-yellow-100 ' : 'bg-richblack-700 text-white '}hover:scale-95 transition drop-shadow-[1px_1px_1px_rgba(255,255,255,0.8)] flex items-center gap-1 font-[550]  px-3 py-2 rounded-md`;
+    const buttonClass = `${active ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg hover:shadow-xl' : 'bg-white text-neutral-700 border-2 border-neutral-300 hover:border-primary-400'}
+    hover:scale-105 transition-all duration-300 flex items-center gap-2 font-semibold px-6 py-3 rounded-xl`;
     
     if (isExternal) {
         return (

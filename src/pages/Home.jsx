@@ -39,25 +39,25 @@ const Home = () => {
       <NavBar />
       {/* section1 */}
       <div className="w-11/12 flex flex-col gap-20 items-center max-w-maxContent mx-auto">
-        <div className=" flex flex-col pt-[124px] gap-4 items-start sm:items-center ">
+        <div className=" flex flex-col pt-[124px] gap-6 items-start sm:items-center ">
           <Link
             to={isLoggedIn()==='Instructor'?'/dashboard/add-course':'/signup'}
-            className="hover:bg-richblack-900 bg-richblack-800 rounded-full w-fit sm:self-center
-                         flex items-center gap-2 text-bold mb-4 border-b-2 text-richblack-200 transition hover:scale-95  py-3 px-6 "
+            className="hover:shadow-xl bg-gradient-to-r from-secondary-500 to-secondary-600 rounded-full w-fit sm:self-center
+                         flex items-center gap-2 text-white font-semibold mb-4 transition-all hover:scale-105 py-3 px-8 shadow-lg"
           >
             Become An Instructor
             <IoMdArrowRoundForward />
           </Link>
-          <h2 className="text-white sm:text-center text-3xl">
+          <h2 className="text-neutral-800 sm:text-center text-4xl font-bold">
             Empower Your Future with <HighlightedText text={"Coding Skills"} />
           </h2>
-          <p className="text-richblack-300 font-semibold sm:text-center sm:w-5/6">
+          <p className="text-neutral-600 font-medium sm:text-center sm:w-5/6 text-lg">
             With our online coding courses, you can learn at your own pace, from
             anywhere in the world, and get access to a wealth of resources,
             including hands-on projects, quizzes, and personalized feedback from
             instructors.{" "}
           </p>
-          <div className="flex gap-4 mt-5">
+          <div className="flex gap-5 mt-8">
             <CustomButton linkTo={'/about'} active={true}>
               Learn More <IoMdArrowRoundForward />
             </CustomButton>
@@ -69,13 +69,13 @@ const Home = () => {
 
         <div className="sm:w-[75%] self-center relative">
           <div
-            className={`box1 backdrop-blur-2xl  shadow-[1px_1px_300px_90px_#61b3fa] absolute top-20 left-[50%] h-1 w-1 rounded-full`}
+            className={`box1 backdrop-blur-2xl shadow-[1px_1px_200px_60px_rgba(14,165,233,0.3)] absolute top-20 left-[50%] h-1 w-1 rounded-full`}
           ></div>
-          <div className="z-10  relative">
+          <div className="z-10 relative">
             <video
               muted
               autoPlay
-              className="shadow-[19px_19px_#FFFFFF] bg-blue"
+              className="shadow-[12px_12px_0px_0px_rgba(14,165,233,0.5)] rounded-2xl"
             >
               <source src={banner} type="video/mp4" />
             </video>
@@ -119,10 +119,10 @@ const Home = () => {
         <CardsWindow />
       </div>
       {/* section2 */}
-      <div className=" bg-pure-greys-5 ">
-        <div className="mx-auto text-richblack-700 max-w-maxContent ">
-          <div className="chex h-72 flex items-center justify-center">
-            <div className="flex gap-6">
+      <div className="bg-gradient-to-br from-neutral-50 via-primary-50 to-secondary-50">
+        <div className="mx-auto text-neutral-800 max-w-maxContent">
+          <div className="chex h-80 flex items-center justify-center">
+            <div className="flex gap-7">
               <CustomButton active={true} linkTo={"/catalog/Artificial-Intelligence"}>
                 Explore full catalog
                 <IoMdArrowRoundForward />
@@ -134,15 +134,15 @@ const Home = () => {
               </CustomButton>
             </div>
           </div>
-          <div className="w-11/12 mx-auto flex justify-center py-20">
-            <div className="flex flex-col lg:flex-row gap-5 lg:gap-12 h-fit">
-              <p className="text-4xl text-start sm:text-center lg:text-start font-bold lg:w-[51%]">
+          <div className="w-11/12 mx-auto flex justify-center py-24">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 h-fit">
+              <p className="text-5xl text-start sm:text-center lg:text-start font-bold lg:w-[51%] text-neutral-800">
                 Get the skills you need for a{" "}
                 <HighlightedText text={"job that is in demand."} />
               </p>
-              <div className="flex flex-col sm:items-center lg:items-start lg:gap-14 gap-5 lg:w-[49%]">
-                <p className="font-[500] text-start sm:text-center lg:text-start">
-                  The modern StudyNotion is the dictates its own terms. Today,
+              <div className="flex flex-col sm:items-center lg:items-start lg:gap-16 gap-6 lg:w-[49%]">
+                <p className="font-medium text-start sm:text-center lg:text-start text-lg text-neutral-600">
+                  The modern StudyPoint dictates its own terms. Today,
                   to be a competitive specialist requires more than professional
                   skills.
                 </p>
@@ -159,20 +159,20 @@ const Home = () => {
         </div>
       </div>
       {/* section3 */}
-      <div className="mx-auto py-20 w-11/12 max-w-maxContent">
-        <div className="flex flex-col-reverse md:flex-row gap-20 ">
-          <div className="md:w-[50%] ">
-            <div className="shadow-[-15px_-15px_rgb(255,255,255)]">
-              <img className="" src={instructor} alt="" />
+      <div className="mx-auto py-24 w-11/12 max-w-maxContent">
+        <div className="flex flex-col-reverse md:flex-row gap-20">
+          <div className="md:w-[50%]">
+            <div className="shadow-[-20px_-20px_0px_0px_rgba(14,165,233,0.3)] rounded-2xl overflow-hidden">
+              <img className="rounded-2xl" src={instructor} alt="" />
             </div>
           </div>
-          <div className="flex flex-col  md:w-[40%] gap-16 justify-center">
+          <div className="flex flex-col md:w-[40%] gap-16 justify-center">
             <div>
-              <p className="text-4xl font-semibold text-[#F1F2FF]">Become an</p>
+              <p className="text-5xl font-bold text-neutral-800">Become an</p>
               <HighlightedText text={"Instructor"} />
-              <p className="text-[#838894] font-medium">
+              <p className="text-neutral-600 font-medium text-lg mt-4">
                 Instructors from around the world teach millions of students on
-                StudyNotion. We provide the tools and skills to teach what you
+                StudyPoint. We provide the tools and skills to teach what you
                 love.
               </p>
             </div>

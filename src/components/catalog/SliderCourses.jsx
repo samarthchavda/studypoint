@@ -17,11 +17,11 @@ const SliderCourses = ({ courses, type }) => {
     },[]); 
   return (
     <div className=" my-10">
-      <h2 className="text-richblack-5 mb-5 font-semibold text-3xl">
+      <h2 className="text-neutral-800 mb-5 font-semibold text-3xl">
         { type === 'start' ? 'Courses to get you started '  :'Top Selling courses '}
-        <span className="text-sm text-richblack-300">(swipe to see more)</span>
+        <span className="text-sm text-neutral-600 font-normal ml-2">(swipe to see more)</span>
       </h2>
-      <p className="text-red-500 relative -top-5 font-semibold text-3xl">
+      <p className="text-accent-600 relative -top-5 font-semibold text-xl">
         { !courses || courses?.length<=0  && 'No courses found here'}
       </p>
       <div className=" flex justify-center mx-auto">  

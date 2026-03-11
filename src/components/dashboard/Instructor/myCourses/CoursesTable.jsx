@@ -55,46 +55,45 @@ const CoursesTable = ({ courses, updateCourses }) => {
 
   return (
     <>
-      <Table className="rounded-lg w-full border lg:ml-6 ml-3 my-2 border-richblack-800 text-white border-collapse ">
-        <Thead className="font-medium text-richblack-100">
+      <Table className="rounded-lg w-full border lg:ml-6 ml-3 my-2 border-neutral-200 bg-white shadow-md text-neutral-800 border-collapse">
+        <Thead className="font-semibold text-neutral-700 bg-neutral-50">
           <Tr className="">
-            <Th className="text-start">Courses</Th>
-            <Th className="text-center">Duration</Th>
-            <Th className="text-center">Price</Th>
-            <Th className="">Actions</Th>
+            <Th className="text-start py-4 px-4">Courses</Th>
+            <Th className="text-center py-4 px-4">Duration</Th>
+            <Th className="text-center py-4 px-4">Price</Th>
+            <Th className="py-4 px-4">Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
           {courses?.map((item, index) => {
             return (
-              <Tr className="" key={index}>
-                <Td className="py-[10px] md:w-4/6">
+              <Tr className="border-t border-neutral-200 hover:bg-neutral-50 transition-colors" key={index}>
+                <Td className="py-[10px] md:w-4/6 px-4">
                   <div className="flex md:flex-row flex-col gap-5">
                     <img
-                      className="max-h-[152px] aspect-auto  rounded-lg"
+                      className="max-h-[152px] aspect-auto rounded-lg shadow-sm"
                       src={item.thumbnail}
                       alt=""
                     />
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-[8px]">
-                        <h3 className="text-richblack-5 font-medium">
+                        <h3 className="text-neutral-800 font-semibold text-lg">
                           {item.name}
                         </h3>
-                        <p className="text-richblack-100 text-sm">
+                        <p className="text-neutral-600 text-sm">
                           {item.description}
                         </p>
                       </div>
-                      <p className="font-medium text-xs text-richblack-25">
+                      <p className="font-medium text-xs text-neutral-500">
                         Created: {date(item.createdAt)}
                       </p>
                       <p
-                        className={`text-xs font-medium w-fit py-[2px] px-[8px] rounded-full flex gap-[6px] items-center
+                        className={`text-xs font-semibold w-fit py-[2px] px-[8px] rounded-full flex gap-[6px] items-center
                       ${
                         item.status === "published"
-                          ? "text-yellow-100"
-                          : "text-pink-100"
-                      }
-                       bg-richblack-700`}
+                          ? "text-success-700 bg-success-100"
+                          : "text-orange-700 bg-orange-100"
+                      }`}
                       >
                         {item.status === "published" ? (
                           <FaCheckCircle />
@@ -106,20 +105,20 @@ const CoursesTable = ({ courses, updateCourses }) => {
                     </div>
                   </div>
                 </Td>
-                <Td className="text-richblack-100 py-[10px] text-center font-medium">
+                <Td className="text-neutral-700 py-[10px] px-4 text-center font-medium">
                   {item?.totalDuration
                     ? showLength(formatDuration(item.totalDuration))
                     : "null"}
                 </Td>
-                <Td className=" py-[10px] ">
-                  <div className="flex text-richblack-100 gap-2 mx-auto sm:justify-center">
-                    <p>{item?.price}</p>
+                <Td className="py-[10px] px-4">
+                  <div className="flex text-neutral-700 gap-2 mx-auto sm:justify-center font-semibold">
+                    <p>₹{item?.price}</p>
                   </div>
                 </Td>
-                <Td className="py-[10px]">
-                  <div className="flex  gap-2 mx-auto text-richblack-400 font-bold sm:justify-center">
+                <Td className="py-[10px] px-4">
+                  <div className="flex gap-2 mx-auto text-neutral-600 font-bold sm:justify-center">
                     <button
-                      className="w-[18px] h-[18px]"
+                      className="w-[18px] h-[18px] hover:text-primary-600 transition-colors"
                       onClick={() => {
                         navigate(`/dashboard/edit-course/${item._id}`);
                       }}
@@ -131,7 +130,7 @@ const CoursesTable = ({ courses, updateCourses }) => {
                         setDelCourseId(item._id);
                         setDeleteModal(true);
                       }}
-                      className="w-[18px] h-[18px]"
+                      className="w-[18px] h-[18px] hover:text-red-600 transition-colors"
                     >
                       <RiDeleteBin6Line />
                     </button>

@@ -30,8 +30,8 @@ const Sidebar = () => {
     dispatch(logout(navigate));
   };
   return (
-    <div className="h-full xl:border-l-[1px] border-richblack-700">
-      <div className="relative pt-3 sm:pt-6 bg-richblack-800 pb-3 sm:pb-0 flex h-full flex-col gap-2">
+    <div className="h-full border-r-[1px] border-neutral-200 bg-white/50">
+      <div className="relative pt-3 sm:pt-6 pb-3 sm:pb-0 flex h-full flex-col gap-2">
         <div className="w-full">
           {sidebarLinks.map((item, index) => {
             return item.type === role ||
@@ -41,11 +41,11 @@ const Sidebar = () => {
             ) : null;
           })}
         </div>
-        <div className="w-[calc(100%-2rem)] mx-auto px-4 h-[1px] bg-[#2C333F]"></div>
+        <div className="w-[calc(100%-2rem)] mx-auto px-4 h-[1px] bg-neutral-200"></div>
         <div>
           <SideBarLink
             link={{
-              name: "Settigs",
+              name: "Settings",
               icon: "VscSettingsGear",
               path: "/dashboard/settings",
             }}
@@ -53,7 +53,7 @@ const Sidebar = () => {
         </div>
         <button
           onClick={()=>{setConfirmationModal(true)}}
-          className="sm:pl-4 pl-2 flex gap-2 font-medium  items-center text-richblack-300 "
+          className="sm:pl-4 pl-2 flex gap-2 font-semibold items-center text-accent-600 hover:text-accent-700 transition-colors"
         >
           <VscSignOut />
           Log Out

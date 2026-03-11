@@ -14,11 +14,11 @@ const GridCourses = ({ courses }) => {
       },[]);
   return (
     <div className="flex flex-col gap-5">
-      <h2 className="text-richblack-5 text-3xl font-semibold">
+      <h2 className="text-neutral-800 text-3xl font-semibold">
         Frequently bought together
       </h2>
       {!courses || courses?.length<=0 ? (
-        <p className="text-red-500 relative -top-5 font-semibold text-3xl">
+        <p className="text-accent-600 relative -top-5 font-semibold text-xl">
           No courses found here
         </p>
       ) : (

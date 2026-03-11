@@ -1,3 +1,121 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global Text Color Fixes for Light Theme */
+@layer utilities {
+  /* Override light text colors with dark colors for better contrast */
+  .text-richblack-5,
+  .text-richblack-25,
+  .text-richblack-50 {
+    color: #171717 !important; /* neutral-900 - dark text */
+  }
+  
+  .text-richblack-100,
+  .text-richblack-200 {
+    color: #404040 !important; /* neutral-700 - medium dark */
+  }
+  
+  .text-richblack-300,
+  .text-richblack-400 {
+    color: #525252 !important; /* neutral-600 - medium */
+  }
+  
+  /* Keep darker colors as they have good contrast */
+  .text-richblack-500,
+  .text-richblack-600,
+  .text-richblack-700,
+  .text-richblack-800,
+  .text-richblack-900 {
+    /* These are already dark, keep them */
+  }
+  
+  /* Fix white text */
+  .text-white {
+    color: #171717 !important; /* Change white to dark */
+  }
+  
+  /* Fix light yellow text */
+  .text-yellow-25,
+  .text-yellow-50 {
+    color: #A16207 !important; /* yellow-600 - darker yellow */
+  }
+  
+  /* Fix light neutral colors */
+  .text-neutral-300,
+  .text-neutral-400 {
+    color: #525252 !important; /* neutral-600 */
+  }
+}
+
+/* Background color fixes */
+@layer utilities {
+  /* Fix dark backgrounds to light */
+  .bg-richblack-800,
+  .bg-richblack-900 {
+    background-color: #ffffff !important; /* white background */
+    border: 1px solid #e5e5e5 !important; /* add border for definition */
+  }
+  
+  .bg-richblack-700 {
+    background-color: #fafafa !important; /* neutral-50 */
+    border: 1px solid #e5e5e5 !important;
+  }
+  
+  .bg-richblack-600 {
+    background-color: #f5f5f5 !important; /* neutral-100 */
+  }
+}
+
+/* Border color fixes */
+@layer utilities {
+  .border-richblack-700,
+  .border-richblack-600,
+  .border-richblack-800 {
+    border-color: #e5e5e5 !important; /* neutral-200 */
+  }
+}
+
+/* Specific component fixes */
+@layer components {
+  /* Dashboard cards */
+  .dashboard-card {
+    @apply bg-white border border-neutral-200 text-neutral-800;
+  }
+  
+  /* Form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    @apply text-neutral-800 bg-white border-neutral-300;
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    @apply border-primary-500 ring-2 ring-primary-200;
+  }
+  
+  /* Tables */
+  table {
+    @apply text-neutral-800;
+  }
+  
+  thead {
+    @apply bg-neutral-100 text-neutral-700;
+  }
+  
+  tbody tr {
+    @apply border-neutral-200;
+  }
+  
+  tbody tr:hover {
+    @apply bg-neutral-50;
+  }
+}

@@ -55,7 +55,7 @@ const MyCourses = () => {
     </div>
   ) : (
     <div className="flex items-center flex-col gap-5 h-full justify-center mt-8 md:mt-10">
-      <p className="text-3xl  text-richblack-5">
+      <p className="text-3xl text-neutral-800 font-semibold">
         You have not Added any courses
       </p>
       <YellowBtn

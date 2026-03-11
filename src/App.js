@@ -60,8 +60,8 @@ function App() {
     <div
       className={`font-inter w-screen overflow-x-hidden min-h-screen ${
         location.pathname.split("/").at(1) === "dashboard"
-          ? "bg-richblack-800"
-          : "bg-richblack-900"
+          ? "bg-gradient-to-br from-neutral-50 via-primary-50 to-secondary-50"
+          : "bg-gradient-to-br from-white via-primary-50 to-purple-50"
       }`}
     >
       {isOnline ? (

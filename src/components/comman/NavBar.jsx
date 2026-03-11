@@ -1,5 +1,5 @@
 import React, { use, useEffect, useRef } from "react";
-import logo from "../../assets/Logo/Logo-Full-Light.png";
+import logo from "../../assets/Logo/studypoint-logo.png";
 import { NavbarLinks } from "../../data/navbar-links";
 import {
   Link,
@@ -125,41 +125,42 @@ const NavBar = () => {
 
   return (
     <div
-      className={`w-full ${
-        checkForBgColour("dashboard", 1) ||
-        checkForBgColour("sub-sectionId", -2) ||
-        checkForBgColour("catalog", -2) ||
-        checkForBgColour("course", -2)
-          ? "bg-richblack-800"
-          : "bg-richblack-900"
-      } border-b-[0.5px] flex flex-col md:flex-row gap-2 md:gap-0 pt-2 pb-2 md:pb-0 md:pt-0 border-richblack-700 h-fit md:h-14`}
+      className={`w-full bg-white/80 backdrop-blur-lg border-b-[1px] flex flex-col md:flex-row gap-2 md:gap-0 py-3 md:py-0 border-neutral-200 h-fit md:h-24 shadow-sm sticky top-0 z-50`}
     >
-      <div className="w-11/12 mx-auto flex justify-between max-w-maxContent items-center">
-        <div className="">
-          <img className="w-[160px] h-[32px]" src={logo} alt="" />
-        </div>
+      <div className="w-11/12 mx-auto flex justify-between max-w-maxContent items-center h-full">
+        <Link to="/" className="flex items-center h-full py-3">
+          <img 
+            className="h-20 w-auto md:h-20 object-contain max-w-[280px]" 
+            src={logo} 
+            alt="StudyPoint Logo"
+            onError={(e) => {
+              console.error('Logo failed to load:', logo);
+              e.target.style.border = '2px solid red';
+            }}
+          />
+        </Link>
         <nav className="hidden md:block">
           <ul className="flex gap-5">
             {NavbarLinks.map((item, index) => {
               return (
                 <li key={index}>
                   {item.title === "Catalog" ? (
-                    <div className="text-richblack-200 relative  cursor-pointer">
-                      <div onClick={()=>toggleMenu()} className={`${location.pathname.split('/').at(1)==='catalog'?"text-[#FFD60A] font-bold" :"text-richblack-200"} flex gap-1 items-center`}>
+                    <div className="text-neutral-700 relative cursor-pointer">
+                      <div onClick={()=>toggleMenu()} className={`${location.pathname.split('/').at(1)==='catalog'?"text-primary-600 font-semibold" :"text-neutral-700 hover:text-primary-600"} flex gap-1 items-center transition-colors duration-200`}>
                         Catalog
                         <IoIosArrowDropdown />
                       </div>
                       <div ref={catalogRef}  className=" invisible opacity-0 
                       transition-all z-30  duration-[250] 
-                      absolute px-2 -translate-x-5  top-12 rounded-xl py-3 text-richblack-800 bg-richblack-25">
+                      absolute px-2 -translate-x-5  top-12 rounded-xl py-3 text-neutral-800 bg-white shadow-xl border border-neutral-200">
                         <div className="z-10 min-w-[15em] min-h-[5em] flex flex-col gap-1 justify-center relative ">
                           {categories.length === 0
                             ? "No Categroies have been created"
                             : categories.map((category, index) => {
                                 return (
                                   <Link
-                                    to={`/catalog/${category.name.replace(" ","-")}`}
-                                    className="px-10  rounded-lg font-[550] py-1 hover:bg-richblack-50/80 "
+                                    to={`/catalog/${category.name.replace(/ /g,"-")}`}
+                                    className="px-10 rounded-lg font-medium py-2 hover:bg-primary-50 hover:text-primary-700 transition-colors"
                                     key={index}
                                   >
                                     {category.name}
@@ -168,16 +169,16 @@ const NavBar = () => {
                               })}
                         </div>
 
-                        <div className="bg-richblack-25 h-20 w-20 absolute top-0 left-12 rotate-45"></div>
+                        <div className="bg-white h-20 w-20 absolute top-0 left-12 rotate-45 border-l border-t border-neutral-200"></div>
                       </div>
                     </div>
                   ) : (
                     <Link
                       className={`${
                         location.pathname === `${item.path}`
-                          ? "text-[#FFD60A] font-bold"
-                          : "text-richblack-200"
-                      }`}
+                          ? "text-primary-600 font-semibold"
+                          : "text-neutral-700 hover:text-primary-600"
+                      } transition-colors duration-200`}
                       to={item.path}
                     >
                       {item.title}
@@ -190,17 +191,17 @@ const NavBar = () => {
         </nav>
         <div className="hidden md:flex">
           {token === null ? (
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <Link
-                className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
-                rounded-lg border-[1px]"
+                className="bg-white text-neutral-700 px-5 py-2 border-neutral-300 
+                rounded-lg border-[1px] hover:bg-neutral-50 transition-all font-medium"
                 to="/login"
               >
                 Login
               </Link>
               <Link
-                className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
-                rounded-lg border-[1px]"
+                className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-5 py-2
+                rounded-lg hover:shadow-lg hover:scale-105 transition-all font-medium"
                 to="/signup"
               >
                 Signup
@@ -210,13 +211,13 @@ const NavBar = () => {
             <div className="flex gap-4">
               {user?.accountType === "Student" ? (
                 <Link to={"/dashboard/wishList"} className="relative ">
-                  <IoCartOutline className="text-white cursor-pointer h-8 w-8" />
+                  <IoCartOutline className="text-neutral-700 cursor-pointer h-7 w-7 hover:text-primary-600 transition-colors" />
                   {totalItems === 0 ? (
                     ""
                   ) : (
                     <div
-                      className="h-4 w-4 rounded-full absolute right-0 
-                      text-xs text-black -top-1 ball_animation bg-green-400 flex justify-center items-center"
+                      className="h-5 w-5 rounded-full absolute right-0 
+                      text-xs text-white -top-1 ball_animation bg-gradient-to-r from-accent-500 to-accent-600 flex justify-center items-center font-semibold shadow-md"
                     >
                       {totalItems}
                     </div>
@@ -224,30 +225,37 @@ const NavBar = () => {
                 </Link>
               ) : null}
               <div className="relative " onClick={showBox}>
-                <div
-                  className="text-white cursor-pointer rounded-full h-8 w-8 "
-                  style={{
-                    backgroundImage: `url(${user?.image})`,
-                    backgroundSize: "cover",
-                  }}
-                ></div>
+                {user?.image ? (
+                  <div
+                    className="cursor-pointer rounded-full h-9 w-9 border-2 border-primary-400 hover:border-primary-600 transition-all"
+                    style={{
+                      backgroundImage: `url(${user.image})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
+                ) : (
+                  <div className="cursor-pointer rounded-full h-9 w-9 border-2 border-primary-400 hover:border-primary-600 transition-all bg-primary-100 flex items-center justify-center">
+                    <FaRegCircleUser className="text-primary-600 h-6 w-6" />
+                  </div>
+                )}
                 <div
                   ref={boxRef}
-                  className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible opacity-0 transition-all duration-200 text-richblack-200 absolute bg-richblack-700 px-3 py-2 min-w-[120px]"
+                  className="flex flex-col rounded-xl gap-1 z-[2000] right-0 -bottom-24 invisible opacity-0 transition-all duration-200 text-neutral-700 absolute bg-white shadow-xl border border-neutral-200 px-3 py-2 min-w-[140px]"
                 >
                   <div
                     onClick={(e) => {
                       e.stopPropagation();
                       setLogoutModal(true);
                     }}
-                    className="flex border-b-[1px] pb-1 border-richblack-200/50 gap-1 cursor-pointer items-center hover:text-white"
+                    className="flex border-b-[1px] pb-2 mb-1 border-neutral-200 gap-2 cursor-pointer items-center hover:text-accent-600 transition-colors font-medium"
                   >
                     <MdLogout />
                     Logout
                   </div>
                   <Link
                     to={"/dashboard"}
-                    className="flex gap-1 cursor-pointer items-center hover:text-white"
+                    className="flex gap-2 cursor-pointer items-center hover:text-primary-600 transition-colors font-medium"
                   >
                     <RiDashboard2Line />
                     Dashboard
@@ -265,20 +273,20 @@ const NavBar = () => {
               return (
                 <li key={index}>
                   {item.title === "Catalog" ? (
-                    <div className="text-richblack-200 relative group cursor-pointer">
-                      <div className={`${location.pathname.split('/').at(1)==='catalog'?"text-[#FFD60A] font-bold" :"text-richblack-200"} flex gap-1 items-center`}>
+                    <div className="text-neutral-700 relative group cursor-pointer">
+                      <div className={`${location.pathname.split('/').at(1)==='catalog'?"text-primary-600 font-semibold" :"text-neutral-700"} flex gap-1 items-center`}>
                         Catalog
                         <IoIosArrowDropdown />
                       </div>
-                      <div className="group-hover:visible invisible opacity-0 group-hover:opacity-100 transition-all z-30 group-hover:-translate-y-2 duration-[250] absolute px-2 -translate-x-5  top-12 rounded-xl py-3 text-black bg-richblack-25">
-                        <div className="z-10  flex flex-col gap-1 relative ">
+                      <div className="group-hover:visible invisible opacity-0 group-hover:opacity-100 transition-all z-30 group-hover:-translate-y-2 duration-[250] absolute px-2 -translate-x-5 top-12 rounded-xl py-3 text-neutral-800 bg-white shadow-xl border border-neutral-200">
+                        <div className="z-10 flex flex-col gap-1 relative">
                           {categories.length === 0
                             ? "No Categroies have been created"
                             : categories.map((category, index) => {
                                 return (
                                   <Link
-                                    to={`/catalog/${category.name.replace(" ","-")}`}
-                                    className="px-10 text-lg rounded-lg font-[550] py-1 hover:bg-richblack-100 "
+                                    to={`/catalog/${category.name.replace(/ /g,"-")}`}
+                                    className="px-10 text-lg rounded-lg font-medium py-2 hover:bg-primary-50 hover:text-primary-700 transition-colors"
                                     key={index}
                                   >
                                     {category.name}
@@ -287,16 +295,16 @@ const NavBar = () => {
                               })}
                         </div>
 
-                        <div className="bg-richblack-25 h-20 w-20 absolute top-0 left-12 rotate-45"></div>
+                        <div className="bg-white h-20 w-20 absolute top-0 left-12 rotate-45 border-l border-t border-neutral-200"></div>
                       </div>
                     </div>
                   ) : (
                     <Link
                       className={`${
                         location.pathname === `${item.path}`
-                          ? "text-[#FFD60A] font-bold"
-                          : "text-richblack-200"
-                      }`}
+                          ? "text-primary-600 font-semibold"
+                          : "text-neutral-700 hover:text-primary-600"
+                      } transition-colors duration-200`}
                       to={item.path}
                     >
                       {item.title}
@@ -308,17 +316,17 @@ const NavBar = () => {
           </ul>
         </nav>
         {token === null ? (
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-3 justify-center">
             <Link
-              className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
-              rounded-lg border-[1px]"
+              className="bg-white text-neutral-700 px-4 py-2 border-neutral-300 
+              rounded-lg border-[1px] hover:bg-neutral-50 transition-all font-medium"
               to="/login"
             >
               Login
             </Link>
             <Link
-              className="bg-richblack-800 text-richblack-50 px-4 py-2 border-richblack-600 
-              rounded-lg border-[1px]"
+              className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-4 py-2
+              rounded-lg hover:shadow-lg hover:scale-105 transition-all font-medium"
               to="/signup"
             >
               Signup
@@ -327,14 +335,14 @@ const NavBar = () => {
         ) : (
           <div className="flex gap-4 justify-center items-center">
             {user?.accountType === "Student" ? (
-              <Link to={"/dashboard/wishList"} className="relative ">
-                <IoCartOutline className="text-white cursor-pointer h-8 w-8" />
+              <Link to={"/dashboard/wishList"} className="relative">
+                <IoCartOutline className="text-neutral-700 cursor-pointer h-7 w-7 hover:text-primary-600 transition-colors" />
                 {totalItems === 0 ? (
                   ""
                 ) : (
                   <div
-                    className="h-4 w-4 rounded-full absolute right-0 
-                    text-xs text-black -top-1 ball_animation bg-green-400 flex justify-center items-center"
+                    className="h-5 w-5 rounded-full absolute right-0 
+                    text-xs text-white -top-1 ball_animation bg-gradient-to-r from-accent-500 to-accent-600 flex justify-center items-center font-semibold shadow-md"
                   >
                     {totalItems}
                   </div>
@@ -342,30 +350,37 @@ const NavBar = () => {
               </Link>
             ) : null}
             <div className="relative " onClick={showMobileBox}>
-              <div
-                className="text-white cursor-pointer rounded-full h-8 w-8 "
-                style={{
-                  backgroundImage: `url(${user?.image})`,
-                  backgroundSize: "cover",
-                }}
-              ></div>
+              {user?.image ? (
+                <div
+                  className="cursor-pointer rounded-full h-9 w-9 border-2 border-primary-400 hover:border-primary-600 transition-all"
+                  style={{
+                    backgroundImage: `url(${user.image})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                ></div>
+              ) : (
+                <div className="cursor-pointer rounded-full h-9 w-9 border-2 border-primary-400 hover:border-primary-600 transition-all bg-primary-100 flex items-center justify-center">
+                  <FaRegCircleUser className="text-primary-600 h-6 w-6" />
+                </div>
+              )}
               <div
                 ref={mobileBoxRef}
-                className="flex flex-col rounded-lg gap-1 z-[2000] right-0 -bottom-20 invisible opacity-0 transition-all duration-200 text-richblack-200 absolute bg-richblack-700 px-3 py-2 min-w-[120px]"
+                className="flex flex-col rounded-xl gap-1 z-[2000] right-0 -bottom-24 invisible opacity-0 transition-all duration-200 text-neutral-700 absolute bg-white shadow-xl border border-neutral-200 px-3 py-2 min-w-[140px]"
               >
                 <div
                   onClick={(e) => {
                     e.stopPropagation();
                     setLogoutModal(true);
                   }}
-                  className="flex border-b-[1px] pb-1 border-richblack-200/50 gap-1 cursor-pointer items-center hover:text-white"
+                  className="flex border-b-[1px] pb-2 mb-1 border-neutral-200 gap-2 cursor-pointer items-center hover:text-accent-600 transition-colors font-medium"
                 >
                   <MdLogout />
                   Logout
                 </div>
                 <Link
                   to={"/dashboard"}
-                  className="flex gap-1 cursor-pointer items-center hover:text-white"
+                  className="flex gap-2 cursor-pointer items-center hover:text-primary-600 transition-colors font-medium"
                 >
                   <RiDashboard2Line />
                   Dashboard

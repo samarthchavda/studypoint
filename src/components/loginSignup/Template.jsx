@@ -31,26 +31,26 @@ const Template = ({
   };
 
   return (
-    <div className="w-full min-h-screen flex justify-center  items-center mx-auto">
+    <div className="w-full min-h-screen flex justify-center items-center mx-auto bg-gradient-to-br from-white via-primary-50 to-purple-50">
       {loading ? (
         <Spinner />
       ) : (
         <div className="min-h-[calc(100vh-65.33px)] flex justify-center items-center">
-          <div className="py-12 max-w-maxContent text-white w-[85vw] mx-auto flex sm:flex-row flex-col gap-10 justify-between">
+          <div className="py-12 max-w-maxContent w-[85vw] mx-auto flex sm:flex-row flex-col gap-10 justify-between">
             <div className="flex flex-col gap-4 sm:w-[40%]">
               <div className="relative">
-                <Link className="absolute flex gap-1 items-center text-richblack-200 -left-[5%]   -top-9" to={"/"}>
-                  <IoChevronBackCircle className="text-4xl " />
+                <Link className="absolute flex gap-1 items-center text-neutral-700 hover:text-primary-600 -left-[5%] -top-9 transition-colors font-medium" to={"/"}>
+                  <IoChevronBackCircle className="text-4xl" />
                   <span>Back to Home</span>
                 </Link>
-                <p className="text-3xl font-semibold">
+                <p className="text-3xl font-semibold text-neutral-800">
                   {type === "login"
                     ? "Welcome Back"
                     : userType === "student"
-                    ? "Join the millions learning to code with StudyNotion for free"
-                    : "Join the StudyNotion to utilize your skills for free"}
+                    ? "Join the millions learning to code with StudyPoint for free"
+                    : "Join StudyPoint to utilize your skills for free"}
                 </p>
-                <p className="text-[#9FA2AF] text-lg">
+                <p className="text-neutral-600 text-lg mt-2">
                   {userType === "student"
                     ? "Build skills for today, tomorrow, and beyond "
                     : "Discover your Passions,"}
@@ -80,20 +80,11 @@ const Template = ({
                   setIsLoggedIn={setIsLoggedIn}
                 ></LoginForm>
               )}
-              {/* <div className="flex items-center gap-2">
-                <div className="w-[calc(50%)] h-[0.7px] bg-white"></div>
-                <p className="w-fit">OR</p>
-                <div className="w-[calc(50%)] h-[0.7px] bg-white"></div>
-              </div>
-
-              <button className="flex w-full border-2 justify-center py-2 items-center gap-1">
-                <FcGoogle /> {type==='signup'?'Sign Up':'Login'} with Google
-              </button> */}
             </div>
             <div className="self-center sm:p-10 p-5 sm:w-[40%]">
               <div className="relative">
                 <img
-                  className="h-fit w-fit aspect-square absolute right-5 bottom-5"
+                  className="h-fit w-fit aspect-square absolute right-5 bottom-5 rounded-lg"
                   src={setImg()}
                   alt=""
                 />

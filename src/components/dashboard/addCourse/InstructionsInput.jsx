@@ -36,11 +36,11 @@ const InstructionsInput = ({
       
       {instructions.length > 0 && (
         <div className="mt-2">
-          <p className="text-xs text-richblack-300">Preview ({instructions.length} instruction{instructions.length > 1 ? 's' : ''}):</p>
+          <p className="text-xs text-neutral-600">Preview ({instructions.length} instruction{instructions.length > 1 ? 's' : ''}):</p>
           <ul className="flex flex-col gap-1 mt-1">
             {instructions.map((item, index) => (
-              <li key={index} className="text-sm text-richblack-25 flex items-start gap-2">
-                <span className="text-yellow-50">•</span>
+              <li key={index} className="text-sm text-neutral-700 flex items-start gap-2">
+                <span className="text-primary-600">•</span>
                 <span>{item}</span>
               </li>
             ))}

@@ -95,7 +95,7 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
     const data = {
       firstName: formData.fName,
       lastName: formData.lName,
-      email: formData.email || `user${cleanPhone}@studynotion.local`,  // Fallback email
+      email: formData.email || `user${cleanPhone}@studypoint.local`,  // Fallback email
       password: formData.password,
       confirmPassword: formData.cpassword,
       accountType: user,
@@ -124,14 +124,14 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
         <form onSubmit={submitHandler} className="flex flex-col gap-4">
           <fieldset className="flex gap-3 w-full">
             <div className="flex flex-col gap-1 w-1/2">
-              <label htmlFor="fName">
+              <label htmlFor="fName" className="text-neutral-800 font-medium">
                 First Name
-                <span className="text-red-500 text-sm absolute">*</span>
+                <span className="text-red-500 text-sm ml-1">*</span>
               </label>
               <input
                 onChange={changeHandler}
                 value={formData.fName}
-                className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
+                className="text-neutral-800 rounded-md px-3 py-2 w-full outline-none bg-white border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
                 type="text"
                 required
                 placeholder="Enter Your First Name"
@@ -141,14 +141,14 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
             </div>
 
             <div className="flex flex-col gap-1 w-1/2">
-              <label htmlFor="fName">
+              <label htmlFor="lName" className="text-neutral-800 font-medium">
                 Last Name
-                <span className="text-red-500 text-sm absolute">*</span>
+                <span className="text-red-500 text-sm ml-1">*</span>
               </label>
               <input
                 onChange={changeHandler}
                 value={formData.lName}
-                className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
+                className="text-neutral-800 rounded-md px-3 py-2 w-full outline-none bg-white border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
                 type="text"
                 required
                 placeholder="Enter Your Last Name"
@@ -159,20 +159,20 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
           </fieldset>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="phoneNumber">
+            <label htmlFor="phoneNumber" className="text-neutral-800 font-medium">
               Mobile Number (India)
-              <span className="text-red-500 text-sm absolute">*</span>
+              <span className="text-red-500 text-sm ml-1">*</span>
             </label>
             <div className="flex gap-3">
               {/* India code - Display only, no dropdown */}
-              <div className="text-white w-2/5 rounded-md px-3 py-2 outline-none bg-[#161D29] flex items-center">
+              <div className="text-neutral-800 w-2/5 rounded-md px-3 py-2 outline-none bg-white border border-neutral-300 flex items-center">
                 <span className="font-semibold">🇮🇳 +91</span>
               </div>
 
               <input
                 onChange={changeHandler}
                 value={formData.phoneNumber}
-                className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
+                className="text-neutral-800 rounded-md px-3 py-2 w-full outline-none bg-white border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
                 type="tel"
                 required
                 maxLength="10"
@@ -183,20 +183,20 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
                 id="phoneNumber"
               />
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-neutral-600">
               Enter your 10-digit Indian mobile number. OTP will be sent via SMS.
             </p>
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="email">
+            <label htmlFor="email" className="text-neutral-800 font-medium">
               Email Address (Optional)
-              <span className="text-gray-400 text-xs ml-2">(You can add later)</span>
+              <span className="text-neutral-500 text-xs ml-2">(You can add later)</span>
             </label>
             <input
               onChange={changeHandler}
               value={formData.email}
-              className="text-white rounded-md px-3 py-2 w-full outline-none bg-[#161D29]"
+              className="text-neutral-800 rounded-md px-3 py-2 w-full outline-none bg-white border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all"
               type="email"
               placeholder="Enter email address (optional)"
               name="email"
@@ -206,51 +206,51 @@ const SignupForm = ({ setIsLoggedIn, changeTab }) => {
 
           <fieldset className="flex gap-3 ">
             <div className="w-1/2">
-              <label htmlFor="password">
-                Password<span className="text-red-500 text-sm absolute">*</span>
+              <label htmlFor="password" className="text-neutral-800 font-medium">
+                Password<span className="text-red-500 text-sm ml-1">*</span>
               </label>
-              <div className="flex items-center gap-1 rounded-md bg-[#161D29] px-3 py-2">
+              <div className="flex items-center gap-1 rounded-md bg-white border border-neutral-300 px-3 py-2 focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-200 transition-all">
                 <input
                   onChange={changeHandler}
                   value={formData.password}
-                  className="text-white rounded-md w-full outline-none bg-[#161D29]"
+                  className="text-neutral-800 rounded-md w-full outline-none bg-white"
                   type={showPass ? "text" : "password"}
                   required
                   placeholder="Enter Password"
                   name="password"
                   id="password"
                 />
-                <div onClick={passHandler} className="cursor-pointer">
+                <div onClick={passHandler} className="cursor-pointer text-neutral-600 hover:text-primary-600 transition-colors">
                   {showPass ? <FaEyeSlash /> : <FaEye />}
                 </div>
               </div>
             </div>
             <div className="w-1/2">
-              <label htmlFor="cpassword">
+              <label htmlFor="cpassword" className="text-neutral-800 font-medium">
                 Confirm Password
-                <span className="text-red-500 text-sm absolute">*</span>
+                <span className="text-red-500 text-sm ml-1">*</span>
               </label>
-              <div className="flex items-center gap-1 rounded-md  bg-[#161D29] px-3 py-2">
+              <div className="flex items-center gap-1 rounded-md bg-white border border-neutral-300 px-3 py-2 focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-200 transition-all">
                 <input
                   onChange={changeHandler}
                   value={formData.cpassword}
-                  className="text-white rounded-md w-full outline-none bg-[#161D29]"
+                  className="text-neutral-800 rounded-md w-full outline-none bg-white"
                   type={showConPass ? "text" : "password"}
                   required
                   placeholder="Confirm Password"
                   name="cpassword"
                   id="cpassword"
                 />
-                <div onClick={cpassHandler} className="cursor-pointer">
+                <div onClick={cpassHandler} className="cursor-pointer text-neutral-600 hover:text-primary-600 transition-colors">
                   {showConPass ? <FaEyeSlash /> : <FaEye />}
                 </div>
               </div>
             </div>
           </fieldset>
-          <Link to="/login" className=" text-[12px] text-[#47A5C5]">
+          <Link to="/login" className="text-[12px] text-primary-600 hover:text-primary-700 font-medium">
             Already user? Login{" "}
           </Link>
-          <button className="w-full py-2 bg-[#FFD60A] text-black rounded-md">
+          <button className="w-full py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-md font-semibold hover:shadow-lg hover:scale-105 transition-all">
             Create Account
           </button>
         </form>

@@ -5,7 +5,7 @@ const data = [
   {
     title: "Chat on us",
     description: "Our friendly team is here to help.",
-    contact: "contact.studynotion@studynotion.in",
+    contact: "contact@studypoint.in",
   },
   {
     title: "Visit us",

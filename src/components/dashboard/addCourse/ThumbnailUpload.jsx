@@ -13,9 +13,9 @@ const ThumbnailUpload = ({ register, erros, watch }) => {
   return ( 
     <>
       {filePreview || thumbnail ? (
-        <div className="flex flex-col items-center gap-3 border-dashed border-[1.5px] rounded-lg border-[#424854] py-4 px-3 bg-[#2C333F]">
-          <img className="h-60 w-fit rounded-lg" src={filePreview || thumbnail} alt="" />
-          <label className="rounded-lg font-medium text-[#000814] cursor-pointer h-fit bg-[#FFD60A] py-3 px-6 items-center flex gap-2 border border-[#2C333F]" htmlFor="thumbnail">Select other thumnail</label>
+        <div className="flex flex-col items-center gap-3 border-dashed border-[1.5px] rounded-lg border-primary-300 py-4 px-3 bg-primary-50">
+          <img className="h-60 w-fit rounded-lg shadow-md" src={filePreview || thumbnail} alt="" />
+          <label className="rounded-lg font-semibold text-white cursor-pointer h-fit bg-gradient-to-r from-primary-500 to-primary-600 py-3 px-6 items-center flex gap-2 hover:shadow-lg hover:scale-105 transition-all" htmlFor="thumbnail">Select other thumbnail</label>
         </div>
       ) : (
         <div className="flex flex-col gap-1">

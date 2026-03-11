@@ -24,42 +24,42 @@ const SubSectionWindow = ({ subSections, isEnrolled = false, showFirstFree = tru
         return (
           <div 
             key={subSection._id}
-            className="border-b border-richblack-600 last:border-none"
+            className="border-b border-neutral-200 last:border-none"
           >
             <div
               onClick={() => !isLocked && setExpandedSections(prev => ({
                 ...prev,
                 [subSection._id]: !prev[subSection._id]
               }))}
-              className={`flex items-center justify-between ${!isLocked ? 'cursor-pointer hover:bg-richblack-700' : 'cursor-not-allowed opacity-70'} py-2 rounded-lg px-4`}
+              className={`flex items-center justify-between ${!isLocked ? 'cursor-pointer hover:bg-neutral-50' : 'cursor-not-allowed opacity-70'} py-2 rounded-lg px-4 transition-colors`}
             >
               <div className="flex items-center gap-2">
                 {isLocked ? (
-                  <FaLock className="text-richblack-400" />
+                  <FaLock className="text-neutral-400" />
                 ) : (
-                  <HiOutlineVideoCamera className="text-richblack-50" />
+                  <HiOutlineVideoCamera className="text-primary-600" />
                 )}
-                <p className="text-sm text-richblack-50 flex items-center gap-2">
+                <p className="text-sm text-neutral-700 flex items-center gap-2 font-medium">
                   {subSection?.title}
                   {isFreePreview && (
-                    <span className="bg-yellow-50 text-richblack-900 px-2 py-0.5 rounded text-xs font-semibold">
+                    <span className="bg-success-100 text-success-700 px-2 py-0.5 rounded text-xs font-semibold">
                       FREE PREVIEW
                     </span>
                   )}
                   {isLocked && (
-                    <span className="text-richblack-400 text-xs italic">
+                    <span className="text-neutral-500 text-xs italic">
                       (Locked - Buy to unlock)
                     </span>
                   )}
                 </p>
                 {!isLocked && (
                   <MdKeyboardArrowDown 
-                    className="text-richblack-50 text-xl"
+                    className="text-neutral-700 text-xl transition-transform duration-200"
                     style={{ transform: `rotate(${isExpanded ? 180 : 0}deg)` }}
                   />
                 )}
               </div>
-              <span className="text-richblack-25 text-sm">
+              <span className="text-neutral-600 text-sm">
                 {length?.hours > 0 ? `${length?.hours}h` : 
                  length?.minutes > 0 ? `${length?.minutes}m` : 
                  `${length?.seconds}s`}
@@ -68,13 +68,13 @@ const SubSectionWindow = ({ subSections, isEnrolled = false, showFirstFree = tru
             
             {isExpanded && !isLocked && (
               <div className="pl-[2.5rem] pb-3 flex flex-col gap-3">
-                <p className="text-sm text-richblack-50">
+                <p className="text-sm text-neutral-700">
                   {subSection?.description}
                 </p>
                 {isFreePreview && subSection?.videoUrl && (
                   <button
                     onClick={() => openVideoPreview(subSection.videoUrl)}
-                    className="bg-yellow-50 hover:bg-yellow-100 text-richblack-900 font-semibold py-2 px-4 rounded-lg flex items-center gap-2 w-fit transition-all duration-200 transform hover:scale-105"
+                    className="bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 w-fit transition-all duration-200 transform hover:scale-105 shadow-md"
                   >
                     <HiOutlineVideoCamera className="text-lg" />
                     Watch Free Preview

@@ -56,50 +56,50 @@ const CourseCard = ({ info, allowWidth = false }) => {
 
   return (
     <div className="relative">
-      <Link to={`/course/${info._id}`} className="flex flex-col gap-2">
-        <div className="relative">
+      <Link to={`/course/${info._id}`} className="flex flex-col gap-3 group">
+        <div className="relative overflow-hidden rounded-2xl">
           <img
             style={{
               maxWidth: allowWidth ? (width > 766 ? "600px" : "371px") : "371px",
             }}
-            className="rounded-lg"
-            src={info.thumbnail || "https://via.placeholder.com/400x200/1F2937/FFFFFF?text=No+Image"}
+            className="rounded-2xl group-hover:scale-105 transition-transform duration-300"
+            src={info.thumbnail || "https://via.placeholder.com/400x200/0EA5E9/FFFFFF?text=No+Image"}
             alt={info.courseName || info.name || "Course"}
             onError={(e) => {
-              e.target.src = "https://via.placeholder.com/400x200/1F2937/FFFFFF?text=No+Image";
+              e.target.src = "https://via.placeholder.com/400x200/0EA5E9/FFFFFF?text=No+Image";
             }}
           />
           {/* Demo Badge */}
-          <div className="absolute top-2 left-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-3 left-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">
             DEMO
           </div>
           
           {/* Wishlist Button */}
           <button
             onClick={handleWishlistToggle}
-            className="absolute top-2 right-2 bg-richblack-700 hover:bg-richblack-600 p-2 rounded-full transition-all"
+            className="absolute top-3 right-3 bg-white/90 hover:bg-white p-2.5 rounded-full transition-all shadow-lg hover:scale-110"
           >
             {isInWishlist ? (
-              <FaHeart className="text-pink-500 text-xl" />
+              <FaHeart className="text-secondary-500 text-lg" />
             ) : (
-              <FaRegHeart className="text-richblack-5 text-xl" />
+              <FaRegHeart className="text-neutral-600 text-lg" />
             )}
           </button>
         </div>
-        <p className="text-richblack-5 font-medium text-lg">{info.name || info.courseName}</p>
-        <p className="text-richblack-300 text-sm">
+        <p className="text-neutral-800 font-semibold text-lg group-hover:text-primary-600 transition-colors">{info.name || info.courseName}</p>
+        <p className="text-neutral-600 text-sm font-medium">
           By {info.instructor?.firstName} {info.instructor?.lastName}
         </p>
         <div className="flex items-center gap-2">
           <Stars rating={averageRating} />
-          <span className="text-richblack-400 text-sm">
+          <span className="text-neutral-500 text-sm font-medium">
             ({info.ratingAndReviews?.length || 0} reviews)
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-richblack-5 font-semibold text-xl">₹{info.price}</span>
+          <span className="text-primary-600 font-bold text-2xl">₹{info.price}</span>
           {info.studentsEnrolled && (
-            <span className="text-richblack-400 text-sm">
+            <span className="text-neutral-500 text-sm bg-neutral-100 px-3 py-1 rounded-full font-medium">
               {info.studentsEnrolled.length} students
             </span>
           )}

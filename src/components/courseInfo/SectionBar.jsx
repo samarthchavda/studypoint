@@ -17,28 +17,28 @@ const SectionBar = ({ section, isEnrolled }) => {
   const length = lecturesLength();
 
   return (
-    <div className="border-[1px] border-richblack-600 mb-2">
+    <div className="border-[1px] border-neutral-200 mb-2 rounded-lg overflow-hidden">
       <div
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center cursor-pointer justify-between 
-          bg-richblack-700 px-8 py-4 hover:bg-richblack-600"
+          bg-neutral-50 px-8 py-4 hover:bg-neutral-100 transition-colors"
       >
         <div className="flex items-center gap-1">
           <span>
             <MdKeyboardArrowDown 
-              className="text-richblack-50 text-xl"
+              className="text-neutral-700 text-xl transition-transform duration-200"
               style={{ transform: `rotate(${isOpen ? 180 : 0}deg)` }}
             />
           </span>
-          <h4 className="text-sm text-richblack-5 font-medium">
+          <h4 className="text-sm text-neutral-800 font-semibold">
             {section?.name}
           </h4>
         </div>
         <p className="flex items-center gap-2">
-          <span className="text-yellow-50 block text-sm">
+          <span className="text-primary-600 block text-sm font-medium">
             {section?.subSections?.length} lectures
           </span>
-          <span className="text-richblack-25 block text-sm">
+          <span className="text-neutral-600 block text-sm">
             {length?.hours > 0 ? `${length?.hours}h` : 
              length?.minutes > 0 ? `${length?.minutes}m` : 
              `${length?.seconds}s`}
@@ -47,7 +47,7 @@ const SectionBar = ({ section, isEnrolled }) => {
       </div>
       
       {isOpen && (
-        <div className="bg-richblack-900">
+        <div className="bg-white border-t border-neutral-200">
           <SubSectionWindow 
             subSections={section?.subSections}
             isEnrolled={isEnrolled}
